@@ -5,6 +5,7 @@ import { experienceImages } from './images'
 import { JourneyIncludedPill } from '../../journey/JourneyChrome'
 import { useJourney } from '../../journey/JourneyContext'
 import { inferJourneyRegion } from '../../journey/journeyTaxonomy'
+import { normalizeRegionLabel } from '../../journey/savedJourneyDisplay'
 import { sharedHeritageRecommendations, sharedHeritageWorld } from '../../journey/discoveryWorlds'
 import ahangama from '../../assets/images/Ahangama.jpeg'
 import galle from '../../assets/images/Galle.jpeg'
@@ -483,17 +484,16 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
         id: toJourneyId('theme', encounter.theme),
         kind: 'theme',
         label: encounter.theme,
-        detail: 'A preferred way into Sri Lanka from Expectations.',
         source: 'Expectations',
       })
     }
 
-    if (encounter.theme && parentRegion && !isIncluded(toJourneyId('region', parentRegion))) {
+    if (encounter.theme && parentRegion && !isIncluded(toJourneyId('region', normalizeRegionLabel(parentRegion)))) {
+      const editorialRegion = normalizeRegionLabel(parentRegion)
       includeItem({
-        id: toJourneyId('region', parentRegion),
+        id: toJourneyId('region', editorialRegion),
         kind: 'region',
-        label: parentRegion,
-        detail: `A regional setting naturally aligned with ${encounter.theme}.`,
+        label: editorialRegion,
         source: 'Expectations',
         parentTheme: encounter.theme,
       })
@@ -506,7 +506,7 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
       detail: encounter.note,
       source: encounter.category,
       parentTheme: encounter.theme,
-      parentRegion,
+      parentRegion: parentRegion ? normalizeRegionLabel(parentRegion) : undefined,
     })
   }
 
@@ -595,19 +595,18 @@ export function ExpectationsPage() {
 
   function includeSharedHeritageRecommendations() {
     sharedHeritageRecommendations.slice(1, 5).forEach(({ destination }) => {
+      const parentRegion = inferJourneyRegion({
+        kind: 'destination',
+        label: destination,
+        source: 'Shared Heritage recommendations',
+      })
       includeItem({
         id: toJourneyId('destination', destination),
         kind: 'destination',
         label: destination,
-        detail: `A high-relevance recommendation for ${sharedHeritageWorld.name}.`,
-        source: 'Recommendation Engine',
+        source: 'Expectations',
         parentTheme: sharedHeritageWorld.name,
-        parentRegion: inferJourneyRegion({
-          kind: 'destination',
-          label: destination,
-          detail: sharedHeritageWorld.description,
-          source: 'Shared Heritage recommendations',
-        }),
+        parentRegion: parentRegion ? normalizeRegionLabel(parentRegion) : undefined,
       })
     })
   }
@@ -636,7 +635,6 @@ export function ExpectationsPage() {
       id: journeyId,
       kind: 'theme',
       label: theme,
-      detail: 'A preferred way into Sri Lanka from Expectations.',
       source: 'Expectations',
     })
 
@@ -656,7 +654,6 @@ export function ExpectationsPage() {
       id: toJourneyId('theme', theme),
       kind: 'theme',
       label: theme,
-      detail: 'A preferred way into Sri Lanka from Expectations.',
       source: 'Expectations',
     })
 

@@ -28,7 +28,7 @@ export function MyJourneyPage({ defaultView = 'explore' }: MyJourneyPageProps) {
 
   const handleViewChange = useCallback((view: JourneyView) => {
     setActiveView(view)
-    setJourneyView(view)
+    setJourneyView(view, { directionId: null })
   }, [])
 
   return (

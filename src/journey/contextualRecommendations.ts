@@ -11,6 +11,7 @@ import {
   toJourneyId,
 } from './journeyItemHelpers'
 import { getRegionEditorialName } from './journeyRegionCatalog'
+import { findRegionIdByLabel, normalizeRegionLabel } from './savedJourneyDisplay'
 
 export type ContextualRecommendationContext = 'destination' | 'region' | 'experience' | 'theme'
 
@@ -256,19 +257,23 @@ export function getSavedRegionIds(savedItems: JourneyItem[], regions: JourneyReg
 
   savedItems.forEach((item) => {
     if (item.kind === 'region') {
-      const match = regions.find(
-        (region) => getRegionEditorialName(region.id) === item.label || region.title === item.label,
-      )
-      if (match) {
-        savedRegionIds.add(match.id)
+      const regionId = findRegionIdByLabel(item.label)
+      if (regionId) {
+        savedRegionIds.add(regionId)
       }
     }
   })
 
   regions.forEach((region) => {
-    if (savedLabels.has(getRegionEditorialName(region.id)) || savedLabels.has(region.title)) {
+    const editorialName = getRegionEditorialName(region.id)
+    if (savedLabels.has(editorialName) || savedLabels.has(region.title)) {
       savedRegionIds.add(region.id)
     }
+    savedItems.forEach((item) => {
+      if (item.kind === 'region' && normalizeRegionLabel(item.label) === editorialName) {
+        savedRegionIds.add(region.id)
+      }
+    })
     region.destinations.forEach((destination) => {
       if (savedLabels.has(destination.title)) {
         savedRegionIds.add(region.id)

@@ -100,3 +100,17 @@ export interface SuggestedRhythmResult {
   rhythmId?: string
   isIllustrative: true
 }
+
+/** Illustrative curated journey — not a confirmed commercial package. */
+export interface SignatureJourney {
+  id: string
+  title: string
+  subtitle?: string
+  summary: string
+  themeIds: string[]
+  regionIds: string[]
+  destinationIds: string[]
+  experienceIds: string[]
+  durationLabel?: string
+  isIllustrative: true
+}

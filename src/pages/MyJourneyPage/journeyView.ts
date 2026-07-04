@@ -9,10 +9,32 @@ export function readJourneyView(defaultView: JourneyView = 'explore'): JourneyVi
   return defaultView
 }
 
-export function setJourneyView(view: JourneyView) {
+export function readFocusedDirectionId(): string | undefined {
+  const params = new URLSearchParams(window.location.search)
+  const direction = params.get('direction')
+  return direction ?? undefined
+}
+
+export function setJourneyView(view: JourneyView, options?: { directionId?: string | null }) {
   const url = new URL(window.location.href)
   url.searchParams.set('view', view)
+  if (options?.directionId) {
+    url.searchParams.set('direction', options.directionId)
+  } else if (options?.directionId === null || view !== 'journey') {
+    url.searchParams.delete('direction')
+  }
   window.history.replaceState({}, '', url.toString())
+}
+
+export function setFocusedDirectionId(directionId: string | undefined) {
+  const url = new URL(window.location.href)
+  if (directionId) {
+    url.searchParams.set('view', 'journey')
+    url.searchParams.set('direction', directionId)
+  } else {
+    url.searchParams.delete('direction')
+  }
+  window.history.pushState({}, '', url.toString())
 }
 
 export type MapFilterCategory = 'all' | 'worlds' | 'regions' | 'experiences' | 'saved'

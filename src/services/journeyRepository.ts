@@ -1,5 +1,6 @@
 import type { JourneyItem } from '../journey/JourneyContext'
 import { getRegionEditorialName, REGION_RHYTHM_ORDER } from '../journey/journeyRegionCatalog'
+import { findRegionIdByLabel, normalizeRegionLabel } from '../journey/savedJourneyDisplay'
 import { journeyRegions } from '../data/journeyRegions'
 import {
   adaptCatalogExperience,
@@ -10,6 +11,7 @@ import {
   findRegionForDestinationId,
 } from '../data/journey/adapters'
 import { mockJourneyRhythms } from '../data/journey/mockJourneyRhythms'
+import { mockSignatureJourneys } from '../data/journey/mockSignatureJourneys'
 import { mockRecommendations } from '../data/journey/mockRecommendations'
 import { mockTravelConnections } from '../data/journey/mockTravelConnections'
 import {
@@ -23,6 +25,7 @@ import type {
   JourneyExperience,
   Recommendation,
   RecommendationInput,
+  SignatureJourney,
   SuggestedJourneyRhythm,
   SuggestedRhythmResult,
   TravelConnection,
@@ -40,6 +43,7 @@ export interface JourneyRepository {
   getJourneyRhythms(): Promise<SuggestedJourneyRhythm[]>
   getJourneyRhythmById(id: string): Promise<SuggestedJourneyRhythm | undefined>
   generateIllustrativeItinerary(input: ItineraryInput, contextItems?: JourneyItem[]): Promise<IllustrativeItinerary | undefined>
+  getSignatureJourneysForTheme(themeId: string): Promise<SignatureJourney[]>
 }
 
 const REGION_SEGMENT_SUMMARIES: Record<string, string> = {
@@ -87,27 +91,30 @@ function resolveSavedRegionIds(items: JourneyItem[]): string[] {
 
   items.forEach((item) => {
     if (item.kind === 'region') {
+      const regionId = findRegionIdByLabel(item.label)
+      if (regionId) {
+        regionIds.add(regionId)
+        return
+      }
       const match = journeyRegions.find(
-        (region) => getRegionEditorialName(region.id) === item.label || region.title === item.label,
+        (region) =>
+          getRegionEditorialName(region.id) === normalizeRegionLabel(item.label) ||
+          region.title === item.label,
       )
       if (match) {
         regionIds.add(match.id)
       }
     }
     if (item.kind === 'destination' && item.parentRegion) {
-      const match = journeyRegions.find(
-        (region) => getRegionEditorialName(region.id) === item.parentRegion,
-      )
-      if (match) {
-        regionIds.add(match.id)
+      const regionId = findRegionIdByLabel(item.parentRegion)
+      if (regionId) {
+        regionIds.add(regionId)
       }
     }
     if (item.kind === 'experience' && item.parentRegion) {
-      const match = journeyRegions.find(
-        (region) => getRegionEditorialName(region.id) === item.parentRegion,
-      )
-      if (match) {
-        regionIds.add(match.id)
+      const regionId = findRegionIdByLabel(item.parentRegion)
+      if (regionId) {
+        regionIds.add(regionId)
       }
     }
   })
@@ -253,7 +260,10 @@ class MockJourneyRepository implements JourneyRepository {
     const matchedRhythm = matchRhythmToSavedItems(savedDestinationIds, savedRegionIds)
     if (matchedRhythm) {
       const sequence = matchedRhythm.destinationIds
-        .map((id) => this.destinations.find((destination) => destination.id === id)?.regionName)
+        .map((id) => {
+          const regionName = this.destinations.find((destination) => destination.id === id)?.regionName
+          return regionName ? normalizeRegionLabel(regionName) : undefined
+        })
         .filter((name, index, array): name is string => Boolean(name) && array.indexOf(name) === index)
 
       if (sequence.length >= 2) {
@@ -325,6 +335,10 @@ class MockJourneyRepository implements JourneyRepository {
       isIllustrative: true,
       note: ITINERARY_DISCLAIMER,
     }
+  }
+
+  async getSignatureJourneysForTheme(themeId: string): Promise<SignatureJourney[]> {
+    return mockSignatureJourneys.filter((journey) => journey.themeIds.includes(themeId))
   }
 }
 

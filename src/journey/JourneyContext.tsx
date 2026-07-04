@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { inferJourneyRegion, inferJourneyTheme, normalizeJourneyItem } from './journeyTaxonomy'
+import { normalizeJourneyItemLabels } from './savedJourneyDisplay'
 
 export type JourneyItemKind =
   | 'theme'
@@ -50,7 +51,7 @@ const JourneyContext = createContext<JourneyContextValue | undefined>(undefined)
 
 function normalizeJourneyItems(items: JourneyItem[]) {
   const normalizedItems = items
-    .map(normalizeJourneyItem)
+    .map((item) => normalizeJourneyItemLabels(normalizeJourneyItem(item)))
     .filter(
       (item) =>
         !(item.kind === 'experience' && item.detail?.startsWith('A signature encounter naturally aligned with')),
