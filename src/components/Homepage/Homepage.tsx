@@ -294,7 +294,7 @@ export function Homepage() {
           <header className="figma-section-header figma-experiences-header">
             <div>
               <p className="figma-overline">Inspiration Before Curation</p>
-              <h2>Ways Into The Island</h2>
+              <h2>Ways Into The Royale Isles</h2>
               <p>
                 These Discovery Worlds are not decisions. They are editorial lenses for understanding
                 Sri Lanka before any journey is saved, scored, or shaped around you.
