@@ -455,7 +455,7 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
     includeEncounterInJourney()
   }
 
-  function handleEnquireClick(event: MouseEvent<HTMLAnchorElement>) {
+  function handleEnquireClick() {
     if (!isEncounterIncluded) {
       includeEncounterInJourney()
     }
