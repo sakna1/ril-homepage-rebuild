@@ -12,7 +12,7 @@ const footerNav = {
   connect: [
     { href: '/#begin', label: 'Begin a Conversation' },
     { href: '/discover-sri-lanka', label: 'Discovery Guide' },
-    { href: '/#begin', label: 'Contact' },
+    { href: '/contact', label: 'Contact' },
   ] as const,
   legal: [
     { href: '/privacy', label: 'Privacy Policy' },

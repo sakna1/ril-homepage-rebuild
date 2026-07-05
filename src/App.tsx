@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { AboutPage } from './components/AboutPage/AboutPage'
+import { ContactPage } from './components/ContactPage/ContactPage'
 import { ConciergeDesk } from './components/ConciergeDesk/ConciergeDesk'
 import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
 import { ExperienceDetailPage } from './components/ExperienceDetailPage/ExperienceDetailPage'
@@ -48,6 +49,10 @@ function AppContent() {
 
   if (path === '/about') {
     return renderPage(<AboutPage />)
+  }
+
+  if (path === '/contact') {
+    return renderPage(<ContactPage />)
   }
 
   if (path === '/travel-preparation') {
