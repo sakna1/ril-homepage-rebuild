@@ -1,0 +1,1660 @@
+DestinationMarker.tsx
+
+import { useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
+import mapboxgl, { type Map, type Popup } from 'mapbox-gl'
+import type { Destination } from '../../data/destinations'
+import { DestinationPopup } from './DestinationPopup'
+
+type PopupAnchor =
+  | 'bottom'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'top-left'
+  | 'top-right'
+
+type DestinationMarkerProps = {
+  destination: Destination
+  map: Map
+}
+
+let activePopupRequest = 0
+let closeActivePopup: (() => void) | null = null
+
+function createMarkerElement(destination: Destination) {
+  const marker = document.createElement('button')
+  const visual = document.createElement('span')
+  const halo = document.createElement('span')
+  const core = document.createElement('span')
+  const label = document.createElement('span')
+
+  marker.type = 'button'
+  marker.className = 'destination-marker'
+  marker.setAttribute('aria-label', `Discover ${destination.name}`)
+
+  visual.className = 'destination-marker__visual'
+  halo.className = 'destination-marker__halo'
+  core.className = 'destination-marker__core'
+  label.className = 'destination-marker__label'
+  label.textContent = destination.name
+
+  visual.append(halo, core)
+  marker.append(visual, label)
+
+  return marker
+}
+
+function getPopupAnchor(map: Map, coordinates: Destination['coordinates']): PopupAnchor {
+  const point = map.project(coordinates)
+  const canvas = map.getCanvas()
+  const edgePadding = 220
+  const isNearTop = point.y < edgePadding
+  const isNearBottom = point.y > canvas.clientHeight - edgePadding
+  const isNearLeft = point.x < edgePadding
+  const isNearRight = point.x > canvas.clientWidth - edgePadding
+
+  if (isNearTop && isNearLeft) {
+    return 'top-left'
+  }
+
+  if (isNearTop && isNearRight) {
+    return 'top-right'
+  }
+
+  if (isNearBottom && isNearLeft) {
+    return 'bottom-left'
+  }
+
+  if (isNearBottom && isNearRight) {
+    return 'bottom-right'
+  }
+
+  if (isNearTop) {
+    return 'top'
+  }
+
+  if (isNearBottom) {
+    return 'bottom'
+  }
+
+  if (isNearLeft) {
+    return 'left'
+  }
+
+  if (isNearRight) {
+    return 'right'
+  }
+
+  return 'bottom'
+}
+
+function getFlyToOffset(anchor: PopupAnchor): [number, number] {
+  const x =
+    anchor.endsWith('left') || anchor === 'left'
+      ? -140
+      : anchor.endsWith('right') || anchor === 'right'
+        ? 140
+        : 0
+  const y = anchor.startsWith('top') ? -120 : anchor.startsWith('bottom') ? 120 : 0
+
+  return [x, y]
+}
+
+export function DestinationMarker({ destination, map }: DestinationMarkerProps) {
+  useEffect(() => {
+    const markerElement = createMarkerElement(destination)
+    const popupElement = document.createElement('div')
+    const popupRoot = createRoot(popupElement)
+
+    popupRoot.render(<DestinationPopup destination={destination} />)
+
+    let popup: Popup | null = null
+    const removePopup = () => popup?.remove()
+
+    const marker = new mapboxgl.Marker({
+      anchor: 'center',
+      element: markerElement,
+    })
+      .setLngLat(destination.coordinates)
+      .addTo(map)
+
+    const openPopup = () => {
+      const popupRequest = activePopupRequest + 1
+      const anchor = getPopupAnchor(map, destination.coordinates)
+      const targetZoom = Math.max(map.getZoom(), 7.55)
+
+      activePopupRequest = popupRequest
+      closeActivePopup?.()
+      popup?.remove()
+      popup = new mapboxgl.Popup({
+        anchor,
+        className: 'destination-popup',
+        closeButton: false,
+        closeOnClick: true,
+        focusAfterOpen: false,
+        maxWidth: '360px',
+        offset: 28,
+      })
+      closeActivePopup = removePopup
+
+      map.flyTo({
+        center: destination.coordinates,
+        curve: 1.25,
+        duration: 850,
+        essential: true,
+        offset: getFlyToOffset(anchor),
+        speed: 0.75,
+        zoom: targetZoom,
+      })
+
+      map.once('moveend', () => {
+        if (popupRequest !== activePopupRequest) {
+          return
+        }
+
+        popup?.setLngLat(destination.coordinates).setDOMContent(popupElement).addTo(map)
+      })
+    }
+
+    markerElement.addEventListener('click', openPopup)
+
+    return () => {
+      markerElement.removeEventListener('click', openPopup)
+      marker.remove()
+      popup?.remove()
+      if (closeActivePopup === removePopup) {
+        closeActivePopup = null
+      }
+      popupRoot.unmount()
+    }
+  }, [destination, map])
+
+  return null
+}
+
+destinationpopup.tsx
+
+import type { Destination } from '../../data/destinations'
+
+type DestinationPopupProps = {
+  destination: Destination
+}
+
+export function DestinationPopup({ destination }: DestinationPopupProps) {
+  return (
+    <article className="destination-popup-card">
+      <img
+        className="destination-popup-card__image"
+        src={destination.heroImage}
+        alt={`${destination.name} destination preview`}
+      />
+      <div className="destination-popup-card__content">
+        <p className="destination-popup-card__eyebrow">{destination.province}</p>
+        <h2>{destination.name}</h2>
+        <p>{destination.shortDescription}</p>
+        <a className="destination-popup-card__link" href={`/travel-planner#${destination.id}`}>
+          Explore Destination
+        </a>
+      </div>
+    </article>
+  )
+}
+
+
+journeyregionallayer.tsx
+
+import { useEffect } from 'react'
+import type { Map } from 'mapbox-gl'
+import type { JourneyRegion } from '../../data/journeyRegions'
+
+type JourneyRegionLayerProps = {
+  map: Map
+  regions: JourneyRegion[]
+  selectedRegionId?: string
+  onRegionSelect: (region: JourneyRegion) => void
+}
+
+type RegionPolygonFeatureCollection = {
+  type: 'FeatureCollection'
+  features: Array<{
+    type: 'Feature'
+    id: string
+    properties: {
+      id: string
+      title: string
+    }
+    geometry: {
+      type: 'Polygon'
+      coordinates: [number, number][][]
+    }
+  }>
+}
+
+type RegionLabelFeatureCollection = {
+  type: 'FeatureCollection'
+  features: Array<{
+    type: 'Feature'
+    id: string
+    properties: {
+      id: string
+      title: string
+    }
+    geometry: {
+      type: 'Point'
+      coordinates: [number, number]
+    }
+  }>
+}
+
+const REGION_SOURCE_ID = 'journey-regions'
+const REGION_LABEL_SOURCE_ID = 'journey-region-labels'
+const REGION_FILL_LAYER_ID = 'journey-region-fill'
+const REGION_GLOW_LAYER_ID = 'journey-region-glow'
+const REGION_LINE_LAYER_ID = 'journey-region-line'
+const REGION_LABEL_LAYER_ID = 'journey-region-label'
+
+function createRegionFeatureCollection(regions: JourneyRegion[]): RegionPolygonFeatureCollection {
+  return {
+    type: 'FeatureCollection',
+    features: regions.map((region) => ({
+      type: 'Feature',
+      id: region.id,
+      properties: {
+        id: region.id,
+        title: region.title,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[...region.polygon, region.polygon[0]]],
+      },
+    })),
+  }
+}
+
+function createRegionLabelFeatureCollection(regions: JourneyRegion[]): RegionLabelFeatureCollection {
+  return {
+    type: 'FeatureCollection',
+    features: regions.map((region) => ({
+      type: 'Feature',
+      id: region.id,
+      properties: {
+        id: region.id,
+        title: region.title,
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: region.center,
+      },
+    })),
+  }
+}
+
+function setSourceData(map: Map, sourceId: string, data: unknown) {
+  const source = map.getSource(sourceId) as { setData?: (nextData: unknown) => void } | undefined
+  source?.setData?.(data)
+}
+
+function getRegionOpacityExpression(selectedRegionId?: string) {
+  if (!selectedRegionId) {
+    return ['case', ['boolean', ['feature-state', 'hover'], false], 0.3, 0.12]
+  }
+
+  return [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    0.34,
+    ['==', ['get', 'id'], selectedRegionId],
+    0.24,
+    0.035,
+  ]
+}
+
+function getLabelOpacityExpression(selectedRegionId?: string) {
+  if (!selectedRegionId) {
+    return 0.82
+  }
+
+  return ['case', ['==', ['get', 'id'], selectedRegionId], 0.96, 0.18]
+}
+
+export function JourneyRegionLayer({
+  map,
+  regions,
+  selectedRegionId,
+  onRegionSelect,
+}: JourneyRegionLayerProps) {
+  useEffect(() => {
+    const regionData = createRegionFeatureCollection(regions)
+    const labelData = createRegionLabelFeatureCollection(regions)
+
+    if (!map.getSource(REGION_SOURCE_ID)) {
+      map.addSource(REGION_SOURCE_ID, {
+        type: 'geojson',
+        data: regionData,
+        promoteId: 'id',
+      })
+    } else {
+      setSourceData(map, REGION_SOURCE_ID, regionData)
+    }
+
+    if (!map.getSource(REGION_LABEL_SOURCE_ID)) {
+      map.addSource(REGION_LABEL_SOURCE_ID, {
+        type: 'geojson',
+        data: labelData,
+        promoteId: 'id',
+      })
+    } else {
+      setSourceData(map, REGION_LABEL_SOURCE_ID, labelData)
+    }
+
+    if (!map.getLayer(REGION_FILL_LAYER_ID)) {
+      map.addLayer({
+        id: REGION_FILL_LAYER_ID,
+        type: 'fill',
+        source: REGION_SOURCE_ID,
+        paint: {
+          'fill-color': '#c5a059',
+          'fill-opacity': getRegionOpacityExpression(selectedRegionId),
+        },
+      })
+    }
+
+    if (!map.getLayer(REGION_GLOW_LAYER_ID)) {
+      map.addLayer({
+        id: REGION_GLOW_LAYER_ID,
+        type: 'line',
+        source: REGION_SOURCE_ID,
+        paint: {
+          'line-color': '#c5a059',
+          'line-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.58, 0],
+          'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 28, 8],
+          'line-blur': 22,
+        },
+      })
+    }
+
+    if (!map.getLayer(REGION_LINE_LAYER_ID)) {
+      map.addLayer({
+        id: REGION_LINE_LAYER_ID,
+        type: 'line',
+        source: REGION_SOURCE_ID,
+        paint: {
+          'line-color': '#004225',
+          'line-opacity': 0.18,
+          'line-width': 1,
+          'line-blur': 1.4,
+        },
+      })
+    }
+
+    if (!map.getLayer(REGION_LABEL_LAYER_ID)) {
+      map.addLayer({
+        id: REGION_LABEL_LAYER_ID,
+        type: 'symbol',
+        source: REGION_LABEL_SOURCE_ID,
+        layout: {
+          'text-field': ['get', 'title'],
+          'text-size': 11,
+          'text-letter-spacing': 0.12,
+          'text-transform': 'uppercase',
+          'text-allow-overlap': false,
+          'text-ignore-placement': false,
+        },
+        paint: {
+          'text-color': '#004225',
+          'text-halo-color': '#fbf9f5',
+          'text-halo-width': 1.4,
+          'text-opacity': getLabelOpacityExpression(selectedRegionId),
+        },
+      })
+    }
+
+    const handleClick = (event: { features?: Array<{ properties?: { id?: string } }> }) => {
+      const regionId = event.features?.[0]?.properties?.id
+      const region = regions.find((item) => item.id === regionId)
+
+      if (region) {
+        onRegionSelect(region)
+      }
+    }
+
+    let hoveredRegionId: string | number | undefined
+
+    const handleMouseMove = (
+      event: { features?: Array<{ id?: string | number; properties?: { id?: string } }> },
+    ) => {
+      map.getCanvas().style.cursor = 'pointer'
+      const nextRegionId = event.features?.[0]?.id ?? event.features?.[0]?.properties?.id
+
+      if (hoveredRegionId === nextRegionId) {
+        return
+      }
+
+      if (hoveredRegionId !== undefined) {
+        map.setFeatureState({ source: REGION_SOURCE_ID, id: hoveredRegionId }, { hover: false })
+      }
+
+      hoveredRegionId = nextRegionId
+
+      if (hoveredRegionId !== undefined) {
+        map.setFeatureState({ source: REGION_SOURCE_ID, id: hoveredRegionId }, { hover: true })
+      }
+    }
+
+    const handleMouseLeave = () => {
+      map.getCanvas().style.cursor = ''
+
+      if (hoveredRegionId !== undefined) {
+        map.setFeatureState({ source: REGION_SOURCE_ID, id: hoveredRegionId }, { hover: false })
+      }
+
+      hoveredRegionId = undefined
+    }
+
+    map.on('click', REGION_FILL_LAYER_ID, handleClick)
+    map.on('mousemove', REGION_FILL_LAYER_ID, handleMouseMove)
+    map.on('mouseleave', REGION_FILL_LAYER_ID, handleMouseLeave)
+
+    return () => {
+      map.off('click', REGION_FILL_LAYER_ID, handleClick)
+      map.off('mousemove', REGION_FILL_LAYER_ID, handleMouseMove)
+      map.off('mouseleave', REGION_FILL_LAYER_ID, handleMouseLeave)
+
+      if (hoveredRegionId !== undefined) {
+        map.setFeatureState({ source: REGION_SOURCE_ID, id: hoveredRegionId }, { hover: false })
+      }
+    }
+  }, [map, onRegionSelect, regions, selectedRegionId])
+
+  useEffect(() => {
+    if (map.getLayer(REGION_FILL_LAYER_ID)) {
+      map.setPaintProperty(
+        REGION_FILL_LAYER_ID,
+        'fill-opacity',
+        getRegionOpacityExpression(selectedRegionId),
+      )
+    }
+
+    if (map.getLayer(REGION_LABEL_LAYER_ID)) {
+      map.setPaintProperty(
+        REGION_LABEL_LAYER_ID,
+        'text-opacity',
+        getLabelOpacityExpression(selectedRegionId),
+      )
+    }
+  }, [map, selectedRegionId])
+
+  return null
+}
+
+mapcontrols.tsx
+
+import { useEffect } from 'react'
+import mapboxgl, { type Map } from 'mapbox-gl'
+
+type MapControlsProps = {
+  map: Map
+}
+
+export function MapControls({ map }: MapControlsProps) {
+  useEffect(() => {
+    const navigationControl = new mapboxgl.NavigationControl({ showCompass: true, showZoom: true })
+    map.addControl(navigationControl, 'top-right')
+
+    return () => {
+      map.removeControl(navigationControl)
+    }
+  }, [map])
+
+  return null
+}
+
+regiondestinationmarker.tsx
+
+
+import { useEffect } from 'react'
+import mapboxgl, { type Map } from 'mapbox-gl'
+import type { RegionDestination } from '../../data/journeyRegions'
+
+type RegionDestinationMarkerProps = {
+  destination: RegionDestination
+  map: Map
+  onSelect: (destination: RegionDestination) => void
+}
+
+function createMarkerElement(destination: RegionDestination) {
+  const marker = document.createElement('button')
+  const visual = document.createElement('span')
+  const halo = document.createElement('span')
+  const core = document.createElement('span')
+  const label = document.createElement('span')
+
+  marker.type = 'button'
+  marker.className = 'destination-marker'
+  marker.setAttribute('aria-label', `Discover ${destination.title}`)
+
+  visual.className = 'destination-marker__visual'
+  halo.className = 'destination-marker__halo'
+  core.className = 'destination-marker__core'
+  label.className = 'destination-marker__label'
+  label.textContent = destination.title
+
+  visual.append(halo, core)
+  marker.append(visual, label)
+
+  return marker
+}
+
+export function RegionDestinationMarker({
+  destination,
+  map,
+  onSelect,
+}: RegionDestinationMarkerProps) {
+  useEffect(() => {
+    const markerElement = createMarkerElement(destination)
+    const marker = new mapboxgl.Marker({
+      anchor: 'center',
+      element: markerElement,
+    })
+      .setLngLat(destination.coordinates)
+      .addTo(map)
+
+    const stopMapInteraction = (event: Event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+
+    const handleClick = (event: MouseEvent) => {
+      stopMapInteraction(event)
+      onSelect(destination)
+    }
+
+    markerElement.addEventListener('pointerdown', stopMapInteraction)
+    markerElement.addEventListener('mousedown', stopMapInteraction)
+    markerElement.addEventListener('touchstart', stopMapInteraction)
+    markerElement.addEventListener('click', handleClick)
+
+    return () => {
+      markerElement.removeEventListener('pointerdown', stopMapInteraction)
+      markerElement.removeEventListener('mousedown', stopMapInteraction)
+      markerElement.removeEventListener('touchstart', stopMapInteraction)
+      markerElement.removeEventListener('click', handleClick)
+      markerElement.classList.add('destination-marker--leaving')
+      window.setTimeout(() => marker.remove(), 220)
+    }
+  }, [destination, map, onSelect])
+
+  return null
+}
+
+
+travelmap.css
+
+.travel-map {
+  position: relative;
+  width: 100%;
+  min-height: clamp(560px, 66vh, 700px);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  background: var(--color-surface-secondary);
+  box-shadow: 0 28px 90px var(--shadow-card-soft);
+}
+
+.travel-map__canvas {
+  width: 100%;
+  min-height: inherit;
+  height: 100%;
+}
+
+.travel-map--empty {
+  display: grid;
+  place-items: center;
+  padding: var(--space-xl);
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+}
+
+.travel-map .mapboxgl-ctrl-top-right {
+  top: 24px;
+  right: 24px;
+}
+
+.travel-map .mapboxgl-ctrl-group {
+  overflow: hidden;
+  border: 1px solid rgba(197, 160, 89, 0.32);
+  border-radius: 14px;
+  background: rgba(251, 249, 245, 0.92);
+  box-shadow: 0 16px 40px var(--shadow-card);
+}
+
+.travel-map .mapboxgl-ctrl button {
+  width: 34px;
+  height: 34px;
+}
+
+.destination-marker {
+  position: absolute;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  appearance: none;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  animation: destination-marker-enter 280ms ease both;
+}
+
+.destination-marker--leaving {
+  pointer-events: none;
+  animation: destination-marker-leave 220ms ease both;
+}
+
+.mapboxgl-canvas {
+  cursor: default;
+}
+
+.destination-marker__visual {
+  position: absolute;
+  display: block;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+  transition: transform 240ms ease;
+}
+
+.destination-marker__halo,
+.destination-marker__core {
+  position: absolute;
+  display: block;
+  left: 50%;
+  top: 50%;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.destination-marker__halo {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(197, 160, 89, 0.48);
+  background: rgba(251, 249, 245, 0.72);
+  box-shadow: 0 10px 26px rgba(13, 31, 23, 0.22);
+  transition:
+    border-color 240ms ease,
+    transform 240ms ease,
+    background 240ms ease;
+}
+
+.destination-marker__core {
+  width: 9px;
+  height: 9px;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(0, 66, 37, 0.78);
+  transition:
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+
+.destination-marker__label {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  width: max-content;
+  max-width: 150px;
+  padding: 7px 11px;
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  border-radius: 999px;
+  background: rgba(251, 249, 245, 0.94);
+  box-shadow: 0 12px 34px rgba(13, 31, 23, 0.16);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-label);
+  line-height: var(--line-height-caption);
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translate(-50%, 6px);
+  transition:
+    opacity 240ms ease,
+    transform 240ms ease;
+  white-space: nowrap;
+}
+
+.destination-marker:hover,
+.destination-marker:focus-visible {
+  z-index: 2;
+}
+
+.destination-marker:hover .destination-marker__visual,
+.destination-marker:focus-visible .destination-marker__visual {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.destination-marker:hover .destination-marker__halo,
+.destination-marker:focus-visible .destination-marker__halo {
+  border-color: var(--color-accent);
+  background: rgba(251, 249, 245, 0.95);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.destination-marker:hover .destination-marker__core,
+.destination-marker:focus-visible .destination-marker__core {
+  box-shadow: 0 0 0 4px rgba(0, 66, 37, 0.74);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.destination-marker:hover .destination-marker__label,
+.destination-marker:focus-visible .destination-marker__label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.destination-marker:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.destination-popup.mapboxgl-popup {
+  z-index: 5;
+}
+
+.destination-popup .mapboxgl-popup-content {
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  border-radius: 26px;
+  background: var(--color-surface);
+  box-shadow: 0 28px 80px rgba(13, 31, 23, 0.22);
+  animation: destination-popup-enter 260ms ease both;
+}
+
+.destination-popup .mapboxgl-popup-tip {
+  border-top-color: var(--color-surface);
+}
+
+.destination-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.destination-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.destination-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+  border-bottom-color: var(--color-surface);
+}
+
+.destination-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.destination-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.destination-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+  border-top-color: var(--color-surface);
+}
+
+.destination-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  border-right-color: var(--color-surface);
+}
+
+.destination-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  border-left-color: var(--color-surface);
+}
+
+.destination-popup-card {
+  width: min(340px, calc(100vw - 40px));
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.destination-popup-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.destination-popup-card__content {
+  padding: 24px 24px 26px;
+}
+
+.destination-popup-card__eyebrow {
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-wider);
+  line-height: var(--line-height-caption);
+  text-transform: uppercase;
+}
+
+.destination-popup-card h2 {
+  margin-top: 8px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.035em;
+}
+
+.destination-popup-card p:not(.destination-popup-card__eyebrow) {
+  margin-top: 12px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: var(--line-height-copy);
+}
+
+.destination-popup-card__link {
+  display: inline-flex;
+  margin-top: 22px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid currentColor;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-label);
+  line-height: var(--line-height-caption);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.destination-popup-card__link:hover,
+.destination-popup-card__link:focus-visible {
+  color: var(--color-primary);
+}
+
+@media (max-width: 767px) {
+  .travel-map {
+    min-height: 500px;
+    aspect-ratio: 4 / 5;
+    border-radius: 22px;
+  }
+
+  .travel-map .mapboxgl-ctrl-top-right {
+    top: 16px;
+    right: 16px;
+  }
+
+  .destination-popup-card {
+    width: min(310px, calc(100vw - 32px));
+  }
+}
+
+@keyframes destination-popup-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes destination-marker-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes destination-marker-leave {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+
+travelmap.tsx
+
+import { type ReactNode, useEffect, useRef, useState } from 'react'
+import mapboxgl, { type LngLatBoundsLike, type LngLatLike, type Map } from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
+import { MapControls } from './MapControls'
+import './TravelMap.css'
+
+const SRI_LANKA_CENTER: LngLatLike = [80.77, 7.87]
+const SRI_LANKA_BOUNDS: LngLatBoundsLike = [
+  [79.45, 5.72],
+  [81.95, 9.84],
+]
+const SRI_LANKA_FOCUS_BOUNDS: LngLatBoundsLike = [
+  [79.62, 5.92],
+  [81.84, 9.72],
+]
+const OVERVIEW_DRAG_ZOOM_THRESHOLD = 7.6
+const MAP_MASK_COLOR = '#fbf9f5'
+const COUNTRY_BOUNDARIES_SOURCE_ID = 'country-boundaries'
+const COUNTRY_MASK_LAYER_ID = 'sri-lanka-country-mask'
+
+// Keep Sri Lanka visible and paint every other country with the map background color.
+const excludeSriLankaFilter = [
+  '!',
+  [
+    'any',
+    ['==', ['get', 'iso_3166_1'], 'LK'],
+    ['==', ['get', 'iso_3166_1_alpha_2'], 'LK'],
+    ['==', ['get', 'iso_3166_1_alpha_3'], 'LKA'],
+  ],
+] as const
+
+function isWaterLayer(layer: { id: string }) {
+  return layer.id.toLowerCase().includes('water')
+}
+
+function muteBaseMapSymbols(map: Map, layerId: string) {
+  map.setPaintProperty(layerId, 'text-opacity', 0)
+  map.setPaintProperty(layerId, 'icon-opacity', 0)
+}
+
+function applySriLankaMask(map: Map) {
+  if (!map.getSource(COUNTRY_BOUNDARIES_SOURCE_ID)) {
+    map.addSource(COUNTRY_BOUNDARIES_SOURCE_ID, {
+      type: 'vector',
+      url: 'mapbox://mapbox.country-boundaries-v1',
+    })
+  }
+
+  const styleLayers = map.getStyle().layers ?? []
+
+  for (const layer of styleLayers) {
+    if (layer.type === 'symbol') {
+      muteBaseMapSymbols(map, layer.id)
+    }
+
+    if (isWaterLayer(layer) && layer.type === 'fill') {
+      map.setPaintProperty(layer.id, 'fill-color', MAP_MASK_COLOR)
+    }
+  }
+
+  if (!map.getLayer(COUNTRY_MASK_LAYER_ID)) {
+    map.addLayer({
+      id: COUNTRY_MASK_LAYER_ID,
+      type: 'fill',
+      source: COUNTRY_BOUNDARIES_SOURCE_ID,
+      'source-layer': 'country_boundaries',
+      filter: excludeSriLankaFilter,
+      paint: {
+        'fill-color': MAP_MASK_COLOR,
+        'fill-opacity': 1,
+      },
+    })
+  }
+}
+
+function keepOverviewFocused(map: Map) {
+  if (map.getZoom() <= OVERVIEW_DRAG_ZOOM_THRESHOLD) {
+    map.dragPan.disable()
+    return
+  }
+
+  map.dragPan.enable()
+}
+
+export type TravelMapProps = {
+  children?: ReactNode | ((map: Map) => ReactNode)
+  className?: string
+  center?: LngLatLike
+  maxBounds?: LngLatBoundsLike
+  maxZoom?: number
+  minZoom?: number
+  onMapReady?: (map: Map) => void
+  styleUrl?: string
+  zoom?: number
+}
+
+export function TravelMap({
+  children,
+  className,
+  center = SRI_LANKA_CENTER,
+  maxBounds = SRI_LANKA_BOUNDS,
+  maxZoom = 14,
+  minZoom = 6.8,
+  onMapReady,
+  styleUrl = 'mapbox://styles/mapbox/streets-v12',
+  zoom = 7.4,
+}: TravelMapProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const mapRef = useRef<Map | null>(null)
+  const [mapInstance, setMapInstance] = useState<Map | null>(null)
+  const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+
+  useEffect(() => {
+    if (!containerRef.current || !accessToken || mapRef.current) {
+      return
+    }
+
+    mapboxgl.accessToken = accessToken
+
+    const map = new mapboxgl.Map({
+      container: containerRef.current,
+      style: styleUrl,
+      center,
+      zoom,
+      minZoom,
+      maxZoom,
+      maxBounds,
+      renderWorldCopies: false,
+    })
+
+    mapRef.current = map
+    let isRestoringOverview = false
+
+    const handleMapLoad = () => {
+      applySriLankaMask(map)
+      map.fitBounds(SRI_LANKA_FOCUS_BOUNDS, {
+        duration: 0,
+        padding: 12,
+      })
+      keepOverviewFocused(map)
+      setMapInstance(map)
+      onMapReady?.(map)
+    }
+
+    const handleZoomEnd = () => {
+      keepOverviewFocused(map)
+
+      if (map.getZoom() > OVERVIEW_DRAG_ZOOM_THRESHOLD || isRestoringOverview) {
+        return
+      }
+
+      isRestoringOverview = true
+      map.fitBounds(SRI_LANKA_FOCUS_BOUNDS, {
+        duration: 320,
+        padding: 12,
+      })
+      map.once('moveend', () => {
+        isRestoringOverview = false
+        keepOverviewFocused(map)
+      })
+    }
+
+    map.on('zoomend', handleZoomEnd)
+
+    if (map.loaded()) {
+      handleMapLoad()
+    } else {
+      map.once('load', handleMapLoad)
+    }
+
+    return () => {
+      map.off('load', handleMapLoad)
+      map.off('zoomend', handleZoomEnd)
+      map.remove()
+      mapRef.current = null
+      setMapInstance(null)
+    }
+  }, [accessToken, center, maxBounds, maxZoom, minZoom, onMapReady, styleUrl, zoom])
+
+  if (!accessToken) {
+    return (
+      <div className={`travel-map travel-map--empty ${className ?? ''}`.trim()} role="status">
+        Mapbox access token is not configured.
+      </div>
+    )
+  }
+
+  return (
+    <div className={`travel-map ${className ?? ''}`.trim()}>
+      <div ref={containerRef} className="travel-map__canvas" aria-label="Interactive map of Sri Lanka" />
+      {mapInstance ? (
+        <>
+          <MapControls map={mapInstance} />
+          {typeof children === 'function' ? children(mapInstance) : children}
+        </>
+      ) : null}
+    </div>
+  )
+}
+
+
+travelpreparationpage.tsx
+
+
+import './TravelPreparationPage.css'
+import { experienceImages } from '../ExperiencesPage/images'
+
+const images = {
+  hero: experienceImages.teaEstate,
+  southCoast: experienceImages.mirissaBoats,
+  eastCoast: experienceImages.blueWhaleSunset,
+  hillCountry: experienceImages.teaEstate,
+  culturalTriangle: experienceImages.sigiriyaDawn,
+  westCoast: experienceImages.galleFort,
+  train: experienceImages.perahera,
+} as const
+
+const handbookLinks = [
+  { href: '#visa-entry', label: 'Visa & Entry' },
+  { href: '#arrival', label: 'Arrival' },
+  { href: '#currency', label: 'Currency' },
+  { href: '#seasons', label: 'Seasons' },
+  { href: '#travel-notes', label: 'Travel Notes' },
+  { href: '#etiquette', label: 'Etiquette' },
+  { href: '#faq', label: 'FAQ' },
+] as const
+
+const heroProtocols = [
+  'Private airport handling',
+  'Fast-track immigration guidance',
+  'Dedicated arrival host',
+  'Discreet onward transfer',
+] as const
+
+const assurancePoints = [
+  { value: '24/7', label: 'Journey desk' },
+  { value: 'Private', label: 'Airport liaison' },
+  { value: 'Curated', label: 'Regional timing' },
+  { value: 'Discreet', label: 'Guest support' },
+] as const
+
+const applicationSteps = [
+  'Visit eta.gov.lk - the official portal',
+  'Complete the form (approx. 15 minutes)',
+  'Pay the processing fee online',
+  'Receive confirmation by email',
+  'Present your ETA on arrival at immigration',
+] as const
+
+const arrivalNotes = [
+  { label: 'SIM Cards', copy: 'Dialog or Mobitel at arrivals' },
+  { label: 'Currency', copy: 'Exchange desk available; ATMs also on-site' },
+  { label: 'Your Driver', copy: 'Name card in Arrivals, typically within 20 min' },
+  { label: 'First Journey', copy: 'Approximately 30 min to Colombo city centre' },
+] as const
+
+const paymentNotes = [
+  {
+    icon: 'Rs',
+    label: 'Local Currency',
+    title: 'Sri Lankan Rupee',
+    copy: 'LKR - approx. 300-320 to USD',
+  },
+  {
+    icon: 'hex',
+    label: 'Cards',
+    title: 'Widely Accepted',
+    copy: 'Visa & Mastercard at most curated establishments',
+  },
+  {
+    icon: 'circle',
+    label: 'Cash',
+    title: 'Carry Some',
+    copy: 'Markets, tuk-tuks, and rural areas prefer cash',
+  },
+  {
+    icon: '+',
+    label: 'ATMs',
+    title: 'Nationwide',
+    copy: 'Commercial Bank & HNB are the most reliable networks',
+  },
+] as const
+
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const
+
+const seasons = [
+  {
+    region: 'South Coast',
+    copy: 'Wide beaches, whale watching, colonial forts, surf',
+    activeMonths: [0, 1, 2, 3, 9, 10],
+    best: 'November - April',
+    image: images.southCoast,
+    imageCopy: 'Wide white beaches, colonial fort towns, surf breaks and whale-watching season.',
+  },
+  {
+    region: 'East Coast',
+    copy: 'Turquoise bays, diving, empty beaches, solitude',
+    activeMonths: [3, 4, 5, 6, 7],
+    best: 'April - September',
+    image: images.eastCoast,
+    imageCopy: 'While the south rests under cloud, the east awakens.',
+  },
+  {
+    region: 'Hill Country',
+    copy: 'Tea terraces, mist, waterfalls, cool mornings',
+    activeMonths: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    best: 'Year-round - cooler Dec-Feb',
+    image: images.hillCountry,
+    imageCopy: 'The highlands exist in their own weather.',
+  },
+  {
+    region: 'Cultural Triangle',
+    copy: 'Ancient cities, wildlife, dry plains, ruins',
+    activeMonths: [4, 5, 6, 7, 8, 9],
+    best: 'May - October',
+    image: images.culturalTriangle,
+    imageCopy: 'Ancient cities built over centuries sit between jungle and sky.',
+  },
+  {
+    region: 'West Coast',
+    copy: 'Colombo, Negombo, calm seas, gateway coast',
+    activeMonths: [0, 1, 2, 9, 10],
+    best: 'November - March',
+    image: images.westCoast,
+    imageCopy: 'Colombo, Negombo, and the coast most travellers meet first.',
+  },
+] as const
+
+const travelNotes = [
+  {
+    numeral: 'I',
+    title: 'Time Moves Differently Here',
+    copy:
+      'A two-hour drive can take four. The train schedule is a suggestion. Meetings begin when everyone has arrived. Surrender to this, and you will discover that unhurried is not the same as slow.',
+  },
+  {
+    numeral: 'II',
+    title: 'The Best Experiences Cannot Be Scheduled',
+    copy:
+      'The fisherman who waves you over for tea. The ceremony that spills into the street on a Tuesday evening. The waterfall behind the guesthouse garden. Leave space for what cannot be planned.',
+  },
+  {
+    numeral: 'III',
+    title: 'Hospitality Is Personal',
+    copy:
+      'When someone invites you into their home, they are not performing a custom. They are extending themselves. Accept graciously. Remove your shoes. Stay longer than you planned.',
+  },
+  {
+    numeral: 'IV',
+    title: 'The Train Is Part Of The Journey',
+    copy:
+      'The Kandy-Ella line is not transport - it is an event. Book the observation car or stand at an open door. The tea country rolls past like something remembered, not seen.',
+  },
+  {
+    numeral: 'V',
+    title: 'A Smile Travels Further Than An Itinerary',
+    copy:
+      'Sri Lankans are among the most warmly curious people in the world. Put down the phone. Make eye contact. Say Ayubowan. Something unexpectedly beautiful will follow.',
+  },
+] as const
+
+const etiquette = [
+  {
+    title: 'Remove Your Shoes',
+    copy:
+      'Before entering a home, temple, or any sacred space. This is non-negotiable and deeply felt. Look for the pile of shoes at the door.',
+  },
+  {
+    title: 'Dress for Temples',
+    copy:
+      'Shoulders and knees covered. Many temples have sarongs available for those who need them. This extends to mosques and kovils.',
+  },
+  {
+    title: 'The Greeting',
+    copy:
+      "Ayubowan - hands pressed together at the chest, a slight bow. It means 'may you live long.' Attempting it will disarm almost anyone.",
+  },
+  {
+    title: 'Accepting Food',
+    copy:
+      'When offered food or drink, accepting is an act of trust. Refusing repeatedly can cause quiet offence. Taste at least a little.',
+  },
+  {
+    title: 'The Head Wobble',
+    copy:
+      'A lateral wobble often means yes, understanding, or agreement. It is not a European head-shake. Takes a few days to read correctly.',
+  },
+  {
+    title: 'Photography',
+    copy:
+      'Always ask before photographing people, particularly at religious sites. A smile and a gesture go a long way. Respect a no graciously.',
+  },
+] as const
+
+const faqs = [
+  {
+    category: 'Entry Protocol',
+    question: 'Do I need a visa to visit Sri Lanka?',
+    answer:
+      'Most travellers need an Electronic Travel Authorisation before arrival. Apply through the official ETA portal before departure.',
+  },
+  {
+    category: 'Seasonal Timing',
+    question: 'When is the best time to visit?',
+    answer:
+      'There is always a good region in season. The south and west are strongest November to April, while the east is best from April to September.',
+  },
+  {
+    category: 'Private Payments',
+    question: 'What currency is used and how do I manage money?',
+    answer:
+      'The local currency is the Sri Lankan Rupee. Cards are accepted at most curated establishments, but cash is useful for markets, tuk-tuks, and rural stops.',
+  },
+  {
+    category: 'Guest Assurance',
+    question: 'Is Sri Lanka safe for international travellers?',
+    answer:
+      'Sri Lanka is welcoming and navigable with thoughtful planning. We arrange trusted drivers, context, and local guidance around each journey.',
+  },
+  {
+    category: 'Wellbeing',
+    question: 'What vaccinations or health precautions are recommended?',
+    answer:
+      'Speak with your travel physician before departure. Bring personal medication, sun protection, mosquito repellent, and copies of prescriptions.',
+  },
+] as const
+
+function SectionHeading({ number, title, inverse = false }: { number: string; title: string; inverse?: boolean }) {
+  return (
+    <div className={`prep-section-heading${inverse ? ' prep-section-heading--inverse' : ''}`}>
+      <span>{number}</span>
+      <i />
+      <h2>{title}</h2>
+    </div>
+  )
+}
+
+function isPeakMonth(activeMonths: readonly number[], monthIndex: number) {
+  return activeMonths.includes(monthIndex)
+}
+
+export function TravelPreparationPage() {
+  return (
+    <main className="travel-prep-page">
+      <section className="prep-hero">
+        <div className="prep-hero-copy">
+          <div className="prep-kicker">
+            <span />
+            <p>Private Arrival Protocol</p>
+          </div>
+          <p className="prep-hero-numeral">I</p>
+          <h1>
+            Before
+            <br />
+            You Arrive
+          </h1>
+          <i className="prep-gold-rule" />
+          <p className="prep-hero-intro">
+            A discreet pre-arrival briefing for VVIP guests, prepared by the Royale Isles Lanka advisory team before
+            your first step onto the island.
+          </p>
+          <nav className="prep-chip-nav" aria-label="Travel preparation sections">
+            {handbookLinks.map((link) => (
+              <a key={link.href} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+        <div className="prep-hero-image">
+          <img src={images.hero} alt="Sri Lanka hill country tea fields" />
+          <aside className="prep-hero-protocol" aria-label="VVIP arrival protocol highlights">
+            <p>Arrival Protocol</p>
+            <h2>Handled before you land.</h2>
+            <ul>
+              {heroProtocols.map((protocol) => (
+                <li key={protocol}>{protocol}</li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      {/* <nav className="prep-contents" aria-label="Travel preparation contents">
+        <span>Contents</span>
+        {handbookLinks.map((link, index) => (
+          <a key={link.href} href={link.href}>
+            <strong>{String(index + 1).padStart(2, '0')}</strong>
+            {link.label}
+          </a>
+        ))}
+      </nav> */}
+
+      <section className="prep-assurance" aria-label="Private travel assurance">
+        <div className="prep-assurance-copy">
+          <span>For Principals, Family Offices & Private Travellers</span>
+          <p>
+            Every detail below is paired with human coordination: airport receiving, driver briefing, pace control,
+            cultural context, and a private team that remains quietly reachable throughout the journey.
+          </p>
+        </div>
+        <dl className="prep-assurance-grid">
+          {assurancePoints.map((point) => (
+            <div key={point.label}>
+              <dt>{point.value}</dt>
+              <dd>{point.label}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section className="prep-section prep-visa" id="visa-entry">
+        <div className="prep-container">
+          <SectionHeading number="01" title="Visa & Entry" />
+          <div className="prep-visa-grid">
+            <article className="prep-visa-card prep-visa-card--primary">
+              <p>Primary Route</p>
+              <h3>Electronic Travel Authorisation</h3>
+              <i />
+              <p>
+                Available to most nationalities. Our advisory team confirms the correct entry path before departure and
+                keeps arrival documentation ready for your receiving host.
+              </p>
+              <dl>
+                <div>
+                  <dt>Duration</dt>
+                  <dd>30 days</dd>
+                </div>
+                <div>
+                  <dt>Extendable</dt>
+                  <dd>90 days</dd>
+                </div>
+                <div>
+                  <dt>Apply by</dt>
+                  <dd>48 hrs prior</dd>
+                </div>
+                <div>
+                  <dt>Portal</dt>
+                  <dd>eta.gov.lk</dd>
+                </div>
+              </dl>
+            </article>
+
+            <article className="prep-visa-card prep-visa-card--steps">
+              <p>Application Steps</p>
+              <h3>How to Apply</h3>
+              <i />
+              <ol>
+                {applicationSteps.map((step, index) => (
+                  <li key={step}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </article>
+
+            <article className="prep-visa-card prep-visa-card--arrival" id="arrival">
+              <p>02 - Arrival</p>
+              <h3>At the Airport</h3>
+              <i />
+              <p>
+                Bandaranaike International Airport (CMB) is calm and navigable. Your arrival is handled with a named
+                receiving point, discreet driver coordination, and private onward timing.
+              </p>
+              <ul>
+                {arrivalNotes.map((note) => (
+                  <li key={note.label}>
+                    <strong>{note.label}</strong>
+                    <span>{note.copy}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+          <aside className="prep-service-note">
+            <span>VVIP Preference</span>
+            <p>
+              For guests requiring additional privacy, protocol vehicles, security coordination, or tarmac-adjacent
+              handling where available, arrangements are confirmed privately before travel.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section className="prep-section prep-payments" id="currency">
+        <div className="prep-container">
+          <SectionHeading number="03" title="Currency & Payments" />
+          <div className="prep-payment-grid">
+            {paymentNotes.map((note) => (
+              <article key={note.label} className="prep-payment-card">
+                <span className={`prep-payment-icon${note.icon === 'hex' ? ' prep-payment-icon--hex' : ''}${note.icon === 'circle' ? ' prep-payment-icon--circle' : ''}`}>
+                  {note.icon}
+                </span>
+                <p>{note.label}</p>
+                <h3>{note.title}</h3>
+                <small>{note.copy}</small>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="prep-section prep-seasons" id="seasons">
+        <div className="prep-container">
+          <SectionHeading number="04" title="Weather & Seasons" inverse />
+          <p className="prep-seasons-note">
+            Peak season indicated by filled circles. For VVIP journeys, timing is selected around privacy, weather,
+            movement, and the quietest access windows.
+          </p>
+          <div className="prep-season-table" role="table" aria-label="Sri Lanka seasonal guide">
+            <div className="prep-season-months" role="row">
+              <span />
+              {months.map((month) => (
+                <span key={month}>{month}</span>
+              ))}
+              <span />
+            </div>
+            {seasons.map((season) => (
+              <div className="prep-season-row" key={season.region} role="row">
+                <div className="prep-season-region">
+                  <strong>{season.region}</strong>
+                  <span>{season.copy}</span>
+                </div>
+                {months.map((month, index) => (
+                  <span
+                    key={month}
+                    className={isPeakMonth(season.activeMonths, index) ? 'is-active' : ''}
+                    aria-label={`${month}: ${isPeakMonth(season.activeMonths, index) ? 'peak' : 'off peak'}`}
+                  />
+                ))}
+                <p>{season.best}</p>
+              </div>
+            ))}
+          </div>
+          <div className="prep-region-cards">
+            {seasons.map((season) => (
+              <article key={season.region}>
+                <img src={season.image} alt={`${season.region} in Sri Lanka`} />
+                <h3>{season.region}</h3>
+                <p>{season.imageCopy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="prep-section prep-notes" id="travel-notes">
+        <div className="prep-container">
+          <SectionHeading number="05" title="Travel Notes" />
+          <div className="prep-notes-list">
+            {travelNotes.map((note) => (
+              <article key={note.numeral}>
+                <span>{note.numeral}</span>
+                <h3>{note.title}</h3>
+                <p>{note.copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="prep-section prep-etiquette" id="etiquette">
+        <div className="prep-container">
+          <SectionHeading number="06" title="Sri Lankan Etiquette" />
+          <div className="prep-etiquette-grid">
+            {etiquette.map((item) => (
+              <article key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="prep-section prep-faq" id="faq">
+        <div className="prep-faq-container">
+          <div className="prep-faq-header">
+            <div>
+              <SectionHeading number="07" title="Frequently Asked" />
+              <p>
+                Public answers are intentionally brief. Personal requirements, security preferences, and family-office
+                protocols are confirmed privately with your journey team.
+              </p>
+            </div>
+            <aside className="prep-faq-concierge">
+              <span>Private Advisory</span>
+              <h3>Questions with nuance belong in conversation.</h3>
+              <p>
+                For principals, entourages, medical considerations, special access, or discretion-sensitive movement,
+                our team will brief you directly before any itinerary is finalised.
+              </p>
+              <a href="/concierge">Ask The Concierge</a>
+            </aside>
+          </div>
+
+          <div className="prep-faq-panel">
+            <div className="prep-faq-list">
+              {faqs.map((faq, index) => (
+                <details key={faq.question}>
+                  <summary>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <div>
+                      <small>{faq.category}</small>
+                      <strong>{faq.question}</strong>
+                    </div>
+                  </summary>
+                  <p>{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="prep-final-cta">
+        <div className="prep-final-cta-inner">
+          <div className="prep-final-cta-mark" aria-hidden="true">
+            ✦
+          </div>
+          <p>Private Preparation Briefing</p>
+          <h2>
+            Arrive with every detail
+            <br />
+            <em>quietly handled.</em>
+          </h2>
+          <p>
+            Before you travel, our advisory team reviews entry, arrival, health, wardrobe, currency, security,
+            and regional timing around your exact itinerary. Nothing is generic. Nothing is left for the airport.
+          </p>
+          <div className="prep-cta-actions">
+            <a href="/concierge">Request A Preparation Briefing</a>
+            <a href="#travel-notes">Review The Notes</a>
+          </div>
+          <small>Private arrival handling. Discreet guest support. Prepared before the journey begins.</small>
+        </div>
+      </section>
+    </main>
+  )
+}

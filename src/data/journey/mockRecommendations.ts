@@ -1,0 +1,118 @@
+import type { Recommendation } from './types'
+
+/** Relationship-based editorial recommendations. Not behavioural or algorithmic. */
+export const mockRecommendations: Recommendation[] = [
+  // Destination → complementary destination
+  {
+    id: 'rec-mirissa-tangalle',
+    sourceType: 'destination',
+    sourceId: 'mirissa',
+    recommendationType: 'destination',
+    targetId: 'tangalle',
+    reason: 'A quieter stretch of the southern arc, with space to linger.',
+    editorialLabel: 'A Natural Continuation',
+  },
+  {
+    id: 'rec-ella-haputale',
+    sourceType: 'destination',
+    sourceId: 'ella',
+    recommendationType: 'destination',
+    targetId: 'haputale',
+    reason: 'Another highland perspective with sweeping views and a slower rhythm.',
+    editorialLabel: 'You May Also Be Drawn To',
+  },
+  {
+    id: 'rec-sigiriya-polonnaruwa',
+    sourceType: 'destination',
+    sourceId: 'sigiriya',
+    recommendationType: 'destination',
+    targetId: 'polonnaruwa',
+    reason: 'A deeper reading of the ancient kingdoms within the same region.',
+    editorialLabel: 'A Natural Continuation',
+  },
+  {
+    id: 'rec-galle-mirissa',
+    sourceType: 'destination',
+    sourceId: 'galle-fort',
+    recommendationType: 'destination',
+    targetId: 'mirissa',
+    reason: 'From fortified heritage toward open ocean and gentler bays.',
+    editorialLabel: 'Continue Through the Island',
+  },
+  // Region → destination
+  {
+    id: 'rec-hill-ella',
+    sourceType: 'region',
+    sourceId: 'hill-country',
+    recommendationType: 'destination',
+    targetId: 'ella',
+    reason: 'A highland anchor that often shapes the rhythm of this region.',
+    editorialLabel: 'Continue Through the Island',
+  },
+  {
+    id: 'rec-southern-galle',
+    sourceType: 'region',
+    sourceId: 'southern-coast',
+    recommendationType: 'destination',
+    targetId: 'galle-fort',
+    reason: 'Heritage, architecture, and a measured coastal pace.',
+    editorialLabel: 'Elsewhere in This Rhythm',
+  },
+  {
+    id: 'rec-wild-yala',
+    sourceType: 'region',
+    sourceId: 'wild-south',
+    recommendationType: 'destination',
+    targetId: 'yala',
+    reason: 'Leopard country and landscapes that reward early mornings.',
+    editorialLabel: 'Continue Through the Island',
+  },
+  // Theme → region
+  {
+    id: 'rec-theme-wild-wildsouth',
+    sourceType: 'theme',
+    sourceId: 'wildlife-wilderness',
+    recommendationType: 'destination',
+    targetId: 'yala',
+    reason: 'A region where wilderness encounters feel most natural.',
+    editorialLabel: 'Deepen This Direction',
+  },
+  {
+    id: 'rec-theme-ocean-mirissa',
+    sourceType: 'theme',
+    sourceId: 'ocean-discovery',
+    recommendationType: 'destination',
+    targetId: 'mirissa',
+    reason: 'Ocean rhythms and quieter coastal mornings.',
+    editorialLabel: 'You May Also Be Drawn To',
+  },
+  {
+    id: 'rec-theme-heritage-sigiriya',
+    sourceType: 'theme',
+    sourceId: 'heritage-memory',
+    recommendationType: 'destination',
+    targetId: 'sigiriya',
+    reason: 'An iconic passage through the island’s ancient landscape.',
+    editorialLabel: 'Deepen This Direction',
+  },
+  // Experience → related destination
+  {
+    id: 'rec-exp-whale-mirissa',
+    sourceType: 'experience',
+    sourceId: 'mirissa-private-whale-encounter',
+    recommendationType: 'destination',
+    targetId: 'mirissa',
+    reason: 'The encounter belongs naturally to this southern bay.',
+    editorialLabel: 'Deepen This Direction',
+  },
+  // Rhythm suggestions
+  {
+    id: 'rec-rhythm-tea-tide',
+    sourceType: 'journey',
+    sourceId: 'tea-country-to-tide',
+    recommendationType: 'rhythm',
+    targetId: 'tea-country-to-tide',
+    reason: 'A considered rhythm from highlands to coast.',
+    editorialLabel: 'A Possible Rhythm',
+  },
+]
