@@ -2,7 +2,7 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Contact page placeholders 111
+## Contact page placeholders
 
 The `/contact` map section and office address are **representative placeholders for prototype review**. Replace them with the client’s confirmed business location and final map embed before launch. See `src/contact/README.md`.
 
