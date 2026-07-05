@@ -7,9 +7,9 @@ import galleBeachImage from '../../assets/images/Galle beach.jpeg'
 import kelaniTempleImage from '../../assets/images/Kelani temple.jpeg'
 import kithulgalaImage from '../../assets/images/Kithulgala.jpeg'
 import kandyPeraheraImage from '../../assets/images/Kandy Perahera.JPG'
-import maduRiverImage from '../../assets/images/Madu River.jpeg'
 import nuwaraEliyaImage from '../../assets/images/NuwaraEliya .jpg'
 import peradeniyaImage from '../../assets/images/Peradeniya.jpg'
+import royaleIslesLogoImage from '../../assets/images/logo_bg_remove.png'
 import royaleIslesMapImage from '../../assets/images/royale-isles-map-transparent-clean.png'
 import sigiriyaImage from '../../assets/images/Sigiriya.JPG'
 import travelOneImage from '../../assets/images/travel1.jpg'
@@ -38,7 +38,6 @@ const localImages = {
   kelaniTemple: kelaniTempleImage,
   kithulgala: kithulgalaImage,
   kandyPerahera: kandyPeraheraImage,
-  maduRiver: maduRiverImage,
   nuwaraEliya: nuwaraEliyaImage,
   peradeniya: peradeniyaImage,
   royaleIslesMap: royaleIslesMapImage,
@@ -216,46 +215,12 @@ const brochureHighlights = [
   'A private consultation path for serious enquiries',
 ]
 
-const questions = [
-  {
-    category: 'Bespoke Design',
-    question: 'Do you create bespoke journeys, or use set itineraries?',
-    answer:
-      'Every journey is designed privately around the guest. We may begin with proven routes and trusted relationships, but the final rhythm, access, accommodation, and pace are shaped around your interests.',
-  },
-  {
-    category: 'Planning Window',
-    question: 'How far in advance should we begin planning?',
-    answer:
-      'For the most considered arrangements at this level, VI to XII weeks is ideal. Shorter timelines can be accommodated when availability, access, and private hosting align.',
-  },
-  {
-    category: 'Private Curation',
-    question: 'What distinguishes your curation from a travel agent?',
-    answer:
-      'We do not simply reserve hotels and transfers. We listen first, then compose a journey through private hosts, local context, quiet access, and details that are held discreetly from arrival to departure.',
-  },
-  {
-    category: 'Solo Travel',
-    question: 'Is this suitable for solo travellers?',
-    answer:
-      'Yes. Many guests travel alone for reflection, restoration, or creative renewal. We design solo journeys with trusted hosting, privacy, and a balance of independence and quiet support.',
-  },
-  {
-    category: 'Seasonal Guidance',
-    question: 'What is the best time of year to visit?',
-    answer:
-      'Sri Lanka has several seasonal rhythms, so the best moment depends on the region and the kind of journey you want. We advise around weather, privacy, wildlife movement, festivals, and crowd patterns.',
-  },
-]
-
 function getExpectationsHref(world: string) {
   return `/expectations?world=${encodeURIComponent(world)}`
 }
 
 export function Homepage() {
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
-  const [openQuestionIndex, setOpenQuestionIndex] = useState<number | null>(null)
   const activeStory = travellerStories[activeStoryIndex]
 
   const showPreviousStory = () => {
@@ -294,7 +259,18 @@ export function Homepage() {
           <header className="figma-section-header figma-experiences-header">
             <div>
               <p className="figma-overline">Inspiration Before Curation</p>
-              <h2>Ways Into The Royale Isles</h2>
+              <h2>
+                Ways Into The{' '}
+                <span className="figma-experiences-brand">
+                  <img
+                    className="figma-experiences-mark"
+                    src={royaleIslesLogoImage}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                  Royale Isles
+                </span>
+              </h2>
               <p>
                 These Discovery Worlds are not decisions. They are editorial lenses for understanding
                 Sri Lanka before any journey is saved, scored, or shaped around you.
@@ -379,12 +355,11 @@ export function Homepage() {
           </div>
           <footer className="figma-founder">
             <div>
-              <span>Dr Raghavan</span>
-              <small>Founder · Royale Isles Lanka</small>
+              <span>Sir Arthur C. Clarke</span>
+              <small>Visionary, Futurist, & Author</small>
             </div>
             <p>
-              The island is small enough to feel intimate, yet vast enough that after 20 years,
-              it still surprises me.
+              Enter a realm of legendary allure. As Sir Arthur C. Clarke famously observed, this is 'a paradise on Earth.' Let us curate your private journey into its most exquisite, hidden depths.
             </p>
           </footer>
         </div>
@@ -422,39 +397,6 @@ export function Homepage() {
               </div>
             ))}
           </dl>
-        </div>
-      </section>
-
-      <section className="figma-destination">
-        <div className="figma-container figma-destination-grid">
-          <div className="figma-copy-stack">
-            <p className="figma-overline">The Destination</p>
-            <h2>Wild, Sacred, Coastal, and Deeply Personal</h2>
-            <blockquote>
-              The island is not revealed by covering more ground. It is revealed by knowing which door
-              should open, which hour should be protected, and which silence should remain untouched.
-            </blockquote>
-            <p className="figma-destination-intro">
-              Sri Lanka is compact enough for an unhurried private journey and layered enough for a
-              lifetime of discovery: tea country residences, ancient cities, leopard country, ocean
-              villas, wellness sanctuaries, and colonial fort towns.
-            </p>
-            <p>
-              The craft is in knowing what to reveal, when to move, where to pause, and how to keep
-              the journey protected from noise. This is Sri Lanka arranged for people who do not need
-              the obvious version.
-            </p>
-            <a className="figma-text-link figma-text-link-light" href="#destinations">
-              Discover the Regions
-            </a>
-          </div>
-          <figure className="figma-bordered-image">
-            <img src={localImages.maduRiver} alt="Madu River winding through coastal wetland and jungle" />
-            <figcaption>
-              <span>Coast & Jungle</span>
-              <small>Private villas, hidden coves, rainforest edges, and coastal routes shaped by discretion.</small>
-            </figcaption>
-          </figure>
         </div>
       </section>
 
@@ -622,6 +564,10 @@ export function Homepage() {
             <button type="submit">Begin the Conversation</button>
           </form>
           <small>Held privately, with no obligation.</small>
+          <p className="figma-invitation-aside">
+            Planning your arrival?{' '}
+            <a href="/travel-preparation#assurance">See what we arrange before you land</a>
+          </p>
         </div>
       </section>
 
@@ -720,58 +666,6 @@ export function Homepage() {
         </div>
       </section>
       */}
-
-      <section className="figma-faq" data-node-id="103:13229">
-        <div className="figma-container figma-faq-inner">
-          <div className="figma-faq-header">
-            <div>
-              <div className="figma-faq-heading">
-                <i />
-                <p>Frequently Asked</p>
-              </div>
-              <h2>
-                The Questions
-                <em>Worth Asking</em>
-              </h2>
-              <p>
-                Public answers are intentionally brief. Personal preferences, family-office
-                requirements, security concerns, and pace are best understood in conversation.
-              </p>
-            </div>
-            <aside className="figma-faq-concierge">
-              <span>Private Advisory</span>
-              <h3>Questions with nuance belong in conversation.</h3>
-              <p>
-                For principals, private families, special access, medical needs, or
-                discretion-sensitive movement, our team will brief you directly before any journey is
-                finalised.
-              </p>
-              <a href="#begin">Ask Us Directly</a>
-            </aside>
-          </div>
-
-          <div className="figma-faq-panel">
-            <div className="figma-question-list">
-              {questions.map((question, index) => (
-                <details key={question.question} open={openQuestionIndex === index}>
-                  <summary
-                    onClick={(event) => {
-                      event.preventDefault()
-                      setOpenQuestionIndex((currentIndex) => (currentIndex === index ? null : index))
-                    }}
-                  >
-                    <div>
-                      <small>{question.category}</small>
-                      <strong>{question.question}</strong>
-                    </div>
-                  </summary>
-                  <p>{question.answer}</p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   )
 }

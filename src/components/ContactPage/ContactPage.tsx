@@ -5,9 +5,6 @@ import { ContactLocationMap } from './ContactLocationMap'
 
 const images = {
   hero: '/contact/hero-highlands.jpg',
-  journey: '/contact/ancient-ruins.jpg',
-  closing: '/contact/closing-tree.jpg',
-  routeTexture: '/contact/route-texture.png',
 } as const
 
 const pathways = [
@@ -136,38 +133,6 @@ export function ContactPage() {
         </div>
       </section>
 
-      <section className="contact-journey" data-node-id="132:207" aria-labelledby="contact-journey-heading">
-        <img className="contact-journey-texture" src={images.routeTexture} alt="" aria-hidden="true" />
-        <div className="contact-container contact-journey-layout">
-          <div className="contact-journey-copy">
-            <p className="contact-eyebrow">My Journey</p>
-            <h2 id="contact-journey-heading">
-              Already gathering
-              <span> a journey?</span>
-            </h2>
-            <span className="contact-gold-rule contact-gold-rule--medium" aria-hidden="true" />
-            <p>
-              Saved places, directions, and quiet preferences can shape a more personal consultation — bringing
-              everything you have been collecting into one considered view before we speak.
-            </p>
-            <a className="contact-button contact-button--outline" href="/my-journey">
-              Plan Your Journey
-              <ArrowIcon />
-            </a>
-          </div>
-
-          <figure className="contact-journey-media">
-            <img src={images.journey} alt="Ancient stone stairs and walls overgrown with forest in Sri Lanka" />
-            <div className="contact-journey-media-overlay" aria-hidden="true" />
-            <span className="contact-frame-mark contact-frame-mark--top-left contact-frame-mark--small" aria-hidden="true" />
-            <span
-              className="contact-frame-mark contact-frame-mark--bottom-right contact-frame-mark--small"
-              aria-hidden="true"
-            />
-          </figure>
-        </div>
-      </section>
-
       <section className="contact-details" id="find-us" data-node-id="132:153" aria-labelledby="contact-details-heading">
         <div className="contact-container">
           <p className="contact-eyebrow">Details</p>
@@ -181,21 +146,6 @@ export function ContactPage() {
               </div>
             ))}
           </dl>
-        </div>
-      </section>
-
-      <section className="contact-closing" data-node-id="132:241" aria-labelledby="contact-closing-heading">
-        <img className="contact-closing-background" src={images.closing} alt="" aria-hidden="true" />
-        <div className="contact-closing-overlay" aria-hidden="true" />
-        <div className="contact-closing-content">
-          <span className="contact-gold-rule contact-gold-rule--wide" aria-hidden="true" />
-          <blockquote id="contact-closing-heading">
-            &ldquo;Some journeys begin long before the first flight.&rdquo;
-          </blockquote>
-          <a className="contact-button contact-button--solid" href="#quick-inquiry">
-            Enquire About a Journey
-            <ArrowIcon />
-          </a>
         </div>
       </section>
     </main>

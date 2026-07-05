@@ -261,19 +261,20 @@
 
 .guide-regions {
   display: grid;
-  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
   gap: clamp(36px, 6vw, 86px);
-  align-items: start;
+  align-items: center;
 }
 
 .guide-region-cards {
   display: grid;
-  gap: 12px;
+  gap: 10px;
+  align-self: center;
 }
 
 .guide-region-card {
   position: relative;
-  min-height: 132px;
+  min-height: 118px;
   overflow: hidden;
   border: 1px solid rgba(197, 160, 89, 0.18);
   background: var(--guide-forest);
@@ -316,11 +317,11 @@
   display: flex;
   align-items: flex-end;
   min-height: inherit;
-  padding: 22px;
+  padding: 18px 20px;
   background: linear-gradient(180deg, transparent, rgba(13, 31, 23, 0.64));
   color: var(--color-text-inverse);
   font-family: var(--font-display);
-  font-size: 23px;
+  font-size: 21px;
   font-style: italic;
 }
 
@@ -384,6 +385,9 @@
 }
 
 .guide-region-panel {
+  align-self: center;
+  width: 100%;
+  height: fit-content;
   padding: clamp(32px, 4.5vw, 58px);
   border: 1px solid rgba(197, 160, 89, 0.24);
   background: rgba(251, 249, 245, 0.74);
@@ -504,6 +508,7 @@
 
 .guide-region-heritage {
   margin-top: 30px;
+  margin-bottom: 0;
   padding: 24px;
   border: 1px solid rgba(197, 160, 89, 0.16);
   background: rgba(251, 249, 245, 0.56);
@@ -621,6 +626,15 @@
   .guide-regions,
   .guide-map-bridge {
     grid-template-columns: 1fr;
+  }
+
+  .guide-regions {
+    align-items: stretch;
+  }
+
+  .guide-region-cards,
+  .guide-region-panel {
+    align-self: stretch;
   }
 
   .guide-season-table {

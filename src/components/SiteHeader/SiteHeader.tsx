@@ -9,7 +9,7 @@ const primaryNavLinks = [
 ] as const
 
 const menuNavLinks = [
-  { href: '/travel-preparation', label: 'Before You Arrive' },
+  { href: '/travel-preparation', label: 'On Arrival' },
   { href: '/journal', label: 'Journal' },
   { href: '/about', label: 'About' },
 ] as const
