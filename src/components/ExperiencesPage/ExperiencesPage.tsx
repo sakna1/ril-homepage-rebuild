@@ -1,8 +1,7 @@
 import './ExperiencesPage.css'
-import { useState, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react'
+import { useState, type MouseEvent, type ReactNode } from 'react'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from './images'
-import { JourneyIncludedPill } from '../../journey/JourneyChrome'
 import { useJourney } from '../../journey/useJourney'
 import { inferJourneyRegion } from '../../journey/journeyTaxonomy'
 import { normalizeRegionLabel } from '../../journey/savedJourneyDisplay'
@@ -344,61 +343,6 @@ const experienceThemes = [
   },
 ] as const
 
-const curationColumns = [
-  {
-    eyebrow: 'The Standard We Set',
-    muted: false,
-    items: [
-      {
-        title: 'Personal Verification',
-        copy:
-          'No expectation path is translated into a journey unless a curator understands the access personally. We do not build around borrowed recommendations.',
-      },
-      {
-        title: 'Relationship Primacy',
-        copy:
-          "Every practitioner we may introduce is known personally to at least one team member. We do not work through intermediaries. We do not list contacts we haven't shared a meal with.",
-      },
-      {
-        title: 'Annual Renewal',
-        copy:
-          'Our expectation paths are reviewed every twelve months. Anything that no longer meets the standard is removed without announcement.',
-      },
-      {
-        title: 'Capacity Control',
-        copy:
-          'We deliberately limit how frequently any single experience is offered. Demand does not expand supply. The constraint is the point.',
-      },
-    ],
-  },
-  {
-    eyebrow: 'What This Means For You',
-    muted: true,
-    items: [
-      {
-        title: 'Nothing Pre-packaged',
-        copy:
-          'The experience you enquire about will be the same experience our curator had, not a version of it adapted for guests.',
-      },
-      {
-        title: 'Trust, Not Transaction',
-        copy:
-          'When a door opens in the Knuckles Range for you, it is because the host trusts us, and by extension, you. That trust cannot be purchased. It must be honoured.',
-      },
-      {
-        title: 'Honest Limitations',
-        copy:
-          "We will tell you when something isn't available, and we will not offer an alternative simply to fill the silence. We would rather you travel less and experience more.",
-      },
-      {
-        title: 'You Are Not a Group',
-        copy:
-          "Every enquiry begins with a conversation about who you are. What you've seen. What you're looking for. We don't match guests to products. We assemble encounters around people.",
-      },
-    ],
-  },
-] as const
-
 const photoStrip = [
   { src: localImages.peradeniya, alt: 'Peradeniya gardens in soft daylight', wide: false },
   { src: localImages.nuwaraEliya, alt: 'Nuwara Eliya hill country landscape', wide: true },
@@ -452,7 +396,7 @@ function readInitialExpectationTheme(): ExperienceTheme {
 }
 
 function EncounterCard({ encounter, index }: { encounter: Encounter; index: number }) {
-  const { confirmRemoveItem, includeItem, isIncluded, pendingRemovalId, requestRemoveItem } = useJourney()
+  const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
   const enquiryHref =
     encounter.title === 'The Sigiriya Dawn Ascent'
       ? '/expectations/the-sigiriya-dawn-ascent'
@@ -460,24 +404,13 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
   const journeyId = toJourneyId('experience', encounter.title)
   const isEncounterIncluded = isIncluded(journeyId)
 
-  function handleEncounterInterest(event?: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) {
-    event?.stopPropagation()
+  function includeEncounterInJourney() {
     const parentRegion = inferJourneyRegion({
       kind: 'experience',
       label: encounter.title,
       detail: encounter.note,
       source: `${encounter.category} ${encounter.caption}`,
     })
-
-    if (isEncounterIncluded) {
-      event?.preventDefault()
-      if (pendingRemovalId === journeyId) {
-        confirmRemoveItem(journeyId)
-      } else {
-        requestRemoveItem(journeyId)
-      }
-      return
-    }
 
     if (encounter.theme) {
       includeItem({
@@ -510,27 +443,29 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
     })
   }
 
-  function handleEncounterKeyDown(event: KeyboardEvent<HTMLElement>) {
-    if (event.key !== 'Enter' && event.key !== ' ') {
+  function toggleEncounterJourney(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (isEncounterIncluded) {
+      confirmRemoveItem(journeyId)
       return
     }
 
-    event.preventDefault()
-    handleEncounterInterest(event)
+    includeEncounterInJourney()
+  }
+
+  function handleEnquireClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (!isEncounterIncluded) {
+      includeEncounterInJourney()
+    }
   }
 
   return (
     <article
       id={encounter.id}
       className={`encounter-row experiences-reveal journey-selectable${isEncounterIncluded ? ' is-included' : ''}`}
-      role="button"
-      tabIndex={0}
-      onClick={handleEncounterInterest}
-      onKeyDown={handleEncounterKeyDown}
-      aria-pressed={isEncounterIncluded}
-      aria-label={`${encounter.title}: include in your journey`}
     >
-      {isEncounterIncluded ? <JourneyIncludedPill /> : null}
       <div className="encounter-index">
         <span>{encounterNumerals[index] ?? String(index + 1)}</span>
         <i />
@@ -555,31 +490,32 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
             <span>— {encounter.curator}</span>
           </div>
         </div>
-        <TextLink href={enquiryHref} onClick={handleEncounterInterest}>
+        <TextLink href={enquiryHref} onClick={handleEnquireClick}>
           Enquire About This Encounter
         </TextLink>
-        {isEncounterIncluded ? (
-          <button
-            className="encounter-remove-button"
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation()
-              confirmRemoveItem(journeyId)
-            }}
-          >
-            Remove from Journey
-          </button>
-        ) : null}
       </div>
 
-      <dl className="encounter-details">
+      <aside className="encounter-details-panel" aria-label={`${encounter.title} details`}>
+        <div className="encounter-details-toolbar">
+          <button
+            className="encounter-journey-toggle"
+            type="button"
+            aria-pressed={isEncounterIncluded}
+            aria-label={`${isEncounterIncluded ? 'Remove' : 'Add'} ${encounter.title} ${isEncounterIncluded ? 'from' : 'to'} your journey`}
+            onClick={toggleEncounterJourney}
+          >
+            {isEncounterIncluded ? 'Remove from Journey' : 'Add to Journey'}
+          </button>
+        </div>
+        <dl className="encounter-details">
         {encounter.details.map((detail) => (
           <div key={detail.label}>
             <dt>{detail.label}</dt>
             <dd>{detail.value}</dd>
           </div>
         ))}
-      </dl>
+        </dl>
+      </aside>
     </article>
   )
 }
@@ -841,96 +777,6 @@ export function ExpectationsPage() {
               <span>This pathway is currently available through private consultation.</span>
             </div>
           )}
-        </div>
-      </section>
-
-      <section className="editorial-transition experiences-reveal" aria-labelledby="editorial-transition-title">
-        <div className="experiences-container">
-          <div className="editorial-transition-inner">
-            <p>The Philosophy Of Access</p>
-            <h2 id="editorial-transition-title">
-              Two principles sit beneath
-              <br />
-              <em>every introduction we make.</em>
-            </h2>
-            <p>
-              The signals above show what can be arranged. The principles below explain how we
-              decide what should be arranged at all: nature must not be staged, and access must protect
-              dignity. Together, they shape the standard behind curation.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="wilderness-feature experiences-reveal">
-        <div className="experiences-container wilderness-grid">
-          <div className="wilderness-copy">
-            <p>The Wilderness Principle</p>
-            <h2>
-              <em>Wilderness</em>
-              <br />
-              without
-              <br />
-              mediation.
-            </h2>
-            <span />
-            <p>
-              Yala. Wilpattu. Sinharaja. Three ecosystems, three different grammars of silence. Our
-              naturalist team has spent decades learning to read them. They will teach you how to
-              listen.
-            </p>
-            <small>Stewardship — Silence — Fieldcraft</small>
-          </div>
-          <figure className="wilderness-image-card">
-            <img src={localImages.kithulgala} alt="Forest river landscape in Kithulgala, Sri Lanka" />
-            <figcaption>Rainforest routes — guided by a field naturalist, not a driver.</figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section className="ceremony-quote experiences-reveal">
-        <div className="experiences-container ceremony-grid">
-          <figure>
-            <img src={localImages.kelaniTemple} alt="Kelani temple sacred architecture and ritual setting" />
-            <figcaption>Kelani Temple — Western Province</figcaption>
-          </figure>
-          <blockquote>
-            <p>The Ceremony Principle</p>
-            <h2>
-              "We do not offer you religion. We offer you <em>proximity to the sacred.</em>"
-            </h2>
-            <span>
-              Access is only meaningful when it protects the dignity of the ceremony itself.
-            </span>
-            <cite>— Malini Fernando, {curatorTitles.malini}</cite>
-          </blockquote>
-        </div>
-      </section>
-
-      <section className="curation-process experiences-reveal">
-        <div className="experiences-container">
-          <h2>
-            The Curation
-            <br />
-            <em>Process.</em>
-          </h2>
-          <div className="curation-grid">
-            {curationColumns.map((column) => (
-              <div key={column.eyebrow} className={column.muted ? 'curation-column curation-column--muted' : 'curation-column'}>
-                <p>{column.eyebrow}</p>
-                {column.items.map((item) => (
-                  <article key={item.title}>
-                    <h3>{item.title}</h3>
-                    <p>{item.copy}</p>
-                  </article>
-                ))}
-              </div>
-            ))}
-          </div>
-          <blockquote className="process-quote">
-            Curation does not grow for scale. It <em>deepens for trust.</em>
-            <cite>Arjun Fernando — {curatorTitles.arjun}</cite>
-          </blockquote>
         </div>
       </section>
 

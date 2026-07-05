@@ -8,10 +8,7 @@ const images = {
 } as const
 
 const handbookLinks = [
-  { href: '#welcome', label: 'Your Welcome' },
-  { href: '#tea-ritual', label: 'Welcome Tea' },
   { href: '#arranged', label: 'Arranged Details' },
-  { href: '#concierge', label: 'Concierge' },
   { href: '#assurance', label: 'Assurances' },
   { href: '#begin', label: 'Begin' },
 ] as const
@@ -25,31 +22,10 @@ const heroProtocols = [
 ] as const
 
 const assurancePoints = [
-  { value: 'Personal', label: 'Arrival host' },
-  { value: 'Prepared', label: 'Chauffeur team' },
-  { value: 'Calm', label: 'Arrival welcome' },
-  { value: 'Always', label: 'Concierge support' },
-] as const
-
-const welcomeMoments = [
-  {
-    label: 'At the threshold',
-    title: 'A personal welcome, never a search for a name board.',
-    copy:
-      'Your Royale Isles Lanka representative will be waiting to receive you with calm, discretion, and the first reassuring sense that the journey is already held.',
-  },
-  {
-    label: 'After the flight',
-    title: 'A pause before the island opens.',
-    copy:
-      'Rather than moving immediately onward, you are invited to settle into a considered arrival space where the pace of the journey can soften.',
-  },
-  {
-    label: 'Behind the scenes',
-    title: 'The first hour settles without needing your attention.',
-    copy:
-      'While you exhale, the people receiving you continue their work in the background, leaving you free to feel that the island has already made room for you.',
-  },
+  { value: 'Guaranteed', label: 'The Royale Isles Standard' },
+  { value: 'Licensed', label: 'Private Chauffeurs' },
+  { value: 'Awaiting', label: 'Internationally Trained Hosts' },
+  { value: 'Arranged', label: 'Private Transfer Route' },
 ] as const
 
 const preparationInputs = [
@@ -91,29 +67,6 @@ const arrangedDetails = [
     title: 'Context travels with the route.',
     copy:
       'If your journey includes tea country, railways, old hotels, civic streets, or gardens, your host prepares historical context told with care.',
-  },
-] as const
-
-const conciergeNotes = [
-  {
-    title: 'Before departure',
-    copy:
-      'Your concierge team reviews the journey with the people who will receive you: chauffeurs, hosts, residence teams, guides, and private specialists.',
-  },
-  {
-    title: 'On arrival',
-    copy:
-      'You are personally welcomed, invited to pause, and given the rare luxury of not having to solve the first hour in a new country.',
-  },
-  {
-    title: 'Throughout the journey',
-    copy:
-      'Support remains close without becoming visible. Adjustments, confirmations, and small comforts are handled in the background.',
-  },
-  {
-    title: 'For private households',
-    copy:
-      'Family offices, principals, multi-generational groups, and discretion-sensitive travellers are briefed through a private channel.',
   },
 ] as const
 
@@ -175,7 +128,7 @@ export function TravelPreparationPage() {
             From the moment your flight touches Sri Lanka, Royale Isles Lanka has already considered the details that
             allow you to simply arrive, breathe, and begin.
           </p>
-          <nav className="prep-chip-nav" aria-label="Before you arrive sections">
+          <nav className="prep-chip-nav" aria-label="On Arrival sections">
             {handbookLinks.map((link) => (
               <a key={link.href} href={link.href}>
                 {link.label}
@@ -215,62 +168,6 @@ export function TravelPreparationPage() {
         </dl>
       </section>
 
-      <section className="prep-section prep-visa" id="welcome">
-        <div className="prep-container">
-          <SectionHeading title="Your Welcome to Sri Lanka" />
-          <div className="prep-visa-grid">
-            {welcomeMoments.map((moment, index) => (
-              <article
-                key={moment.label}
-                className={`prep-visa-card${index === 0 ? ' prep-visa-card--primary' : ''}${index === 1 ? ' prep-visa-card--steps' : ''}${index === 2 ? ' prep-visa-card--arrival' : ''}`}
-              >
-                <p>{moment.label}</p>
-                <h3>{moment.title}</h3>
-                <i />
-                <p>{moment.copy}</p>
-              </article>
-            ))}
-          </div>
-          <aside className="prep-service-note">
-            <span>Private Receiving</span>
-            <p>
-              For guests requiring additional privacy, protocol vehicles, family-office coordination, or discretion-led
-              arrival handling, those arrangements are confirmed privately before travel.
-            </p>
-          </aside>
-        </div>
-      </section>
-
-      <section className="prep-section prep-notes" id="tea-ritual">
-        <div className="prep-container">
-          <SectionHeading title="The Welcome Tea Ritual" />
-          <div className="prep-notes-list">
-            <article>
-              <h3>The first ritual of the journey</h3>
-              <p>
-                On arrival, you are invited to pause over a complimentary cup of Ceylon tea in a setting chosen for
-                calm, privacy, and unhurried welcome. It is not simply refreshment after a flight. It is the symbolic
-                beginning of every Royale Isles Lanka journey.
-              </p>
-            </article>
-            <article>
-              <h3>While you settle, the island begins to open</h3>
-              <p>
-                As tea is poured, conversations continue softly around you. Introductions are confirmed, the evening
-                finds its shape, and the first day settles into place without asking anything of you.
-              </p>
-            </article>
-            <article>
-              <h3>The journey has already begun</h3>
-              <p>
-                There is no rush to solve, organise, or ask what comes next. The welcome tea is a gentle threshold
-                between the long flight and the island itself: a moment of stillness before Sri Lanka opens around you.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
       <section className="prep-section prep-payments" id="arranged">
         <div className="prep-container">
           <SectionHeading title="Every Detail Thoughtfully Arranged" />
@@ -291,20 +188,6 @@ export function TravelPreparationPage() {
               ))}
             </ul>
           </aside>
-        </div>
-      </section>
-
-      <section className="prep-section prep-etiquette" id="concierge">
-        <div className="prep-container">
-          <SectionHeading title="Your Personal Concierge" />
-          <div className="prep-etiquette-grid">
-            {conciergeNotes.map((item) => (
-              <article key={item.title}>
-                <h3>{item.title}</h3>
-                <p>{item.copy}</p>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -369,7 +252,6 @@ export function TravelPreparationPage() {
           </p>
           <div className="prep-cta-actions">
             <a href="/concierge">Begin A Private Conversation</a>
-            <a href="#tea-ritual">The Welcome Tea Ritual</a>
           </div>
           <small>Personally welcomed. Thoughtfully prepared. Held from the moment you arrive.</small>
         </div>

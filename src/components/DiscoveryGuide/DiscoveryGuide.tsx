@@ -172,17 +172,6 @@ export function DiscoveryGuide() {
         </figure>
       </section>
 
-      <section className="guide-intro" aria-label="How to understand Sri Lanka">
-        <p>
-          To understand Sri Lanka is to understand movement: west to east, coast to hill country, monsoon to sunlight,
-          ceremony to stillness. A journey here is most rewarding when it follows the island rather than forcing it.
-        </p>
-        <p>
-          The question is rarely simply where to go. It is which region is ready to receive you, which landscape suits
-          the season, and which story feels most like yours.
-        </p>
-      </section>
-
       <section className="guide-regions" aria-label="Explore regions">
         <div className="guide-region-cards">
           {regions.map((region, index) => (
@@ -294,18 +283,6 @@ export function DiscoveryGuide() {
               <span className="guide-season-best">{region.bestMonths}</span>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="guide-map-bridge" aria-labelledby="map-bridge-heading">
-        <div>
-          <span className="guide-eyebrow">From Reading To Exploring</span>
-          <h2 id="map-bridge-heading">Once the island begins to make sense, the map becomes more than a map.</h2>
-          <p>
-            Regions, seasons, and private moments sit close together in Sri Lanka. The interactive map is where these
-            relationships become visible: coast beside wilderness, tea country near sacred cities, and routes shaped by
-            rhythm rather than distance alone.
-          </p>
         </div>
       </section>
 

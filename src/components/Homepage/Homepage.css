@@ -168,9 +168,7 @@
 .figma-overline,
 .figma-kicker-line,
 .figma-centered-kicker,
-.figma-copper-overline,
-.figma-faq-heading p,
-.figma-faq-heading span {
+.figma-copper-overline {
   color: var(--color-accent);
   font-family: var(--font-body);
   font-size: var(--homepage-section-kicker-size);
@@ -376,12 +374,10 @@
 .figma-section-header h2,
 .figma-philosophy h2,
 .figma-island-stats h2,
-.figma-destination h2,
 .figma-testimonials h2,
 .figma-invitation h2,
 .figma-brochure h2,
-.figma-guide h2,
-.figma-faq h2 {
+.figma-guide h2 {
   max-width: var(--homepage-section-heading-max);
   color: var(--color-primary);
   font-family: var(--font-display);
@@ -682,6 +678,27 @@
 
 .figma-experiences-header h2 {
   color: var(--color-primary);
+}
+
+.figma-experiences-brand {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  white-space: nowrap;
+}
+
+.figma-homepage .figma-experiences-brand .figma-experiences-mark {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: clamp(180px, 24vw, 300px);
+  height: auto;
+  margin: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
 }
 
 .figma-experience-brief {
@@ -1212,12 +1229,13 @@
 
 .figma-island-stats {
   display: grid;
-  grid-template-columns: minmax(420px, 0.9fr) minmax(520px, 1.1fr);
+  grid-template-columns: 1fr 1fr;
   align-items: stretch;
   position: relative;
+  min-height: clamp(680px, 76vh, 860px);
   overflow: hidden;
   background:
-    radial-gradient(circle at 78% 18%, rgba(197, 160, 89, 0.18), transparent 30%),
+    radial-gradient(circle at 18% 50%, rgba(197, 160, 89, 0.14), transparent 34%),
     linear-gradient(135deg, var(--color-forest-deep), var(--color-surface-atmospheric) 58%, var(--color-forest-dark));
   color: var(--color-surface);
 }
@@ -1225,6 +1243,7 @@
 .figma-island-stats::before {
   content: '';
   position: absolute;
+  z-index: 2;
   inset: 32px;
   border: 1px solid rgba(197, 160, 89, 0.14);
   pointer-events: none;
@@ -1232,24 +1251,35 @@
 
 .figma-island-stats-media {
   position: relative;
-  min-height: 820px;
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
   margin: 0;
   overflow: hidden;
+  border-right: 1px solid rgba(197, 160, 89, 0.16);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(197, 160, 89, 0.1), transparent 48%),
+    rgba(13, 31, 23, 0.28);
 }
 
-.figma-island-stats-media img {
+.figma-homepage .figma-island-stats-media img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  opacity: 0.82;
-  filter: saturate(0.84) contrast(1.06);
+  object-fit: contain;
+  opacity: 0.96;
+  filter: saturate(0.92) contrast(1.06);
 }
 
-.figma-island-stats-media img.figma-island-stats-map {
+.figma-homepage .figma-island-stats-media img.figma-island-stats-map {
   object-fit: contain;
-  padding: clamp(8px, 1.6vw, 24px);
-  transform: scale(1.18);
+  object-position: center;
+  box-sizing: border-box;
+  padding: 0;
+  transform: scale(1.62);
   transform-origin: center;
 }
 
@@ -1257,40 +1287,36 @@
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(180deg, rgba(13, 31, 23, 0.08), rgba(13, 31, 23, 0.56)),
-    linear-gradient(90deg, transparent 58%, rgba(13, 31, 23, 0.5));
+  background: linear-gradient(180deg, rgba(13, 31, 23, 0.06), rgba(13, 31, 23, 0.28));
+  pointer-events: none;
 }
 
-.figma-island-stats-media figcaption,
-.figma-bordered-image figcaption {
+.figma-island-stats-media figcaption {
   position: absolute;
   z-index: 1;
-  right: 32px;
-  bottom: 32px;
-  left: 32px;
+  right: clamp(24px, 4vw, 40px);
+  bottom: clamp(24px, 4vw, 40px);
+  left: clamp(24px, 4vw, 40px);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 28px;
-  padding: 22px 24px;
+  gap: 24px;
+  padding: 20px 22px;
   border: 1px solid rgba(251, 249, 245, 0.18);
-  background: rgba(13, 31, 23, 0.74);
+  background: rgba(13, 31, 23, 0.78);
   color: var(--color-text-muted-on-dark);
   backdrop-filter: blur(12px);
 }
 
-.figma-island-stats-media figcaption span,
-.figma-bordered-image figcaption span {
+.figma-island-stats-media figcaption span {
   color: var(--color-surface);
   font-family: var(--font-display);
   font-size: 18px;
   line-height: var(--line-height-heading);
 }
 
-.figma-island-stats-media figcaption small,
-.figma-bordered-image figcaption small {
-  max-width: 360px;
+.figma-island-stats-media figcaption small {
+  max-width: min(100%, 280px);
   font-size: 11px;
   font-weight: 300;
   line-height: var(--line-height-copy);
@@ -1300,23 +1326,22 @@
 .figma-island-stats-copy {
   position: relative;
   z-index: 1;
+  grid-column: 2;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 820px;
-  padding: clamp(72px, 8vw, 120px);
+  align-self: stretch;
+  min-height: 100%;
+  padding: clamp(56px, 7vw, 96px);
 }
 
 .figma-island-stats-heading {
-  max-width: 720px;
-}
-
-.figma-island-stats h2,
-.figma-destination h2 {
-  margin-top: var(--homepage-section-heading-gap);
+  max-width: 560px;
 }
 
 .figma-island-stats h2 {
+  margin-top: var(--homepage-section-heading-gap);
   color: var(--color-surface);
 }
 
@@ -1334,23 +1359,23 @@
 }
 
 .figma-island-stats dl {
-  margin-top: 72px;
+  margin-top: clamp(40px, 5vw, 56px);
   border-top: 1px solid rgba(197, 160, 89, 0.18);
 }
 
 .figma-island-stats dl div {
   display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 32px;
+  grid-template-columns: minmax(96px, 132px) 1fr;
+  gap: clamp(20px, 3vw, 32px);
   align-items: center;
-  min-height: 118px;
+  min-height: 96px;
   border-bottom: 1px solid rgba(197, 160, 89, 0.14);
 }
 
 .figma-island-stats dt {
   color: var(--color-accent);
   font-family: var(--font-display);
-  font-size: var(--font-size-h2);
+  font-size: clamp(28px, 2.6vw, var(--font-size-h2));
   line-height: var(--line-height-heading);
 }
 
@@ -1359,69 +1384,6 @@
   font-size: 13px;
   font-weight: 300;
   line-height: var(--line-height-journal);
-}
-
-.figma-destination {
-  position: relative;
-  overflow: hidden;
-  padding: var(--section-padding) 0;
-  background:
-    radial-gradient(circle at 88% 20%, rgba(197, 160, 89, 0.12), transparent 30%),
-    linear-gradient(180deg, var(--color-surface), rgba(232, 225, 213, 0.3)),
-    var(--color-surface);
-}
-
-.figma-destination-grid {
-  display: grid;
-  grid-template-columns: minmax(360px, 0.86fr) minmax(520px, 1.14fr);
-  gap: clamp(56px, 8vw, 104px);
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.figma-destination .figma-copy-stack {
-  padding: 40px 0;
-}
-
-.figma-destination .figma-copy-stack blockquote {
-  max-width: 620px;
-  margin: 4px 0 0;
-  padding: 24px 0 24px 28px;
-  border-left: 1px solid var(--color-accent);
-  color: var(--color-primary);
-  font-family: var(--font-display);
-  font-size: clamp(20px, 2vw, 28px);
-  line-height: var(--line-height-heading);
-}
-
-.figma-text-link-light {
-  border-bottom-color: var(--color-accent);
-  color: var(--color-accent);
-  font-weight: 700;
-}
-
-.figma-bordered-image {
-  position: relative;
-  height: 620px;
-  margin: 0;
-  box-shadow: 0 34px 90px rgba(13, 31, 23, 0.14);
-}
-
-.figma-bordered-image::after {
-  content: '';
-  position: absolute;
-  inset: -16px;
-  border: 1px solid rgba(197, 160, 89, 0.28);
-  pointer-events: none;
-}
-
-.figma-bordered-image img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(0.88) contrast(1.03);
 }
 
 .figma-kicker-line {
@@ -1745,8 +1707,7 @@
   line-height: var(--line-height-copy);
 }
 
-.figma-testimonials,
-.figma-faq {
+.figma-testimonials {
   padding: var(--section-padding) 0;
   background: var(--color-surface-secondary);
 }
@@ -2407,6 +2368,26 @@
   letter-spacing: 0.3px;
 }
 
+.figma-invitation-aside {
+  margin-top: 28px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.figma-invitation-aside a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(197, 160, 89, 0.4);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.figma-invitation-aside a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
 .figma-brochure {
   position: relative;
   overflow: hidden;
@@ -2764,226 +2745,6 @@
   color: var(--color-accent);
 }
 
-.figma-faq {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 88% 14%, rgba(197, 160, 89, 0.14), transparent 30%),
-    linear-gradient(180deg, rgba(232, 225, 213, 0.28), rgba(251, 249, 245, 0.96));
-}
-
-.figma-faq::before {
-  content: '';
-  position: absolute;
-  inset: 32px;
-  border: 1px solid rgba(197, 160, 89, 0.12);
-  pointer-events: none;
-}
-
-.figma-faq-inner {
-  position: relative;
-  z-index: 1;
-}
-
-.figma-faq-header {
-  display: grid;
-  grid-template-columns: minmax(0, 760px) minmax(340px, 420px);
-  justify-content: center;
-  gap: clamp(36px, 4vw, 64px);
-  align-items: start;
-}
-
-.figma-faq-heading {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  color: var(--color-accent);
-}
-
-.figma-faq-heading i {
-  width: 32px;
-  height: 1px;
-  background: currentColor;
-}
-
-.figma-faq-heading p {
-  color: currentColor;
-}
-
-.figma-faq h2 {
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--homepage-section-heading-gap);
-  color: var(--color-primary);
-}
-
-.figma-faq h2 em {
-  font-style: italic;
-}
-
-.figma-faq-header > div > p {
-  max-width: 640px;
-  margin-top: var(--homepage-section-intro-gap);
-  padding-left: 28px;
-  border-left: 1px solid rgba(197, 160, 89, 0.45);
-  color: rgba(26, 26, 26, 0.58);
-  font-size: var(--homepage-section-intro-size);
-  font-weight: 300;
-  line-height: var(--homepage-section-intro-line-height);
-}
-
-.figma-faq-concierge {
-  padding: 34px;
-  border: 1px solid rgba(197, 160, 89, 0.3);
-  background:
-    linear-gradient(145deg, rgba(0, 66, 37, 0.94), rgba(13, 31, 23, 0.98)),
-    var(--color-surface-atmospheric);
-  color: var(--color-surface);
-  box-shadow: 0 28px 80px rgba(13, 31, 23, 0.16);
-}
-
-.figma-faq-concierge span {
-  color: var(--color-accent);
-  font-size: 10px;
-  letter-spacing: 3.6px;
-  line-height: var(--line-height-caption);
-  text-transform: uppercase;
-}
-
-.figma-faq-concierge h3 {
-  margin-top: 18px;
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1.18;
-}
-
-.figma-faq-concierge p {
-  margin-top: 18px;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.8;
-}
-
-.figma-faq-concierge a {
-  display: inline-flex;
-  margin-top: 28px;
-  padding: 14px 24px;
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 2.6px;
-  line-height: var(--line-height-caption);
-  text-transform: uppercase;
-  transition:
-    background 0.25s ease,
-    color 0.25s ease;
-}
-
-.figma-faq-concierge a:hover {
-  background: var(--color-accent);
-  color: var(--color-surface-atmospheric);
-}
-
-.figma-faq-panel {
-  margin-top: 56px;
-  padding: 12px;
-  border: 1px solid rgba(197, 160, 89, 0.22);
-  background: rgba(251, 249, 245, 0.68);
-  box-shadow: 0 24px 80px rgba(13, 31, 23, 0.08);
-}
-
-.figma-question-list {
-  display: grid;
-  gap: 10px;
-}
-
-.figma-question-list details {
-  border: 1px solid rgba(232, 225, 213, 0.86);
-  background:
-    linear-gradient(90deg, rgba(232, 225, 213, 0.28), rgba(251, 249, 245, 0.92)),
-    var(--color-surface);
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.figma-question-list details[open] {
-  border-color: rgba(197, 160, 89, 0.42);
-  box-shadow: 0 16px 44px rgba(13, 31, 23, 0.07);
-}
-
-.figma-question-list summary {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 42px;
-  gap: 24px;
-  align-items: center;
-  padding: 28px 30px;
-  cursor: pointer;
-  list-style: none;
-}
-
-.figma-question-list summary::-webkit-details-marker {
-  display: none;
-}
-
-.figma-question-list summary::after {
-  content: '+';
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid rgba(197, 160, 89, 0.34);
-  border-radius: 50%;
-  color: var(--color-accent);
-  font-family: var(--font-display);
-  font-size: 22px;
-  line-height: 1;
-  transition:
-    background 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease;
-}
-
-.figma-question-list details[open] summary::after {
-  content: '-';
-  background: var(--color-accent);
-  color: var(--color-surface-atmospheric);
-  transform: rotate(180deg);
-}
-
-.figma-question-list summary small {
-  display: block;
-  color: rgba(26, 26, 26, 0.36);
-  font-size: 10px;
-  letter-spacing: 3px;
-  line-height: var(--line-height-caption);
-  text-transform: uppercase;
-}
-
-.figma-question-list summary strong {
-  display: block;
-  margin-top: 8px;
-  color: var(--color-primary);
-  font-family: var(--font-display);
-  font-size: clamp(20px, 2vw, 26px);
-  font-weight: 400;
-  line-height: 1.22;
-}
-
-.figma-question-list details > p {
-  max-width: 760px;
-  margin-left: 30px;
-  padding: 0 32px 30px 0;
-  color: rgba(26, 26, 26, 0.58);
-  font-size: 15px;
-  font-weight: 300;
-  line-height: 1.85;
-}
-
 .figma-footer {
   padding: var(--section-padding) 0;
   background: var(--color-surface-atmospheric);
@@ -3120,7 +2881,6 @@
   }
 
   .figma-discovery-grid,
-  .figma-destination-grid,
   .figma-brochure-grid,
   .figma-guide-grid,
   .figma-journal-grid,
@@ -3150,15 +2910,6 @@
     border-top: 1px solid rgba(197, 160, 89, 0.18);
   }
 
-  .figma-faq-header {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-
-  .figma-faq-concierge {
-    max-width: 640px;
-  }
-
   .figma-journal-brief {
     max-width: 640px;
   }
@@ -3182,15 +2933,11 @@
   }
 
   .figma-island-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .figma-island-stats-media {
-    min-height: 520px;
+    min-height: clamp(620px, 72vh, 760px);
   }
 
   .figma-island-stats-copy {
-    min-height: auto;
+    padding: clamp(48px, 6vw, 72px);
   }
 
   .figma-experience,
@@ -3369,44 +3116,9 @@
     width: 100%;
   }
 
-  .figma-faq::before {
-    inset: 18px;
-  }
-
   .figma-experiences::before,
   .figma-journal::before {
     inset: 18px;
-  }
-
-  .figma-faq-header > div > p {
-    padding-left: 18px;
-    font-size: 15px;
-  }
-
-  .figma-faq-concierge {
-    padding: 28px;
-  }
-
-  .figma-faq-panel {
-    margin-top: 40px;
-    padding: 8px;
-  }
-
-  .figma-question-list summary {
-    grid-template-columns: 1fr 36px;
-    gap: 16px;
-    padding: 24px 20px;
-  }
-
-  .figma-question-list summary::after {
-    width: 36px;
-    height: 36px;
-    font-size: 20px;
-  }
-
-  .figma-question-list details > p {
-    margin-left: 20px;
-    padding: 0 20px 26px 0;
   }
 }
 
@@ -3422,9 +3134,7 @@
   .figma-brochure,
   .figma-guide,
   .figma-testimonials,
-  .figma-faq,
   .figma-footer,
-  .figma-destination,
   .figma-philosophy,
   .figma-invitation {
     padding: 48px 0;
@@ -3440,9 +3150,7 @@
   .figma-identity-card p,
   .figma-feature-story p,
   .figma-journal-list p,
-  .figma-copper-overline,
-  .figma-faq-heading p,
-  .figma-faq-heading span {
+  .figma-copper-overline {
     font-size: 10px;
     letter-spacing: 2px;
   }
@@ -3455,12 +3163,10 @@
   .figma-section-header h2,
   .figma-philosophy h2,
   .figma-island-stats h2,
-  .figma-destination h2,
   .figma-testimonials h2,
   .figma-invitation h2,
   .figma-brochure h2,
-  .figma-guide h2,
-  .figma-faq h2 {
+  .figma-guide h2 {
     font-size: clamp(30px, 9vw, 36px);
     line-height: var(--line-height-display);
   }
@@ -3474,9 +3180,7 @@
   .figma-journal-list article > div > span,
   .figma-invitation-inner > p:not(.figma-overline),
   .figma-brochure-copy > p:not(.figma-copper-overline),
-  .figma-guide .figma-copy-stack > p:not(.figma-copper-overline),
-  .figma-faq-header > div > p,
-  .figma-question-list details > p {
+  .figma-guide .figma-copy-stack > p:not(.figma-copper-overline) {
     font-size: 15px;
     line-height: 1.7;
   }
@@ -3485,15 +3189,31 @@
     margin-top: 16px;
   }
 
-  .figma-bordered-image,
   .figma-brochure-card figure,
   .figma-guide figure {
     min-height: 0;
     height: 340px;
   }
 
+  .figma-island-stats {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(420px, 52vw) auto;
+    min-height: 0;
+  }
+
   .figma-island-stats-media {
-    min-height: 340px;
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 100%;
+    border-right: 0;
+    border-bottom: 1px solid rgba(197, 160, 89, 0.16);
+  }
+
+  .figma-island-stats-copy {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: auto;
+    padding: clamp(48px, 8vw, 72px);
   }
 
   .figma-identities {
@@ -3619,8 +3339,7 @@
     padding: 24px 0;
   }
 
-  .figma-island-stats-media figcaption,
-  .figma-bordered-image figcaption {
+  .figma-island-stats-media figcaption {
     right: 20px;
     bottom: 20px;
     left: 20px;
@@ -3628,8 +3347,7 @@
     align-items: flex-start;
   }
 
-  .figma-island-stats-media figcaption small,
-  .figma-bordered-image figcaption small {
+  .figma-island-stats-media figcaption small {
     text-align: left;
   }
 
@@ -3796,21 +3514,5 @@
     right: 20px;
     left: 20px;
     justify-content: center;
-  }
-
-  .figma-faq-heading {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .figma-question-list summary {
-    grid-template-columns: 1fr 34px;
-    gap: 14px;
-    padding: 20px 16px;
-  }
-
-  .figma-question-list details > p {
-    margin-left: 0;
-    padding: 0 16px 22px;
   }
 }

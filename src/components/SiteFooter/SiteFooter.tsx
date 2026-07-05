@@ -4,7 +4,7 @@ const footerNav = {
   explore: [
     { href: '/discover-sri-lanka', label: 'Discover Sri Lanka' },
     { href: '/expectations', label: 'Expectations' },
-    { href: '/travel-preparation', label: 'Before You Arrive' },
+    { href: '/travel-preparation', label: 'On Arrival' },
     { href: '/my-journey', label: 'My Journey' },
     { href: '/journal', label: 'Journal' },
     { href: '/about', label: 'About' },
