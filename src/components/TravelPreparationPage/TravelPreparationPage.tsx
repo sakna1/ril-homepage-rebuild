@@ -13,7 +13,7 @@ const handbookLinks = [
   { href: '#arranged', label: 'Arranged Details' },
   { href: '#concierge', label: 'Concierge' },
   { href: '#assurance', label: 'Assurances' },
-  { href: '#begin', label: 'Begin' },
+  { href: '/consultation?from=travel-preparation', label: 'Begin' },
 ] as const
 
 const heroProtocols = [
@@ -325,7 +325,7 @@ export function TravelPreparationPage() {
                 For principals, entourages, medical considerations, special access, or discretion-sensitive movement,
                 our team briefs you directly before any journey is finalised.
               </p>
-              <a href="/concierge">Ask The Concierge</a>
+              <a href="/consultation?from=travel-preparation">Ask The Concierge</a>
             </aside>
           </div>
 
@@ -368,7 +368,7 @@ export function TravelPreparationPage() {
             enter the journey.
           </p>
           <div className="prep-cta-actions">
-            <a href="/concierge">Begin A Private Conversation</a>
+            <a href="/consultation?from=travel-preparation">Begin A Private Conversation</a>
             <a href="#tea-ritual">The Welcome Tea Ritual</a>
           </div>
           <small>Personally welcomed. Thoughtfully prepared. Held from the moment you arrive.</small>

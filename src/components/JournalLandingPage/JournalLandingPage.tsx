@@ -325,7 +325,7 @@ export function JournalLandingPage() {
             </ul>
             <div className="journal-hero-actions" aria-label="Journal actions">
               <a href="#journal-archive">Explore the Archive</a>
-              <a href="/concierge">Ask the Concierge</a>
+              <a href="/consultation?from=journal">Ask the Concierge</a>
             </div>
           </div>
 

@@ -10,9 +10,9 @@ const footerNav = {
     { href: '/about', label: 'About' },
   ] as const,
   connect: [
-    { href: '/#begin', label: 'Begin a Conversation' },
+    { href: '/consultation?from=footer', label: 'Begin a Conversation' },
     { href: '/discover-sri-lanka', label: 'Discovery Guide' },
-    { href: '/#begin', label: 'Contact' },
+    { href: '/consultation?from=footer', label: 'Contact' },
   ] as const,
   legal: [
     { href: '/privacy', label: 'Privacy Policy' },

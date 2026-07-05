@@ -1,12 +1,15 @@
 import type { ReactNode } from 'react'
 import { AboutPage } from './components/AboutPage/AboutPage'
 import { ConciergeDesk } from './components/ConciergeDesk/ConciergeDesk'
+import { ConsultationPage } from './components/ConsultationPage/ConsultationPage'
 import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
 import { ExperienceDetailPage } from './components/ExperienceDetailPage/ExperienceDetailPage'
 import { ExpectationsPage } from './components/ExperiencesPage/ExperiencesPage'
 import { Homepage } from './components/Homepage/Homepage'
 import { JournalArticlePage } from './components/JournalArticlePage/JournalArticlePage'
 import { JournalLandingPage } from './components/JournalLandingPage/JournalLandingPage'
+import { AccessibilityPage } from './components/LegalPlaceholderPage/AccessibilityPage'
+import { PrivacyPage } from './components/LegalPlaceholderPage/PrivacyPage'
 import { PageLayout } from './components/PageLayout/PageLayout'
 import { TravelPreparationPage } from './components/TravelPreparationPage/TravelPreparationPage'
 import { MyJourneyPage } from './pages/MyJourneyPage/MyJourneyPage'
@@ -20,6 +23,18 @@ function AppContent() {
 
   if (path === '/') {
     return renderPage(<Homepage />)
+  }
+
+  if (path === '/consultation') {
+    return renderPage(<ConsultationPage />)
+  }
+
+  if (path === '/privacy') {
+    return renderPage(<PrivacyPage />)
+  }
+
+  if (path === '/accessibility') {
+    return renderPage(<AccessibilityPage />)
   }
 
   if (path === '/concierge') {

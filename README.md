@@ -1,3 +1,24 @@
+# Royale Isles Lanka — homepage rebuild
+
+React + TypeScript + Vite prototype for the Royale Isles Lanka discovery and consultation experience.
+
+## Consultation flow
+
+The primary contact route is **`/consultation`**. Form behaviour is local-only until a backend is connected. See **[src/consultation/README.md](src/consultation/README.md)** for architecture, storage keys, CTA map, WhatsApp setup, and go-live checklist.
+
+Copy `.env.example` to `.env` and set `VITE_WHATSAPP_NUMBER` when a confirmed WhatsApp number is available.
+
+## Scripts
+
+```bash
+npm run dev      # local development
+npm run build    # type-check + production build
+npm run lint     # ESLint
+npm run preview  # preview production build
+```
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

@@ -1,0 +1,201 @@
+.consultation-form-section {
+  margin-top: var(--space-2xl);
+}
+
+.consultation-form-section__intro {
+  margin-bottom: var(--space-lg);
+}
+
+.consultation-form-section__intro h2 {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-display);
+  font-size: var(--font-size-h2);
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.consultation-form-section__intro p {
+  margin: 0;
+  max-width: 42rem;
+  font-size: var(--font-size-body-large);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.consultation-form {
+  display: grid;
+  gap: var(--space-xl);
+  max-width: 36rem;
+}
+
+.consultation-form__field {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.consultation-form__field label {
+  font-family: var(--font-body);
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.consultation-form__optional {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text-subtle);
+}
+
+.consultation-form__field input,
+.consultation-form__field select,
+.consultation-form__field textarea {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  color: var(--color-text);
+}
+
+.consultation-form__field input:focus-visible,
+.consultation-form__field select:focus-visible,
+.consultation-form__field textarea:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.consultation-form__field input[aria-invalid='true'],
+.consultation-form__field select[aria-invalid='true'],
+.consultation-form__field textarea[aria-invalid='true'] {
+  border-color: var(--color-primary);
+}
+
+.consultation-form__error {
+  margin: 0;
+  font-size: var(--font-size-label);
+  color: var(--color-primary);
+}
+
+.consultation-form__actions {
+  margin-top: var(--space-xs);
+}
+
+.consultation-form__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 var(--space-lg);
+  border: 0;
+  background: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-button);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-inverse);
+  cursor: pointer;
+}
+
+.consultation-form__submit:hover,
+.consultation-form__submit:focus-visible {
+  background: var(--color-primary-hover);
+}
+
+.consultation-form__note {
+  margin: 0;
+  max-width: 36rem;
+  font-size: var(--font-size-label);
+  line-height: 1.6;
+  color: var(--color-text-subtle);
+}
+
+.consultation-success {
+  margin-top: var(--space-2xl);
+  max-width: 42rem;
+  padding: var(--space-2xl) 0;
+}
+
+.consultation-success__mark {
+  margin-bottom: var(--space-md);
+  font-size: 1.25rem;
+  color: var(--color-accent);
+}
+
+.consultation-success h2 {
+  margin: 0 0 var(--space-md);
+  font-family: var(--font-display);
+  font-size: var(--font-size-h2);
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.consultation-success p {
+  margin: 0 0 var(--space-lg);
+  font-size: var(--font-size-body-large);
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.consultation-success__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.consultation-success__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 var(--space-xl);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-body);
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+.consultation-success__action--primary,
+.consultation-success__action--whatsapp {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.consultation-success__action--primary:hover,
+.consultation-success__action--primary:focus-visible,
+.consultation-success__action--whatsapp:hover,
+.consultation-success__action--whatsapp:focus-visible {
+  border-color: var(--color-primary-hover);
+  background: var(--color-primary-hover);
+  color: var(--color-text-inverse);
+}
+
+.consultation-success__action:not(.consultation-success__action--primary):not(
+    .consultation-success__action--whatsapp
+  ):hover,
+.consultation-success__action:not(.consultation-success__action--primary):not(
+    .consultation-success__action--whatsapp
+  ):focus-visible {
+  border-color: var(--color-primary);
+  color: var(--color-primary-hover);
+}
+
+@media (max-width: 767px) {
+  .consultation-success {
+    padding: var(--space-lg) 0;
+  }
+
+  .consultation-success__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

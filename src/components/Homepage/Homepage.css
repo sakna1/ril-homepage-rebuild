@@ -2367,6 +2367,43 @@
   padding-top: 28px;
 }
 
+.figma-invitation-actions {
+  padding-top: 28px;
+}
+
+.figma-invitation-cta,
+.figma-brochure-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 17px 28px;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+  font: inherit;
+  font-size: 12px;
+  line-height: var(--line-height-caption);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.figma-brochure-cta {
+  width: min(520px, 100%);
+  border-color: rgba(26, 26, 26, 0.28);
+  color: var(--color-primary);
+}
+
+.figma-invitation-cta:hover,
+.figma-invitation-cta:focus-visible,
+.figma-brochure-cta:hover,
+.figma-brochure-cta:focus-visible {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
 .figma-email-form input,
 .figma-brochure-form input,
 .figma-guide-form input {

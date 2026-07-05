@@ -283,7 +283,7 @@ export function Homepage() {
             <span>held privately.</span>
           </h1>
           <div className="figma-hero-actions">
-            <a href="#begin">Begin a Private Conversation</a>
+            <a href="/consultation?from=homepage">Begin a Private Conversation</a>
           </div>
         </div>
         <p className="figma-hero-caption">Bespoke journeys for private families, principals, and those who travel rarely, and only well.</p>
@@ -617,10 +617,11 @@ export function Homepage() {
             would make Sri Lanka feel personally meaningful. We will respond with considered next
             steps, not a catalogue.
           </p>
-          <form className="figma-email-form">
-            <input type="email" aria-label="Your email address" placeholder="Your email address" />
-            <button type="submit">Begin the Conversation</button>
-          </form>
+          <div className="figma-invitation-actions">
+            <a className="figma-invitation-cta" href="/consultation?from=homepage">
+              Begin the Conversation
+            </a>
+          </div>
           <small>Held privately, with no obligation.</small>
         </div>
       </section>
@@ -648,10 +649,9 @@ export function Homepage() {
               Sent privately, without an automated itinerary or mailing-list noise: a polished first
               briefing for travellers who expect careful judgement before any recommendation is made.
             </p>
-            <form className="figma-brochure-form">
-              <input type="email" aria-label="Your email address" placeholder="Your email address" />
-              <button type="submit">Request Brochure</button>
-            </form>
+            <a className="figma-brochure-cta" href="/consultation?from=brochure">
+              Request Brochure
+            </a>
           </div>
           <aside className="figma-brochure-card" aria-label="Private brochure preview">
             <figure className="figma-brochure-preview" aria-hidden="true">
@@ -746,7 +746,7 @@ export function Homepage() {
                 discretion-sensitive movement, our team will brief you directly before any journey is
                 finalised.
               </p>
-              <a href="#begin">Ask Us Directly</a>
+              <a href="/consultation?from=homepage">Ask Us Directly</a>
             </aside>
           </div>
 

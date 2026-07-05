@@ -1,5 +1,14 @@
 /// <reference types="vite/client" />
 
+interface ImportMetaEnv {
+  readonly VITE_WHATSAPP_NUMBER?: string
+  readonly VITE_MAPBOX_ACCESS_TOKEN?: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
 declare module '*.jpg' {
   const content: string
   export default content

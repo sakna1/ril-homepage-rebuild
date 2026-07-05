@@ -419,7 +419,7 @@ function Eyebrow({ children, dark = false }: { children: ReactNode; dark?: boole
 
 function TextLink({
   children,
-  href = '#begin',
+  href = '/consultation?from=expectations',
   inverse = false,
   onClick,
 }: {
@@ -456,7 +456,7 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
   const enquiryHref =
     encounter.title === 'The Sigiriya Dawn Ascent'
       ? '/expectations/the-sigiriya-dawn-ascent'
-      : '#begin'
+      : '/consultation?from=expectations'
   const journeyId = toJourneyId('experience', encounter.title)
   const isEncounterIncluded = isIncluded(journeyId)
 
@@ -966,7 +966,7 @@ export function ExpectationsPage() {
             will say so.
           </p>
           <div className="experiences-final-cta-actions">
-            <a href="#begin" className="primary-cta">
+            <a href="/consultation?from=expectations" className="primary-cta">
               Request A Private Briefing
             </a>
             <TextLink inverse>Review Expectations</TextLink>

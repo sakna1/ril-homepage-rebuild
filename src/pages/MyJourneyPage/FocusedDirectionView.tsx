@@ -313,7 +313,7 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
       ) : null}
 
       <div className="focused-direction__actions">
-        <a className="saved-journey-tab__cta-primary" href="/concierge">
+        <a className="saved-journey-tab__cta-primary" href="/consultation?from=my-journey">
           Request a Private Consultation
         </a>
         <button type="button" className="focused-direction__back-secondary" onClick={onClose}>

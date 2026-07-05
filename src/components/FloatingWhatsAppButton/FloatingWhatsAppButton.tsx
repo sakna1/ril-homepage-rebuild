@@ -1,40 +1,16 @@
 import './FloatingWhatsAppButton.css'
-
-const defaultMessage =
-  'Hello Royale Isles Lanka, I would like to start planning a Sri Lanka journey.'
-const defaultPhoneNumber = '94763962161'
-
-function getWhatsAppHref() {
-  const phoneNumber = String(import.meta.env.VITE_WHATSAPP_NUMBER ?? defaultPhoneNumber).replace(
-    /\D/g,
-    '',
-  )
-  const message = encodeURIComponent(defaultMessage)
-
-  return `https://wa.me/${phoneNumber}?text=${message}`
-}
+import { getDefaultWhatsAppHref, isWhatsAppConfigured } from '../../consultation/whatsApp'
 
 export function FloatingWhatsAppButton() {
+  if (!isWhatsAppConfigured()) {
+    return null
+  }
+
   return (
     <div className="floating-action-group" aria-label="Quick contact actions">
       <a
-        className="floating-action-button floating-action-button--concierge"
-        href="/concierge"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Open AI Concierge in a new tab"
-      >
-        <span className="floating-action-button__icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" focusable="false">
-            <path d="M16 3.5 18.14 11 25.5 13.14 18.14 15.28 16 22.5 13.86 15.28 6.5 13.14 13.86 11 16 3.5Zm7.75 16.25.98 3.52 3.52.98-3.52.98-.98 3.52-.98-3.52-3.52-.98 3.52-.98.98-3.52ZM8.25 20l.76 2.49 2.49.76-2.49.76-.76 2.49-.76-2.49L5 23.25l2.49-.76L8.25 20Z" />
-          </svg>
-        </span>
-        <span className="floating-action-button__text">AI Concierge</span>
-      </a>
-
-      <a
         className="floating-action-button floating-action-button--whatsapp"
-        href={getWhatsAppHref()}
+        href={getDefaultWhatsAppHref()}
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with Royale Isles Lanka on WhatsApp"

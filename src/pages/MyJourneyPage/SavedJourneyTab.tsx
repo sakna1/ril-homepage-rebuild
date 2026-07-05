@@ -175,7 +175,7 @@ export function SavedJourneyTab() {
             with care.
           </p>
           <div className="saved-journey-tab__handoff-actions">
-            <a className="saved-journey-tab__cta-primary" href="/concierge">
+            <a className="saved-journey-tab__cta-primary" href="/consultation?from=my-journey">
               Request a Private Consultation
             </a>
           </div>
@@ -309,7 +309,7 @@ export function SavedJourneyTab() {
           with care.
         </p>
         <div className="saved-journey-tab__handoff-actions">
-          <a className="saved-journey-tab__cta-primary" href="/concierge">
+          <a className="saved-journey-tab__cta-primary" href="/consultation?from=my-journey">
             Request a Private Consultation
           </a>
         </div>
