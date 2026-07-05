@@ -1,0 +1,203 @@
+import './ContactPage.css'
+import { ArrowIcon } from '../ArrowIcon'
+import { ContactInquiryPanel } from './ContactInquiryPanel'
+import { ContactLocationMap } from './ContactLocationMap'
+
+const images = {
+  hero: '/contact/hero-highlands.jpg',
+  journey: '/contact/ancient-ruins.jpg',
+  closing: '/contact/closing-tree.jpg',
+  routeTexture: '/contact/route-texture.png',
+} as const
+
+const pathways = [
+  {
+    number: '01',
+    label: 'By private consultation',
+    title: 'Request a Bespoke Journey',
+    action: 'Begin here',
+    href: '/consultation',
+  },
+  {
+    number: '02',
+    label: 'Discover the island',
+    title: 'Explore Sri Lanka',
+    action: 'Discover more',
+    href: '/discover-sri-lanka',
+  },
+  {
+    number: '03',
+    label: 'A personal note',
+    title: 'Send a Message',
+    action: 'Write to us',
+    href: '#quick-inquiry',
+  },
+] as const
+
+const contactDetails = [
+  { label: 'Private Office', value: 'Colombo · By appointment' },
+  { label: 'Concierge Line', value: 'Available upon enquiry' },
+  { label: 'Correspondence', value: 'Held discreetly, by arrangement' },
+  { label: 'Consultations', value: 'In person, by video, or in writing' },
+] as const
+
+export function ContactPage() {
+  return (
+    <main className="contact-page" data-node-id="132:2">
+      <section className="contact-hero" data-node-id="132:5" aria-labelledby="contact-hero-heading">
+        <div className="contact-hero-copy">
+          <div className="contact-kicker">
+            <span className="contact-gold-rule contact-gold-rule--short" aria-hidden="true" />
+            <p>Contact</p>
+          </div>
+
+          <div className="contact-hero-body">
+            <p className="contact-eyebrow">Private Enquiries</p>
+            <h1 id="contact-hero-heading">
+              Begin a
+              <span>Conversation</span>
+            </h1>
+            <span className="contact-gold-rule" aria-hidden="true" />
+            <p className="contact-lead">
+              For principals, private families, and those who travel rarely — and only well. Share what is drawing you
+              towards Sri Lanka, and we will respond with considered next steps, not a catalogue.
+            </p>
+            <a className="contact-text-link" href="#quick-inquiry">
+              Enquire About a Journey
+              <ArrowIcon />
+            </a>
+          </div>
+
+          <p className="contact-hero-footnote">Sri Lanka · Private Consultations · By Arrangement</p>
+        </div>
+
+        <figure className="contact-hero-media">
+          <img src={images.hero} alt="Misty layered mountains and forest in the Sri Lankan highlands" />
+          <div className="contact-hero-media-overlay" aria-hidden="true" />
+          <span className="contact-frame-mark contact-frame-mark--top-left" aria-hidden="true" />
+          <span className="contact-frame-mark contact-frame-mark--bottom-right" aria-hidden="true" />
+          <figcaption>Sri Lankan Highlands</figcaption>
+        </figure>
+      </section>
+
+      <section className="contact-pathways" id="pathways" data-node-id="132:34" aria-labelledby="contact-pathways-heading">
+        <div className="contact-container">
+          <header className="contact-pathways-header">
+            <div>
+              <p className="contact-eyebrow">Pathways</p>
+              <h2 id="contact-pathways-heading">
+                How would you like
+                <span> to begin?</span>
+              </h2>
+            </div>
+            <p className="contact-pathways-intro">
+              Three quiet entry points into a journey shaped around privacy, pace, and personal meaning.
+            </p>
+          </header>
+
+          <div className="contact-pathways-grid">
+            {pathways.map((pathway) => (
+              <a className="contact-pathway-card" href={pathway.href} key={pathway.number}>
+                <span className="contact-pathway-number" aria-hidden="true">
+                  {pathway.number}
+                </span>
+                <p className="contact-pathway-label">{pathway.label}</p>
+                <h3>{pathway.title}</h3>
+                <span className="contact-pathway-action">
+                  {pathway.action}
+                  <ArrowIcon />
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="contact-form-section"
+        id="quick-inquiry"
+        data-node-id="132:92"
+        aria-labelledby="contact-form-heading"
+      >
+        <div className="contact-container contact-form-layout">
+          <div className="contact-form-intro">
+            <p className="contact-eyebrow">Quick Inquiry</p>
+            <h2 id="contact-form-heading">
+              A few words
+              <span> to begin</span>
+            </h2>
+            <span className="contact-gold-rule contact-gold-rule--medium" aria-hidden="true" />
+            <p>
+              A compact note for when you already know you would like to reach us — held with the same discretion we
+              bring to every journey.
+            </p>
+          </div>
+          <ContactInquiryPanel />
+        </div>
+      </section>
+
+      <section className="contact-journey" data-node-id="132:207" aria-labelledby="contact-journey-heading">
+        <img className="contact-journey-texture" src={images.routeTexture} alt="" aria-hidden="true" />
+        <div className="contact-container contact-journey-layout">
+          <div className="contact-journey-copy">
+            <p className="contact-eyebrow">My Journey</p>
+            <h2 id="contact-journey-heading">
+              Already gathering
+              <span> a journey?</span>
+            </h2>
+            <span className="contact-gold-rule contact-gold-rule--medium" aria-hidden="true" />
+            <p>
+              Saved places, directions, and quiet preferences can shape a more personal consultation — bringing
+              everything you have been collecting into one considered view before we speak.
+            </p>
+            <a className="contact-button contact-button--outline" href="/my-journey">
+              Plan Your Journey
+              <ArrowIcon />
+            </a>
+          </div>
+
+          <figure className="contact-journey-media">
+            <img src={images.journey} alt="Ancient stone stairs and walls overgrown with forest in Sri Lanka" />
+            <div className="contact-journey-media-overlay" aria-hidden="true" />
+            <span className="contact-frame-mark contact-frame-mark--top-left contact-frame-mark--small" aria-hidden="true" />
+            <span
+              className="contact-frame-mark contact-frame-mark--bottom-right contact-frame-mark--small"
+              aria-hidden="true"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section className="contact-details" id="find-us" data-node-id="132:153" aria-labelledby="contact-details-heading">
+        <div className="contact-container">
+          <p className="contact-eyebrow">Details</p>
+          <h2 id="contact-details-heading">Find us</h2>
+          <ContactLocationMap />
+          <dl className="contact-details-grid">
+            {contactDetails.map((detail) => (
+              <div key={detail.label}>
+                <dt>{detail.label}</dt>
+                <dd>{detail.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="contact-closing" data-node-id="132:241" aria-labelledby="contact-closing-heading">
+        <img className="contact-closing-background" src={images.closing} alt="" aria-hidden="true" />
+        <div className="contact-closing-overlay" aria-hidden="true" />
+        <div className="contact-closing-content">
+          <span className="contact-gold-rule contact-gold-rule--wide" aria-hidden="true" />
+          <blockquote id="contact-closing-heading">
+            &ldquo;Some journeys begin long before the first flight.&rdquo;
+          </blockquote>
+          <a className="contact-button contact-button--solid" href="#quick-inquiry">
+            Enquire About a Journey
+            <ArrowIcon />
+          </a>
+        </div>
+      </section>
+    </main>
+  )
+}

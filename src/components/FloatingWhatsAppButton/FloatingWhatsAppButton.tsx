@@ -1,18 +1,5 @@
 import './FloatingWhatsAppButton.css'
-
-const defaultMessage =
-  'Hello Royale Isles Lanka, I would like to start planning a Sri Lanka journey.'
-const defaultPhoneNumber = '94763962161'
-
-function getWhatsAppHref() {
-  const phoneNumber = String(import.meta.env.VITE_WHATSAPP_NUMBER ?? defaultPhoneNumber).replace(
-    /\D/g,
-    '',
-  )
-  const message = encodeURIComponent(defaultMessage)
-
-  return `https://wa.me/${phoneNumber}?text=${message}`
-}
+import { getDefaultWhatsAppHref } from '../../consultation/whatsApp'
 
 export function FloatingWhatsAppButton() {
   return (
@@ -34,7 +21,7 @@ export function FloatingWhatsAppButton() {
 
       <a
         className="floating-action-button floating-action-button--whatsapp"
-        href={getWhatsAppHref()}
+        href={getDefaultWhatsAppHref()}
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with Royale Isles Lanka on WhatsApp"
