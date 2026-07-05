@@ -594,6 +594,22 @@
   margin-top: 8px;
 }
 
+.your-directions__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.your-directions__title {
+  margin: 0;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
 .your-directions__toggle {
   padding: 0;
   border: 0;
@@ -609,9 +625,23 @@
 }
 
 .your-directions__panel {
-  margin-top: 20px;
-  padding-top: 20px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid rgba(232, 225, 213, 0.95);
+}
+
+.saved-journey-tab__next-step,
+.saved-journey-tab__route-note {
+  max-width: 56ch;
+  margin: 0 0 16px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.saved-journey-tab__route-note {
+  margin-top: 16px;
+  font-style: italic;
 }
 
 .your-directions__intro {
@@ -625,29 +655,33 @@
 
 .your-directions__cards {
   display: grid;
-  gap: 20px;
+  gap: 14px;
 }
 
 .direction-card {
-  padding: 24px;
+  padding: 18px 20px;
   border: 1px solid rgba(197, 160, 89, 0.2);
-  border-radius: 20px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.52);
 }
 
 .direction-card h3 {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: var(--color-primary);
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 
 .direction-card__description {
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   color: var(--color-text-muted);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .direction-card__saved-label {
@@ -1214,6 +1248,21 @@
   .saved-journey-tab {
     padding-inline: var(--container-gutter-tablet);
   }
+
+  .your-directions__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .saved-journey-tab__map,
+  .focused-direction .saved-journey-tab__map {
+    min-height: 460px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .your-directions__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1200px) {
@@ -1223,6 +1272,15 @@
   .guided-discovery-tab,
   .saved-journey-tab {
     padding-inline: var(--container-gutter-desktop);
+  }
+
+  .your-directions__cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .saved-journey-tab__map,
+  .focused-direction .saved-journey-tab__map {
+    min-height: 480px;
   }
 }
 
@@ -1247,8 +1305,67 @@
     transform: translateY(0);
   }
 
-  .explore-island-tab__map {
-    min-height: 420px;
+  .explore-island-tab__map,
+  .saved-journey-tab__map,
+  .focused-direction .saved-journey-tab__map,
+  .guided-discovery-tab__result-map {
+    min-height: 360px;
+  }
+
+  .my-journey-tabs__tab {
+    padding: 14px 14px;
+    font-size: 12px;
+  }
+
+  .map-filters__chip {
+    padding: 7px 12px;
+  }
+
+  .direction-card__saved li,
+  .your-directions__also-saved-item,
+  .focused-direction__saved li {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .saved-journey-tab__handoff-actions,
+  .focused-direction__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .saved-journey-tab__cta-primary,
+  .focused-direction__back-secondary {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 390px) {
+  .my-journey-tabs {
+    gap: 0;
+  }
+
+  .my-journey-tabs__tab {
+    flex: 1 1 auto;
+    padding: 12px 8px;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+
+  .explore-island-tab__map,
+  .saved-journey-tab__map,
+  .focused-direction .saved-journey-tab__map {
+    min-height: 300px;
+  }
+
+  .direction-card {
+    padding: 14px 16px;
+  }
+
+  .illustrative-itinerary__segment {
+    padding: 12px 14px;
   }
 }
 

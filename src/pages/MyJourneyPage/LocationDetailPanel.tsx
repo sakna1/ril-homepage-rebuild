@@ -1,7 +1,7 @@
 import type { Experience } from '../../data/experiences'
 import type { JourneyRegion, RegionDestination } from '../../data/journeyRegions'
 import { getContextualRecommendations } from '../../journey/contextualRecommendations'
-import { useJourney } from '../../journey/JourneyContext'
+import { useJourney } from '../../journey/useJourney'
 import {
   createJourneyItemFromDestination,
   createJourneyItemFromExperience,
@@ -17,6 +17,7 @@ type LocationDetailPanelProps = {
   selectedExperience?: Experience
   selectedRegion?: JourneyRegion
   onBackToDestination?: () => void
+  onDestinationSelect?: (destination: RegionDestination) => void
   onExperienceSelect?: (experience: Experience) => void
   onExploreRegions?: () => void
   onClose?: () => void
@@ -28,6 +29,7 @@ export function LocationDetailPanel({
   selectedExperience,
   selectedRegion,
   onBackToDestination,
+  onDestinationSelect,
   onExperienceSelect,
   onExploreRegions,
   onClose,
@@ -123,8 +125,8 @@ export function LocationDetailPanel({
           </div>
 
           <div className="journey-discovery-panel__section journey-discovery-panel__section--experiences">
-            <p className="journey-discovery-panel__section-kicker">Curated Experiences</p>
-            <h3>Carefully selected moments that define this destination.</h3>
+            <p className="journey-discovery-panel__section-kicker">Ways to experience this place</p>
+            <h3>A few directions to explore here.</h3>
             <div className="journey-discovery-panel__experience-list">
               {experiences.map((experience) => (
                 <button
@@ -185,9 +187,17 @@ export function LocationDetailPanel({
 
           <div className="journey-discovery-panel__section">
             <h3>Destinations</h3>
-            <ul className="journey-discovery-panel__list">
+            <ul className="journey-discovery-panel__list journey-discovery-panel__list--actions">
               {selectedRegion.destinations.map((destination) => (
-                <li key={destination.id}>{destination.title}</li>
+                <li key={destination.id}>
+                  <button
+                    type="button"
+                    className="journey-discovery-panel__destination-link"
+                    onClick={() => onDestinationSelect?.(destination)}
+                  >
+                    {destination.title}
+                  </button>
+                </li>
               ))}
             </ul>
           </div>

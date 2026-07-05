@@ -1,7 +1,11 @@
 import type { JourneyItem } from '../journey/JourneyContext'
 import { getRegionEditorialName, REGION_RHYTHM_ORDER } from '../journey/journeyRegionCatalog'
-import { findRegionIdByLabel, normalizeRegionLabel } from '../journey/savedJourneyDisplay'
-import { journeyRegions } from '../data/journeyRegions'
+import { normalizeRegionLabel } from '../journey/savedJourneyDisplay'
+import {
+  orderDestinationIdsEditorially,
+  resolveSavedDestinationIds,
+  resolveSavedRegionIds,
+} from '../journey/savedPlaceResolution'
 import {
   adaptCatalogExperience,
   adaptRegionDestination,
@@ -54,72 +58,6 @@ const REGION_SEGMENT_SUMMARIES: Record<string, string> = {
   'The East Coast': 'Quieter shores and a different seasonal rhythm along the eastern edge.',
   'The Wild South': 'Wild terrain, early mornings, and landscapes that reward patience.',
   'The Northern Reaches': 'A more remote reading of the island’s northern peninsula.',
-}
-
-function resolveSavedDestinationIds(items: JourneyItem[]): string[] {
-  const destinations = buildDestinationsFromRegions()
-  const catalogExperiences = buildExperiencesFromCatalog()
-  const ids = new Set<string>()
-
-  items.forEach((item) => {
-    if (item.kind === 'destination') {
-      const match = destinations.find((entry) => entry.name === item.label)
-      if (match) {
-        ids.add(match.id)
-        return
-      }
-      const slug = item.id.replace('destination:', '')
-      const bySlug = destinations.find((entry) => slugify(entry.name) === slug)
-      if (bySlug) {
-        ids.add(bySlug.id)
-      }
-    }
-
-    if (item.kind === 'experience') {
-      const experience = catalogExperiences.find((entry) => entry.title === item.label)
-      if (experience?.destinationId) {
-        ids.add(experience.destinationId)
-      }
-    }
-  })
-
-  return Array.from(ids)
-}
-
-function resolveSavedRegionIds(items: JourneyItem[]): string[] {
-  const regionIds = new Set<string>()
-
-  items.forEach((item) => {
-    if (item.kind === 'region') {
-      const regionId = findRegionIdByLabel(item.label)
-      if (regionId) {
-        regionIds.add(regionId)
-        return
-      }
-      const match = journeyRegions.find(
-        (region) =>
-          getRegionEditorialName(region.id) === normalizeRegionLabel(item.label) ||
-          region.title === item.label,
-      )
-      if (match) {
-        regionIds.add(match.id)
-      }
-    }
-    if (item.kind === 'destination' && item.parentRegion) {
-      const regionId = findRegionIdByLabel(item.parentRegion)
-      if (regionId) {
-        regionIds.add(regionId)
-      }
-    }
-    if (item.kind === 'experience' && item.parentRegion) {
-      const regionId = findRegionIdByLabel(item.parentRegion)
-      if (regionId) {
-        regionIds.add(regionId)
-      }
-    }
-  })
-
-  return Array.from(regionIds)
 }
 
 function slugify(value: string): string {
@@ -233,10 +171,11 @@ class MockJourneyRepository implements JourneyRepository {
       return []
     }
 
+    const orderedIds = orderDestinationIdsEditorially(destinationIds)
     const connections: TravelConnection[] = []
-    for (let index = 0; index < destinationIds.length - 1; index += 1) {
-      const fromId = destinationIds[index]
-      const toId = destinationIds[index + 1]
+    for (let index = 0; index < orderedIds.length - 1; index += 1) {
+      const fromId = orderedIds[index]
+      const toId = orderedIds[index + 1]
       const connection =
         (await this.getTravelConnection(fromId, toId)) ??
         (await this.getTravelConnection(toId, fromId))
@@ -365,12 +304,15 @@ export function adaptSavedItemsToRepositoryInput(items: JourneyItem[]): {
   regionIds: string[]
   destinationIds: string[]
 } {
+  const destinationIds = orderDestinationIdsEditorially(resolveSavedDestinationIds(items))
   return {
     savedItemIds: items.map((item) => item.id),
     regionIds: resolveSavedRegionIds(items),
-    destinationIds: resolveSavedDestinationIds(items),
+    destinationIds,
   }
 }
+
+export { orderDestinationIdsEditorially, resolveSavedDestinationIds, resolveSavedRegionIds }
 
 // Re-export adapters for components that need catalog → journey mapping
 export { adaptRegionDestination, adaptCatalogExperience, findCatalogDestinationById }

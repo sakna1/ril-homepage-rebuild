@@ -1,53 +1,16 @@
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react'
+  JourneyContext,
+  type JourneyContextValue,
+  type JourneyItem,
+} from './journeyContextStore'
 import { inferJourneyRegion, inferJourneyTheme, normalizeJourneyItem } from './journeyTaxonomy'
 import { normalizeJourneyItemLabels } from './savedJourneyDisplay'
 
-export type JourneyItemKind =
-  | 'theme'
-  | 'discovery-world'
-  | 'region'
-  | 'destination'
-  | 'mood'
-  | 'accommodation'
-  | 'experience'
-  | 'season'
-  | 'interest'
-
-export type JourneyItem = {
-  id: string
-  kind: JourneyItemKind
-  label: string
-  detail?: string
-  source?: string
-  parentTheme?: string
-  parentRegion?: string
-}
-
-type JourneyContextValue = {
-  items: JourneyItem[]
-  count: number
-  hasSeenHelper: boolean
-  pendingRemovalId: string | null
-  includeItem: (item: JourneyItem) => void
-  requestRemoveItem: (id: string) => void
-  confirmRemoveItem: (id: string) => void
-  isIncluded: (id: string) => boolean
-  getItem: (id: string) => JourneyItem | undefined
-  dismissHelper: () => void
-}
+export type { JourneyItem, JourneyItemKind } from './journeyContextStore'
 
 const STORAGE_KEY = 'royale-isles-my-journey'
 const HELPER_STORAGE_KEY = 'royale-isles-my-journey-helper-seen'
-
-const JourneyContext = createContext<JourneyContextValue | undefined>(undefined)
 
 function normalizeJourneyItems(items: JourneyItem[]) {
   const normalizedItems = items
@@ -99,16 +62,9 @@ function readStoredHelperState() {
 }
 
 export function JourneyProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<JourneyItem[]>(readStoredJourney)
+  const [items, setItems] = useState<JourneyItem[]>(() => readStoredJourney())
   const [pendingRemovalId, setPendingRemovalId] = useState<string | null>(null)
   const [hasSeenHelper, setHasSeenHelper] = useState(readStoredHelperState)
-
-  useEffect(() => {
-    setItems((currentItems) => {
-      const normalizedItems = normalizeJourneyItems(currentItems)
-      return JSON.stringify(normalizedItems) === JSON.stringify(currentItems) ? currentItems : normalizedItems
-    })
-  })
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
@@ -119,7 +75,7 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
   }, [hasSeenHelper])
 
   const includeItem = useCallback((item: JourneyItem) => {
-    const normalizedItem = normalizeJourneyItem(item)
+    const normalizedItem = normalizeJourneyItemLabels(normalizeJourneyItem(item))
 
     setItems((currentItems) => {
       const existingIndex = currentItems.findIndex((currentItem) => currentItem.id === normalizedItem.id)
@@ -130,10 +86,10 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
           ...currentItems[existingIndex],
           ...normalizedItem,
         }
-        return nextItems
+        return normalizeJourneyItems(nextItems)
       }
 
-      return [...currentItems, normalizedItem]
+      return normalizeJourneyItems([...currentItems, normalizedItem])
     })
     setPendingRemovalId(null)
   }, [])
@@ -147,17 +103,21 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
       const itemToRemove = currentItems.find((item) => item.id === id)
 
       if (itemToRemove?.kind === 'region' && itemToRemove.parentTheme) {
-        return currentItems.filter((item) => item.id !== id && inferJourneyRegion(item) !== itemToRemove.label)
+        return normalizeJourneyItems(
+          currentItems.filter((item) => item.id !== id && inferJourneyRegion(item) !== itemToRemove.label),
+        )
       }
 
       if (itemToRemove?.kind !== 'theme') {
-        return currentItems.filter((item) => item.id !== id)
+        return normalizeJourneyItems(currentItems.filter((item) => item.id !== id))
       }
 
-      return currentItems.filter((item) => {
-        const itemTheme = inferJourneyTheme(item)
-        return item.id !== id && itemTheme !== itemToRemove.label
-      })
+      return normalizeJourneyItems(
+        currentItems.filter((item) => {
+          const itemTheme = inferJourneyTheme(item)
+          return item.id !== id && itemTheme !== itemToRemove.label
+        }),
+      )
     })
     setPendingRemovalId(null)
   }, [])
@@ -184,14 +144,4 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
   }, [confirmRemoveItem, dismissHelper, hasSeenHelper, includeItem, items, pendingRemovalId, requestRemoveItem])
 
   return <JourneyContext.Provider value={value}>{children}</JourneyContext.Provider>
-}
-
-export function useJourney() {
-  const context = useContext(JourneyContext)
-
-  if (!context) {
-    throw new Error('useJourney must be used within JourneyProvider')
-  }
-
-  return context
 }

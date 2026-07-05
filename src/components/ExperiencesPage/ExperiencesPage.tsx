@@ -3,7 +3,7 @@ import { useState, type KeyboardEvent, type MouseEvent, type ReactNode } from 'r
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from './images'
 import { JourneyIncludedPill } from '../../journey/JourneyChrome'
-import { useJourney } from '../../journey/JourneyContext'
+import { useJourney } from '../../journey/useJourney'
 import { inferJourneyRegion } from '../../journey/journeyTaxonomy'
 import { normalizeRegionLabel } from '../../journey/savedJourneyDisplay'
 import { sharedHeritageRecommendations, sharedHeritageWorld } from '../../journey/discoveryWorlds'

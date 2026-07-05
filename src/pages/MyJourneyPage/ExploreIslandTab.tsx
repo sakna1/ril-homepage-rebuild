@@ -5,14 +5,12 @@ import { RegionDestinationMarker } from '../../components/Map/RegionDestinationM
 import { TravelMap } from '../../components/Map/TravelMap'
 import { experiencesById, type Experience } from '../../data/experiences'
 import { journeyRegions, type JourneyRegion, type RegionDestination } from '../../data/journeyRegions'
-import { getRegionRecommendationMetadata } from '../../data/journeyConsultation'
 import { getSavedDestinationIds, getSavedRegionIds } from '../../journey/contextualRecommendations'
 import { regionMatchesTheme } from '../../journey/journeyRegionCatalog'
-import { useJourney } from '../../journey/JourneyContext'
-import { getTabPanelId, getTabId } from './JourneyTabs'
+import { useJourney } from '../../journey/useJourney'
 import { LocationDetailPanel } from './LocationDetailPanel'
 import { MapFilters } from './MapFilters'
-import type { MapFilterState } from './journeyView'
+import { getTabId, getTabPanelId, type MapFilterState } from './journeyView'
 
 const SRI_LANKA_OVERVIEW_BOUNDS: [[number, number], [number, number]] = [
   [79.62, 5.92],
@@ -142,23 +140,33 @@ export function ExploreIslandTab({ highlightedRegionIds = [] }: ExploreIslandTab
     setSelectedExperienceId(undefined)
   }, [])
 
-  useEffect(() => {
-    if (filter.category === 'experiences' && filter.secondaryId) {
-      const experience = experiencesById[filter.secondaryId]
+  const handleFilterChange = useCallback(
+    (nextFilter: MapFilterState) => {
+      setFilter(nextFilter)
+
+      if (nextFilter.category !== 'experiences' || !nextFilter.secondaryId) {
+        return
+      }
+
+      const experience = experiencesById[nextFilter.secondaryId]
       if (!experience) {
         return
       }
+
       const region = activeRegions.find((entry) =>
         entry.destinations.some((destination) => destination.id === experience.destinationId),
       )
-      if (region) {
-        setSelectedRegionId(region.id)
-        setSelectedDestinationId(experience.destinationId)
-        setSelectedExperienceId(experience.id)
-        setIsMobilePanelOpen(true)
+      if (!region) {
+        return
       }
-    }
-  }, [activeRegions, filter.category, filter.secondaryId])
+
+      setSelectedRegionId(region.id)
+      setSelectedDestinationId(experience.destinationId)
+      setSelectedExperienceId(experience.id)
+      setIsMobilePanelOpen(true)
+    },
+    [activeRegions],
+  )
 
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== 'undefined' ? window.matchMedia('(min-width: 961px)').matches : true,
@@ -201,7 +209,7 @@ export function ExploreIslandTab({ highlightedRegionIds = [] }: ExploreIslandTab
       id={getTabPanelId('explore')}
       aria-labelledby={getTabId('explore')}
     >
-      <MapFilters filter={filter} onFilterChange={setFilter} hasSavedItems={items.length > 0} />
+      <MapFilters filter={filter} onFilterChange={handleFilterChange} hasSavedItems={items.length > 0} />
 
       <div className="explore-island-tab__workspace">
         <div className="explore-island-tab__map">
@@ -236,6 +244,7 @@ export function ExploreIslandTab({ highlightedRegionIds = [] }: ExploreIslandTab
               selectedDestination={selectedDestination}
               selectedExperience={selectedExperience}
               onBackToDestination={handleBackToDestination}
+              onDestinationSelect={handleDestinationSelect}
               onExperienceSelect={handleExperienceSelect}
               onExploreRegions={handleExploreRegions}
               onClose={() => {
@@ -250,17 +259,4 @@ export function ExploreIslandTab({ highlightedRegionIds = [] }: ExploreIslandTab
       </div>
     </section>
   )
-}
-
-export function getRegionsForGuidedSelection(themeIds: string[], mood?: string, seasonId?: string) {
-  return journeyRegions.filter((region) => {
-    const metadata = getRegionRecommendationMetadata(region.id)
-    if (!metadata) {
-      return false
-    }
-    const themeMatch = themeIds.length === 0 || themeIds.some((themeId) => metadata.journeyThemes.includes(themeId))
-    const moodMatch = !mood || metadata.journeyMoods.includes(mood)
-    const seasonMatch = !seasonId || metadata.bestTimeOptions.includes(seasonId)
-    return themeMatch && moodMatch && seasonMatch
-  })
 }

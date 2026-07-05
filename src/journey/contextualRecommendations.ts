@@ -11,7 +11,10 @@ import {
   toJourneyId,
 } from './journeyItemHelpers'
 import { getRegionEditorialName } from './journeyRegionCatalog'
-import { findRegionIdByLabel, normalizeRegionLabel } from './savedJourneyDisplay'
+import {
+  resolveSavedDestinationIds as resolveSavedDestinationIdsShared,
+  resolveSavedRegionIds as resolveSavedRegionIdsShared,
+} from './savedPlaceResolution'
 
 export type ContextualRecommendationContext = 'destination' | 'region' | 'experience' | 'theme'
 
@@ -195,52 +198,49 @@ export function getContextualRecommendations(
   },
 ): ContextualRecommendationGroup | null {
   const excludedIds = new Set(savedItems.map((item) => item.id))
-  let recommendations: ContextualRecommendation[] = []
 
   if (context === 'destination' && options.destination && options.region) {
-    recommendations = getNearbyDestinationRecommendations(options.destination, options.region, excludedIds)
     return {
       primaryHeading: 'A Natural Continuation',
       secondaryHeading: 'You May Also Be Drawn To',
-      recommendations,
+      recommendations: getNearbyDestinationRecommendations(
+        options.destination,
+        options.region,
+        excludedIds,
+      ),
     }
   }
 
   if (context === 'region' && options.region) {
-    recommendations = getRegionRecommendations(options.region, excludedIds)
     return {
       primaryHeading: 'Continue Through the Island',
       secondaryHeading: 'Elsewhere in This Rhythm',
-      recommendations,
+      recommendations: getRegionRecommendations(options.region, excludedIds),
     }
   }
 
   if (context === 'experience' && options.experience) {
     const resolvedRegion =
-      options.region ??
-      findRegionByDestinationId(options.experience.destinationId) ??
-      (options.destination ? undefined : undefined)
+      options.region ?? findRegionByDestinationId(options.experience.destinationId)
     const resolvedDestination =
       options.destination ??
       resolvedRegion?.destinations.find((entry) => entry.id === options.experience?.destinationId)
 
-    recommendations = getExperienceRecommendations(
-      options.experience,
-      resolvedDestination,
-      resolvedRegion,
-      excludedIds,
-    )
     return {
       primaryHeading: 'Deepen This Direction',
-      recommendations,
+      recommendations: getExperienceRecommendations(
+        options.experience,
+        resolvedDestination,
+        resolvedRegion,
+        excludedIds,
+      ),
     }
   }
 
   if (context === 'theme' && options.themeId) {
-    recommendations = getThemeRecommendations(options.themeId, excludedIds)
     return {
       primaryHeading: 'Continue Through the Island',
-      recommendations,
+      recommendations: getThemeRecommendations(options.themeId, excludedIds),
     }
   }
 
@@ -252,63 +252,11 @@ export function itemMatchesSavedFilter(item: JourneyItem, savedIds: Set<string>)
 }
 
 export function getSavedRegionIds(savedItems: JourneyItem[], regions: JourneyRegion[]): string[] {
-  const savedLabels = new Set(savedItems.map((item) => item.label))
-  const savedRegionIds = new Set<string>()
-
-  savedItems.forEach((item) => {
-    if (item.kind === 'region') {
-      const regionId = findRegionIdByLabel(item.label)
-      if (regionId) {
-        savedRegionIds.add(regionId)
-      }
-    }
-  })
-
-  regions.forEach((region) => {
-    const editorialName = getRegionEditorialName(region.id)
-    if (savedLabels.has(editorialName) || savedLabels.has(region.title)) {
-      savedRegionIds.add(region.id)
-    }
-    savedItems.forEach((item) => {
-      if (item.kind === 'region' && normalizeRegionLabel(item.label) === editorialName) {
-        savedRegionIds.add(region.id)
-      }
-    })
-    region.destinations.forEach((destination) => {
-      if (savedLabels.has(destination.title)) {
-        savedRegionIds.add(region.id)
-      }
-    })
-  })
-
-  savedItems
-    .filter((item) => item.kind === 'experience')
-    .forEach((item) => {
-      const experience = experiences.find((entry) => entry.title === item.label)
-      if (experience) {
-        const region = findRegionByDestinationId(experience.destinationId)
-        if (region) {
-          savedRegionIds.add(region.id)
-        }
-      }
-    })
-
-  return Array.from(savedRegionIds)
+  return resolveSavedRegionIdsShared(savedItems, regions)
 }
 
 export function getSavedDestinationIds(savedItems: JourneyItem[], regions: JourneyRegion[]): string[] {
-  const savedLabels = new Set(savedItems.map((item) => item.label))
-  const ids: string[] = []
-
-  regions.forEach((region) => {
-    region.destinations.forEach((destination) => {
-      if (savedLabels.has(destination.title)) {
-        ids.push(destination.id)
-      }
-    })
-  })
-
-  return ids
+  return resolveSavedDestinationIdsShared(savedItems, regions)
 }
 
 export function isItemSaved(savedItems: JourneyItem[], id: string): boolean {

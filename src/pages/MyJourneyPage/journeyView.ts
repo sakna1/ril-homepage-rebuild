@@ -1,5 +1,13 @@
 export type JourneyView = 'explore' | 'guided' | 'journey'
 
+export function getTabPanelId(view: JourneyView) {
+  return `my-journey-panel-${view}`
+}
+
+export function getTabId(view: JourneyView) {
+  return `my-journey-tab-${view}`
+}
+
 export function readJourneyView(defaultView: JourneyView = 'explore'): JourneyView {
   const params = new URLSearchParams(window.location.search)
   const view = params.get('view')

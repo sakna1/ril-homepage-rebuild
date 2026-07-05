@@ -1,5 +1,15 @@
 import type { JourneyRegion } from './journeyRegions'
 
+const SHARED_HERITAGE_THEME_ID = 'shared-heritage'
+const SHARED_HERITAGE_RELATED_THEMES = ['heritage-memory', 'culture-human-connection'] as const
+
+function regionSupportsTheme(metadata: JourneyRecommendationMetadata, themeId: string): boolean {
+  if (themeId === SHARED_HERITAGE_THEME_ID) {
+    return SHARED_HERITAGE_RELATED_THEMES.some((relatedId) => metadata.journeyThemes.includes(relatedId))
+  }
+  return metadata.journeyThemes.includes(themeId)
+}
+
 export type JourneyTheme = {
   id: string
   iconLabel: string
@@ -16,8 +26,20 @@ export type JourneySeason = {
 
 export type JourneyConsultationSelection = {
   themeId?: string
+  /** When multiple Discovery Worlds are selected, all are considered. */
+  themeIds?: string[]
   mood?: string
   seasonId?: string
+}
+
+function getSelectionThemeIds(selection: JourneyConsultationSelection): string[] {
+  if (selection.themeIds && selection.themeIds.length > 0) {
+    return selection.themeIds
+  }
+  if (selection.themeId) {
+    return [selection.themeId]
+  }
+  return []
 }
 
 export type JourneyRecommendationMetadata = {
@@ -300,21 +322,6 @@ export const getDestinationRecommendationMetadata = (
   )
 }
 
-const matchesSelection = (
-  metadata: JourneyRecommendationMetadata | undefined,
-  selection: JourneyConsultationSelection,
-) => {
-  if (!metadata) {
-    return false
-  }
-
-  return (
-    (!selection.themeId || metadata.journeyThemes.includes(selection.themeId)) &&
-    (!selection.mood || metadata.journeyMoods.includes(selection.mood)) &&
-    (!selection.seasonId || metadata.bestTimeOptions.includes(selection.seasonId))
-  )
-}
-
 const scoreSelection = (
   metadata: JourneyRecommendationMetadata | undefined,
   selection: JourneyConsultationSelection,
@@ -323,8 +330,11 @@ const scoreSelection = (
     return 0
   }
 
+  const themeIds = getSelectionThemeIds(selection)
+  const themeScore = themeIds.filter((themeId) => regionSupportsTheme(metadata, themeId)).length * 5
+
   return (
-    (selection.themeId && metadata.journeyThemes.includes(selection.themeId) ? 5 : 0) +
+    themeScore +
     (selection.mood && metadata.journeyMoods.includes(selection.mood) ? 3 : 0) +
     (selection.seasonId && metadata.bestTimeOptions.includes(selection.seasonId) ? 3 : 0)
   )
@@ -334,29 +344,65 @@ export const getRecommendedRegions = (
   regions: JourneyRegion[],
   selection: JourneyConsultationSelection,
 ) => {
-  const hasSelection = Boolean(selection.themeId || selection.mood || selection.seasonId)
+  const themeIds = getSelectionThemeIds(selection)
+  const hasSelection = themeIds.length > 0 || Boolean(selection.mood || selection.seasonId)
 
   if (!hasSelection) {
     return []
   }
 
-  const exactMatches = regions.filter((region) =>
-    matchesSelection(getRegionRecommendationMetadata(region.id), selection),
-  )
-
-  if (exactMatches.length) {
-    return exactMatches
-  }
-
-  return regions
+  const scored = regions
     .map((region) => ({
       region,
+      metadata: getRegionRecommendationMetadata(region.id),
       score: scoreSelection(getRegionRecommendationMetadata(region.id), selection),
     }))
     .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3)
-    .map(({ region }) => region)
+    .sort((left, right) => right.score - left.score)
+
+  if (scored.length === 0) {
+    return []
+  }
+
+  const selected: JourneyRegion[] = []
+  const coveredThemes = new Set<string>()
+
+  // Prefer a coherent, diverse set that reflects multiple selected worlds.
+  for (const entry of scored) {
+    if (selected.length >= 4) {
+      break
+    }
+
+    const introducesNewTheme =
+      themeIds.length <= 1 ||
+      themeIds.some(
+        (themeId) =>
+          entry.metadata && regionSupportsTheme(entry.metadata, themeId) && !coveredThemes.has(themeId),
+      )
+
+    if (selected.length < 2 || introducesNewTheme || selected.length < 3) {
+      selected.push(entry.region)
+      themeIds.forEach((themeId) => {
+        if (entry.metadata && regionSupportsTheme(entry.metadata, themeId)) {
+          coveredThemes.add(themeId)
+        }
+      })
+    }
+  }
+
+  if (selected.length < 2) {
+    for (const entry of scored) {
+      if (selected.some((region) => region.id === entry.region.id)) {
+        continue
+      }
+      selected.push(entry.region)
+      if (selected.length >= 2) {
+        break
+      }
+    }
+  }
+
+  return selected.slice(0, 4)
 }
 
 export const getJourneyRecommendation = (
@@ -369,7 +415,15 @@ export const getJourneyRecommendation = (
     return undefined
   }
 
-  const selectedTheme = journeyThemes.find((theme) => theme.id === selection.themeId)
+  const themeIds = getSelectionThemeIds(selection)
+  const selectedThemeTitles = themeIds
+    .map((themeId) => {
+      if (themeId === SHARED_HERITAGE_THEME_ID) {
+        return 'Shared Heritage'
+      }
+      return journeyThemes.find((theme) => theme.id === themeId)?.title
+    })
+    .filter((title): title is string => Boolean(title))
   const selectedSeason = journeySeasons.find((season) => season.id === selection.seasonId)
   const suggestedExperiences = Array.from(
     new Set(
@@ -384,10 +438,22 @@ export const getJourneyRecommendation = (
       .find(Boolean) ??
     'Because your answers point toward regions where the journey can be shaped with privacy, timing and a strong sense of place.'
 
+  const themePhrase =
+    selectedThemeTitles.length === 0
+      ? ''
+      : selectedThemeTitles.length === 1
+        ? selectedThemeTitles[0].toLowerCase()
+        : selectedThemeTitles.length === 2
+          ? `${selectedThemeTitles[0].toLowerCase()} and ${selectedThemeTitles[1].toLowerCase()}`
+          : `${selectedThemeTitles
+              .slice(0, -1)
+              .map((title) => title.toLowerCase())
+              .join(', ')}, and ${selectedThemeTitles[selectedThemeTitles.length - 1].toLowerCase()}`
+
   return {
     whyWeChoseThis: `${reason}${
-      selectedTheme && selection.mood && selectedSeason
-        ? ` This combines ${selectedTheme.title.toLowerCase()} with a ${selection.mood.toLowerCase()} mood during ${selectedSeason.label}.`
+      themePhrase && selection.mood && selectedSeason
+        ? ` This brings together ${themePhrase} with a ${selection.mood.toLowerCase()} mood during ${selectedSeason.label}.`
         : ''
     }`,
     regions: recommendedRegions,

@@ -202,6 +202,33 @@
   line-height: var(--line-height-caption);
 }
 
+.journey-discovery-panel__list--actions {
+  padding: 0;
+}
+
+.journey-discovery-panel__destination-link {
+  display: inline-flex;
+  width: 100%;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 66, 37, 0.12);
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: var(--line-height-caption);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.journey-discovery-panel__destination-link:hover,
+.journey-discovery-panel__destination-link:focus-visible {
+  color: var(--color-primary-hover, #1a5c3a);
+  outline: none;
+}
+
 .journey-discovery-panel__recommendation-list {
   display: grid;
   gap: 12px;

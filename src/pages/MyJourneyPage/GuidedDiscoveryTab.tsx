@@ -21,10 +21,10 @@ import {
   createJourneyItemFromTheme,
 } from '../../journey/journeyItemHelpers'
 import { getRegionEditorialName } from '../../journey/journeyRegionCatalog'
-import { useJourney } from '../../journey/JourneyContext'
+import { useJourney } from '../../journey/useJourney'
 import type { SuggestedJourneyRhythm } from '../../data/journey/types'
 import { journeyRepository } from '../../services/journeyRepository'
-import { getTabPanelId, getTabId } from './JourneyTabs'
+import { getTabId, getTabPanelId } from './journeyView'
 
 const guidedThemes = [
   ...journeyThemes,
@@ -51,6 +51,7 @@ export function GuidedDiscoveryTab() {
   const consultationSelection: JourneyConsultationSelection = useMemo(
     () => ({
       themeId: selectedThemeIds[0],
+      themeIds: selectedThemeIds,
       mood: selectedMood,
       seasonId: selectedSeasonId,
     }),

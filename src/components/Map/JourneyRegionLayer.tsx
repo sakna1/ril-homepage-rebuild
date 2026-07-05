@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { Map, MapLayerMouseEvent } from 'mapbox-gl'
+import type { DataDrivenPropertyValueSpecification, Map, MapLayerMouseEvent } from 'mapbox-gl'
 import type { JourneyRegion } from '../../data/journeyRegions'
 
 type JourneyRegionLayerProps = {
@@ -90,7 +90,10 @@ function setSourceData(map: Map, sourceId: string, data: unknown) {
   source?.setData?.(data)
 }
 
-function getRegionOpacityExpression(selectedRegionId?: string, recommendedRegionIds: string[] = []): any {
+function getRegionOpacityExpression(
+  selectedRegionId?: string,
+  recommendedRegionIds: string[] = [],
+): DataDrivenPropertyValueSpecification<number> {
   const hasRecommendations = recommendedRegionIds.length > 0
 
   if (!selectedRegionId) {
@@ -120,7 +123,10 @@ function getRegionOpacityExpression(selectedRegionId?: string, recommendedRegion
   ]
 }
 
-function getLabelOpacityExpression(selectedRegionId?: string, recommendedRegionIds: string[] = []): any {
+function getLabelOpacityExpression(
+  selectedRegionId?: string,
+  recommendedRegionIds: string[] = [],
+): DataDrivenPropertyValueSpecification<number> {
   const hasRecommendations = recommendedRegionIds.length > 0
 
   if (!selectedRegionId) {

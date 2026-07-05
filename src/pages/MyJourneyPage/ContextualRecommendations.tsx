@@ -1,5 +1,5 @@
 import type { JourneyItem } from '../../journey/JourneyContext'
-import { useJourney } from '../../journey/JourneyContext'
+import { useJourney } from '../../journey/useJourney'
 import type { ContextualRecommendation } from '../../journey/contextualRecommendations'
 
 type ContextualRecommendationsProps = {

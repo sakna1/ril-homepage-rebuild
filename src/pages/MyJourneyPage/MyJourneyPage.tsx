@@ -14,13 +14,6 @@ export function MyJourneyPage({ defaultView = 'explore' }: MyJourneyPageProps) {
   const [activeView, setActiveView] = useState<JourneyView>(() => readJourneyView(defaultView))
 
   useEffect(() => {
-    if (defaultView !== 'explore' && !window.location.search.includes('view=')) {
-      setJourneyView(defaultView)
-      setActiveView(defaultView)
-    }
-  }, [defaultView])
-
-  useEffect(() => {
     const handlePopState = () => setActiveView(readJourneyView(defaultView))
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)

@@ -1,5 +1,5 @@
 import { useCallback, useId, type KeyboardEvent } from 'react'
-import type { JourneyView } from './journeyView'
+import { getTabId, getTabPanelId, type JourneyView } from './journeyView'
 
 type JourneyTabsProps = {
   activeView: JourneyView
@@ -33,7 +33,7 @@ export function JourneyTabs({ activeView, onViewChange }: JourneyTabsProps) {
     <div className="my-journey-tabs" role="tablist" aria-label="My Journey sections" id={tablistId}>
       {tabs.map((tab, index) => {
         const isActive = activeView === tab.id
-        const panelId = `my-journey-panel-${tab.id}`
+        const panelId = getTabPanelId(tab.id)
 
         return (
           <button
@@ -41,7 +41,7 @@ export function JourneyTabs({ activeView, onViewChange }: JourneyTabsProps) {
             className="my-journey-tabs__tab"
             type="button"
             role="tab"
-            id={`my-journey-tab-${tab.id}`}
+            id={getTabId(tab.id)}
             aria-selected={isActive}
             aria-controls={panelId}
             tabIndex={isActive ? 0 : -1}
@@ -54,12 +54,4 @@ export function JourneyTabs({ activeView, onViewChange }: JourneyTabsProps) {
       })}
     </div>
   )
-}
-
-export function getTabPanelId(view: JourneyView) {
-  return `my-journey-panel-${view}`
-}
-
-export function getTabId(view: JourneyView) {
-  return `my-journey-tab-${view}`
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useJourney } from './JourneyContext'
+import { useJourney } from './useJourney'
 import './JourneyChrome.css'
 
 export function JourneyIncludedPill() {
@@ -8,21 +8,22 @@ export function JourneyIncludedPill() {
 
 export function JourneyHelperMessage() {
   const { count, hasSeenHelper, dismissHelper } = useJourney()
-  const [isVisible, setIsVisible] = useState(false)
+  const shouldShow = count > 0 && !hasSeenHelper
+  const [locallyHidden, setLocallyHidden] = useState(false)
+  const isVisible = shouldShow && !locallyHidden
 
   useEffect(() => {
-    if (count === 0 || hasSeenHelper) {
+    if (!isVisible) {
       return undefined
     }
 
-    setIsVisible(true)
     const hideTimer = window.setTimeout(() => {
-      setIsVisible(false)
+      setLocallyHidden(true)
       dismissHelper()
     }, 5200)
 
     return () => window.clearTimeout(hideTimer)
-  }, [count, dismissHelper, hasSeenHelper])
+  }, [dismissHelper, isVisible])
 
   if (!isVisible) {
     return null

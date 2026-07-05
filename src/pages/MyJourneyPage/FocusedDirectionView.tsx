@@ -17,7 +17,8 @@ import {
   getDirectionById,
   getDirectionRegionIds,
 } from '../../journey/journeyDirections'
-import { useJourney } from '../../journey/JourneyContext'
+import { useJourney } from '../../journey/useJourney'
+import { orderDestinationIdsEditorially } from '../../journey/savedPlaceResolution'
 import {
   adaptSavedItemsToRepositoryInput,
   journeyRepository,
@@ -29,6 +30,12 @@ type FocusedDirectionViewProps = {
   directionId: string
   onClose: () => void
 }
+
+const ROUTE_FORMING_MESSAGE =
+  'The places you have saved are beginning to form a direction. Final routing is shaped personally around pace, season, and the details that matter to you.'
+
+const CONTINUE_EXPLORING_MESSAGE =
+  'Continue exploring to add places that sit naturally alongside what you have already saved.'
 
 export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionViewProps) {
   const { items, confirmRemoveItem } = useJourney()
@@ -63,7 +70,7 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
   )
 
   const savedDestinationIds = useMemo(
-    () => getSavedDestinationIds(scopedItems, journeyRegions),
+    () => orderDestinationIdsEditorially(getSavedDestinationIds(scopedItems, journeyRegions)),
     [scopedItems],
   )
 
@@ -93,11 +100,12 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
         repositoryInput.savedItemIds,
         scopedItems,
       )
+      const hasValidRhythm = Boolean(rhythmResult && rhythmResult.sequence.length >= 2)
       const itineraryResult = await journeyRepository.generateIllustrativeItinerary(
         {
           savedItemIds: repositoryInput.savedItemIds,
           regionIds: directionRegionIds.length > 0 ? directionRegionIds : repositoryInput.regionIds,
-          rhythmId: rhythmResult?.rhythmId,
+          rhythmId: hasValidRhythm ? rhythmResult?.rhythmId : undefined,
         },
         scopedItems,
       )
@@ -107,8 +115,10 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
       const journeys = await journeyRepository.getSignatureJourneysForTheme(directionId)
 
       if (!cancelled) {
-        setRhythm(rhythmResult)
-        setItinerary(itineraryResult)
+        setRhythm(hasValidRhythm ? rhythmResult : undefined)
+        setItinerary(
+          itineraryResult && itineraryResult.segments.length >= 2 ? itineraryResult : undefined,
+        )
         setConnections(connectionResult)
         setSignatureJourneys(journeys)
       }
@@ -131,12 +141,14 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
     [savedDestinationIds],
   )
 
-  const constellationDestinationIds = useMemo(() => {
-    if (repositoryInput.destinationIds.length >= 2) {
-      return repositoryInput.destinationIds
-    }
-    return savedDestinationIds
-  }, [repositoryInput.destinationIds, savedDestinationIds])
+  const constellationDestinationIds = useMemo(
+    () => (savedDestinationIds.length >= 2 ? savedDestinationIds : []),
+    [savedDestinationIds],
+  )
+
+  const hasValidRhythm = Boolean(rhythm && rhythm.sequence.length >= 2)
+  const hasValidItinerary = Boolean(itinerary && itinerary.segments.length >= 2)
+  const mappedDestinationCount = savedDestinationIds.length
 
   if (!direction || !directionView) {
     return (
@@ -231,6 +243,14 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
               Final routing is refined personally. {ILLUSTRATIVE_DISCLAIMER}
             </p>
           </div>
+        ) : mappedDestinationCount >= 2 ? (
+          <p className="saved-journey-tab__route-note">{ROUTE_FORMING_MESSAGE}</p>
+        ) : mappedDestinationCount === 1 ? (
+          <p className="saved-journey-tab__route-note">{CONTINUE_EXPLORING_MESSAGE}</p>
+        ) : directionView.entries.length === 0 ? (
+          <p className="saved-journey-tab__route-note">
+            Explore the island to find the places and encounters that belong to this direction.
+          </p>
         ) : null}
       </div>
 
@@ -242,41 +262,36 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
         />
       ) : null}
 
-      <div className="saved-journey-tab__rhythm focused-direction__rhythm">
-        <h3>A possible rhythm</h3>
-        {rhythm && rhythm.sequence.length >= 2 ? (
-          <>
-            <p className="saved-journey-tab__rhythm-intro">
-              Based on what you have saved along this direction, one possible beginning is:
-            </p>
-            <p className="saved-journey-tab__rhythm-sequence">{rhythm.sequence.join(' → ')}</p>
-            <div className="saved-journey-tab__rhythm-actions">
-              <button
-                type="button"
-                className="saved-journey-tab__rhythm-link"
-                aria-expanded={showRhythmReason}
-                onClick={() => setShowRhythmReason((current) => !current)}
-              >
-                {showRhythmReason ? 'Hide' : 'Why this route?'}
-              </button>
-              <a className="saved-journey-tab__rhythm-link" href="/my-journey?view=explore">
-                Refine selections
-              </a>
-            </div>
-            {showRhythmReason ? (
-              <p className="saved-journey-tab__rhythm-reason">{rhythm.summary}</p>
-            ) : null}
-            <p className="saved-journey-tab__rhythm-note">{ILLUSTRATIVE_DISCLAIMER}</p>
-          </>
-        ) : (
-          <p>
-            Save a few places along this direction, and we will begin to trace how the island might
-            unfold around them.
+      {hasValidRhythm && rhythm ? (
+        <div className="saved-journey-tab__rhythm focused-direction__rhythm">
+          <h3>A possible rhythm</h3>
+          <p className="saved-journey-tab__rhythm-intro">
+            Based on what you have saved along this direction, one possible beginning is:
           </p>
-        )}
-      </div>
+          <p className="saved-journey-tab__rhythm-sequence">{rhythm.sequence.join(' → ')}</p>
+          <div className="saved-journey-tab__rhythm-actions">
+            <button
+              type="button"
+              className="saved-journey-tab__rhythm-link"
+              aria-expanded={showRhythmReason}
+              onClick={() => setShowRhythmReason((current) => !current)}
+            >
+              {showRhythmReason ? 'Hide' : 'Why this route?'}
+            </button>
+            <a className="saved-journey-tab__rhythm-link" href="/my-journey?view=explore">
+              Refine selections
+            </a>
+          </div>
+          {showRhythmReason ? (
+            <p className="saved-journey-tab__rhythm-reason">{rhythm.summary}</p>
+          ) : null}
+          <p className="saved-journey-tab__rhythm-note">{ILLUSTRATIVE_DISCLAIMER}</p>
+        </div>
+      ) : null}
 
-      {itinerary ? <IllustrativeItineraryPreview itinerary={itinerary} defaultOpen /> : null}
+      {hasValidItinerary && itinerary ? (
+        <IllustrativeItineraryPreview itinerary={itinerary} defaultOpen />
+      ) : null}
 
       {signatureJourneys.length > 0 ? (
         <section className="focused-direction__signature-journeys" aria-labelledby="signature-journeys-heading">

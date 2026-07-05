@@ -30,7 +30,7 @@ import { journeyRepository } from '../../services/journeyRepository'
 | `getDestinations()` | Future Explore tab data loading |
 | `getExperiences()` | Future experience filters |
 | `getExperiencesForDestination()` | Detail panels |
-| `getRecommendations()` | Contextual recommendation enrichment |
+| `getRecommendations()` | Reserved for future backend recommendation integration (see below) |
 | `getTravelConnection()` | Connection lookup |
 | `getTravelConnectionsForDestinations()` | Saved Journey tab transfer notes |
 | `getSuggestedRhythm()` | Saved Journey tab “A Possible Rhythm” |
@@ -148,6 +148,14 @@ export const journeyRepository: JourneyRepository = new ApiJourneyRepository()
    - theme ↔ region ↔ destination ↔ experience relationship tables
    - Signature Journey definitions with many-to-many links
    - verified routing, availability, pricing, and partners only through API responses
+
+## Contextual recommendations (current UI path)
+
+Detail panels and focused direction views currently render recommendations through **catalogue heuristics** in `src/journey/contextualRecommendations.ts` (nearby destinations, region companions, related experiences, theme-aligned regions).
+
+`journeyRepository.getRecommendations()` and `mockRecommendations.ts` implement the future data contract and remain available for backend handoff. They are **not** wired into the live UI in Day 1, to avoid a risky dual-path rewrite. When a backend supplies recommendations, swap the repository implementation and point the UI at `getRecommendations()` without changing panel layout.
+
+Saved place resolution for maps (including experiences → destination markers) is shared in `src/journey/savedPlaceResolution.ts` and used by both the UI helpers and the repository.
 
 ## Illustrative vs verified fields
 

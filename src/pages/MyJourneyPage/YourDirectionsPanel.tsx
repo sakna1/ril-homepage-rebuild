@@ -16,78 +16,85 @@ export function YourDirectionsPanel({
   onRemove,
   onExploreDirection,
 }: YourDirectionsPanelProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const hasDirections = directions.length > 0
+  const [userCollapsed, setUserCollapsed] = useState(false)
+  const isOpen = hasDirections && !userCollapsed
   const panelId = useId()
 
-  if (directions.length === 0 && independentItems.length === 0) {
+  if (!hasDirections && independentItems.length === 0) {
     return null
   }
 
   return (
     <div className="your-directions">
-      <button
-        type="button"
-        className="your-directions__toggle"
-        aria-expanded={isOpen}
-        aria-controls={panelId}
-        onClick={() => setIsOpen((current) => !current)}
-      >
-        {isOpen ? 'Hide your directions' : 'Explore your saved directions'}
-      </button>
-
-      <div
-        id={panelId}
-        className={`your-directions__panel${isOpen ? ' is-open' : ''}`}
-        hidden={!isOpen}
-      >
-        <p className="your-directions__intro">
-          The different ways Sri Lanka has begun to call to you.
-        </p>
-
-        <div className="your-directions__cards">
-          {directions.map((direction) => (
-            <DirectionCard
-              key={direction.id}
-              direction={direction}
-              onExplore={() => onExploreDirection(direction.id)}
-              onRemove={onRemove}
-            />
-          ))}
+      {hasDirections ? (
+        <div className="your-directions__header">
+          <h3 className="your-directions__title">Your Directions</h3>
+          <button
+            type="button"
+            className="your-directions__toggle"
+            aria-expanded={isOpen}
+            aria-controls={panelId}
+            onClick={() => setUserCollapsed((current) => !current)}
+          >
+            {isOpen ? 'Hide' : 'Show'}
+          </button>
         </div>
+      ) : null}
 
-        {independentItems.length > 0 ? (
-          <section className="your-directions__also-saved" aria-labelledby="also-saved-heading">
-            <h3 id="also-saved-heading">Also saved</h3>
-            <ul>
-              {independentItems.map((item) => {
-                const normalized = normalizeJourneyItemLabels(item)
-                return (
-                  <li key={item.id} className="your-directions__also-saved-item">
-                    <div>
-                      <strong>{normalized.label}</strong>
-                      {normalized.parentRegion ? (
-                        <p>In {normalized.parentRegion}</p>
-                      ) : null}
-                    </div>
-                    <div className="your-directions__also-saved-actions">
-                      <a className="your-directions__quiet-link" href="/my-journey?view=explore">
-                        Explore where this may connect
-                      </a>
-                      <button
-                        type="button"
-                        aria-label={`Remove ${normalized.label} from My Journey`}
-                        onClick={() => onRemove(item.id)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        ) : null}
-      </div>
+      {hasDirections ? (
+        <div
+          id={panelId}
+          className={`your-directions__panel${isOpen ? ' is-open' : ''}`}
+          hidden={!isOpen}
+        >
+          <p className="your-directions__intro">
+            The different ways Sri Lanka has begun to call to you.
+          </p>
+
+          <div className="your-directions__cards">
+            {directions.map((direction) => (
+              <DirectionCard
+                key={direction.id}
+                direction={direction}
+                onExplore={() => onExploreDirection(direction.id)}
+                onRemove={onRemove}
+              />
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {independentItems.length > 0 ? (
+        <section className="your-directions__also-saved" aria-labelledby="also-saved-heading">
+          <h3 id="also-saved-heading">Also saved</h3>
+          <ul>
+            {independentItems.map((item) => {
+              const normalized = normalizeJourneyItemLabels(item)
+              return (
+                <li key={item.id} className="your-directions__also-saved-item">
+                  <div>
+                    <strong>{normalized.label}</strong>
+                    {normalized.parentRegion ? <p>In {normalized.parentRegion}</p> : null}
+                  </div>
+                  <div className="your-directions__also-saved-actions">
+                    <a className="your-directions__quiet-link" href="/my-journey?view=explore">
+                      Explore where this may connect
+                    </a>
+                    <button
+                      type="button"
+                      aria-label={`Remove ${normalized.label} from My Journey`}
+                      onClick={() => onRemove(item.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ) : null}
     </div>
   )
 }
