@@ -31,8 +31,10 @@ export function buildWhatsAppHref(message: string): string {
   return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
 }
 
+/** Floating action button — always visible in prototype, using env or dev fallback. */
 export function getDefaultWhatsAppHref(): string {
-  return buildWhatsAppHref(DEFAULT_FLOATING_MESSAGE)
+  const phoneNumber = getConfiguredWhatsAppNumber() ?? PLACEHOLDER_WHATSAPP_NUMBER
+  return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(DEFAULT_FLOATING_MESSAGE)}`
 }
 
 export type QuickInquiryWhatsAppMessageInput = {

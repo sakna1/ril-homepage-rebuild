@@ -8,7 +8,7 @@ For the fuller journey-aware consultation experience, use `/consultation`.
 
 ## WhatsApp
 
-Set `VITE_WHATSAPP_NUMBER` in the environment to a confirmed business number (digits only, including country code). The known development placeholder `94763962161` is treated as unconfigured, so WhatsApp CTAs remain inactive until a real number is supplied.
+Set `VITE_WHATSAPP_NUMBER` in the environment to a confirmed business number (digits only, including country code). The known development placeholder `94763962161` is treated as unconfigured for **inline contact CTAs**, so those remain inactive until a real number is supplied. The floating WhatsApp button still appears in the prototype using the env value or dev fallback.
 
 Shared helpers live in `src/consultation/whatsApp.ts`.
 

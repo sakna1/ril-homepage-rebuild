@@ -4,16 +4,18 @@
   --contact-green: #1c3a2b;
   --contact-green-hover: #163024;
   --contact-green-soft: rgba(28, 58, 43, 0.28);
+  /* Decorative accent — rules, borders, hovers. Not for small text on cream. */
   --contact-gold: #b8915a;
-  --contact-gold-soft: rgba(184, 145, 90, 0.55);
-  --contact-muted: #7a6e5f;
-  --contact-muted-soft: rgba(122, 110, 95, 0.58);
-  --contact-muted-faint: rgba(122, 110, 95, 0.45);
-  --contact-muted-whisper: rgba(122, 110, 95, 0.38);
-  --contact-ink-soft: rgba(44, 36, 24, 0.68);
+  /* AA text tokens (4.5:1+ on cream and deep backgrounds) */
+  --contact-gold-text: #6f5524; /* 6.2:1 on cream */
+  --contact-muted: #5c5244; /* 6.7:1 on cream — primary body secondary */
+  --contact-muted-secondary: #635748; /* 6.2:1 — captions, notes, labels */
+  --contact-muted-tertiary: #4f463c; /* 8.1:1 — smallest supporting copy */
+  --contact-ink-soft: #4a4034; /* 8.9:1 — detail values */
+  --contact-placeholder: #6a6358; /* 5.2:1 — form placeholders */
   --contact-border: rgba(44, 36, 24, 0.12);
   --contact-border-strong: rgba(44, 36, 24, 0.18);
-  --contact-number: rgba(28, 58, 43, 0.08);
+  --contact-number: rgba(28, 58, 43, 0.12);
   --contact-frame: rgba(184, 145, 90, 0.42);
   --contact-content-max: 1120px;
   --font-label: 'Cormorant Garamond', Georgia, serif;
@@ -49,7 +51,7 @@
 }
 
 .contact-hero-footnote {
-  color: rgba(122, 110, 95, 0.52);
+  color: var(--contact-muted-secondary);
   letter-spacing: 0.18em;
 }
 
@@ -79,13 +81,13 @@
   font-weight: 500;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--contact-gold);
+  color: var(--contact-gold-text);
 }
 
 .contact-lead {
   max-width: 420px;
   font-size: 17px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.9;
   color: var(--contact-muted);
 }
@@ -116,7 +118,7 @@
 
 .contact-text-link:hover,
 .contact-pathway-card:hover .contact-pathway-action {
-  color: var(--contact-gold);
+  color: var(--contact-gold-text);
 }
 
 .contact-text-link:hover .arrow-icon,
@@ -163,8 +165,8 @@
 }
 
 .contact-button--outline:hover {
-  border-color: var(--contact-gold-soft);
-  color: var(--contact-gold);
+  border-color: var(--contact-gold);
+  color: var(--contact-gold-text);
   background: rgba(245, 240, 232, 0.82);
 }
 
@@ -310,7 +312,7 @@
 .contact-pathways-intro {
   max-width: 280px;
   font-size: 15px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.75;
   color: var(--contact-muted);
 }
@@ -428,7 +430,7 @@
   margin-top: 28px;
   max-width: 360px;
   font-size: 15px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.85;
   color: var(--contact-muted);
 }
@@ -459,7 +461,7 @@
 }
 
 .contact-field-required {
-  color: var(--contact-gold);
+  color: var(--contact-gold-text);
 }
 
 .contact-field-optional {
@@ -469,7 +471,7 @@
   font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: none;
-  color: var(--contact-muted-faint);
+  color: var(--contact-muted-secondary);
 }
 
 .contact-field input,
@@ -482,7 +484,7 @@
   background: transparent;
   font: inherit;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--contact-green);
   outline: none;
   resize: vertical;
@@ -504,7 +506,7 @@
 
 .contact-field input::placeholder,
 .contact-field textarea::placeholder {
-  color: var(--contact-muted-whisper);
+  color: var(--contact-placeholder);
 }
 
 .contact-field input:focus,
@@ -523,7 +525,7 @@
   max-width: 42ch;
   font-size: 11px;
   line-height: 1.7;
-  color: var(--contact-muted-soft);
+  color: var(--contact-muted-secondary);
 }
 
 .contact-inquiry-panel {
@@ -538,7 +540,7 @@
 .contact-inquiry-success__mark {
   margin-bottom: 20px;
   font-size: 1.1rem;
-  color: var(--contact-gold);
+  color: var(--contact-gold-text);
 }
 
 .contact-inquiry-success h3 {
@@ -553,7 +555,7 @@
   max-width: 38ch;
   margin-top: 20px;
   font-size: 15px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.85;
   color: var(--contact-muted);
 }
@@ -578,7 +580,7 @@
   max-width: 36ch;
   margin-top: 16px;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.75;
   color: var(--contact-muted);
 }
@@ -588,7 +590,6 @@
 }
 
 .contact-whatsapp-option__cta--inactive {
-  opacity: 0.72;
   cursor: not-allowed;
 }
 
@@ -608,7 +609,7 @@
 }
 
 .contact-consultation-link:hover {
-  color: var(--contact-gold);
+  color: var(--contact-gold-text);
 }
 
 .contact-location-map {
@@ -636,7 +637,7 @@
   max-width: 36ch;
   margin-top: 12px;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.75;
   color: var(--contact-muted);
 }
@@ -645,7 +646,7 @@
   margin-top: 16px;
   font-size: 11px;
   line-height: 1.65;
-  color: var(--contact-muted-soft);
+  color: var(--contact-muted-secondary);
 }
 
 .contact-location-map__frame {
@@ -680,7 +681,7 @@
 }
 
 .contact-location-map__frame figcaption a:hover {
-  color: var(--contact-gold);
+  color: var(--contact-gold-text);
 }
 
 /* Journey */
@@ -737,7 +738,7 @@
   margin-top: 28px;
   margin-bottom: 44px;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.9;
   color: var(--contact-muted);
 }
@@ -822,7 +823,7 @@
 .contact-details-grid dd {
   margin-top: 14px;
   font-size: 15px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.7;
   color: var(--contact-ink-soft);
 }
