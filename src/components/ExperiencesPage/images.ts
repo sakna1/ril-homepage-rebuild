@@ -1,7 +1,5 @@
 import arjun from '../../assets/experiences/arjun.jpg'
-import heroSigiriya from '../../assets/experiences/hero-sigiriya.jpg'
 import amara from '../../assets/experiences/amara.jpg'
-import sigiriyaDawn from '../../assets/experiences/sigiriya-dawn.jpg'
 import dilini from '../../assets/experiences/dilini.jpg'
 import teaEstate from '../../assets/experiences/tea-estate.jpg'
 import kavindra from '../../assets/experiences/kavindra.jpg'
@@ -21,14 +19,19 @@ import blueWhaleSunset from '../../assets/experiences/blue-whale-sunset.jpg'
 import galleFort from '../../assets/experiences/galle-fort.jpg'
 import brassLamp from '../../assets/experiences/brass-lamp.jpg'
 import portraitMalini from '../../assets/about/portrait-malini.jpg'
+import queenVictoriaStatue from '../../assets/images/queen-victoria-statue-colombo.jpg'
+import sigiriyaMain from '../../assets/images/Sigiriya Main.jpg'
+import hillCountryNuwaraEliya from '../../assets/images/Hill Country Nuwaraeliya.jpg'
 
 export const experienceImages = {
   arjun,
-  heroSigiriya,
+  heroSigiriya: sigiriyaMain,
   amara,
-  sigiriyaDawn,
+  sigiriyaDawn: sigiriyaMain,
+  sigiriyaMain,
   dilini,
   teaEstate,
+  hillCountry: hillCountryNuwaraEliya,
   kavindra,
   leopardCircuit,
   sahan,
@@ -46,4 +49,5 @@ export const experienceImages = {
   galleFort,
   brassLamp,
   portraitMalini,
+  queenVictoriaStatue,
 } as const

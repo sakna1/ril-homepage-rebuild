@@ -6,8 +6,8 @@ import mirissaBoats from '../assets/experiences/mirissa-boats.jpg'
 import monks from '../assets/experiences/monks.jpg'
 import oilLamps from '../assets/experiences/oil-lamps.jpg'
 import poolVilla from '../assets/experiences/pool-villa.jpg'
-import sigiriyaDawn from '../assets/experiences/sigiriya-dawn.jpg'
-import teaEstate from '../assets/experiences/tea-estate.jpg'
+import sigiriyaMain from '../assets/images/Sigiriya Main.jpg'
+import hillCountryNuwaraEliya from '../assets/images/Hill Country Nuwaraeliya.jpg'
 import { getDestinationRecommendationMetadata } from './journeyConsultation'
 import { getExperienceIdsForDestination } from './experiences'
 import { MapMode, type MapMode as MapModeValue } from './mapModes'
@@ -101,7 +101,7 @@ const destinationRecordsBase: DestinationInput[] = [
     province: 'Uva Province',
     district: 'Badulla',
     coordinates: [81.0463, 6.8667],
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     shortDescription: 'Mist-covered mountains, tea estates and slow railway journeys through the hills.',
     themes: [],
     moods: [],
@@ -116,7 +116,7 @@ const destinationRecordsBase: DestinationInput[] = [
     province: 'Central Province',
     district: 'Nuwara Eliya',
     coordinates: [80.7829, 6.9497],
-    heroImage: blueWhaleSunset,
+    heroImage: hillCountryNuwaraEliya,
     shortDescription: 'Cool highland air, tea country rituals and soft mornings above emerald valleys.',
     themes: [],
     moods: [],
@@ -146,7 +146,7 @@ const destinationRecordsBase: DestinationInput[] = [
     province: 'Central Province',
     district: 'Matale',
     coordinates: [80.7603, 7.957],
-    heroImage: sigiriyaDawn,
+    heroImage: sigiriyaMain,
     shortDescription: 'Ancient gardens, jungle silence and a rock citadel rising from morning gold.',
     themes: [],
     moods: [],
@@ -312,7 +312,7 @@ const personalisedDestinationRecordsBase: Array<DestinationInput | Destination> 
     province: 'Uva Province',
     district: 'Badulla',
     coordinates: [80.9562, 6.7654],
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     shortDescription: 'Highland hideaways wrapped in tea, cloud forest and the quiet drama of the hills.',
     themes: [],
     moods: [],

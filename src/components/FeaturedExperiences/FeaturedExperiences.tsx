@@ -1,3 +1,4 @@
+import { experienceImages } from '../ExperiencesPage/images'
 import './FeaturedExperiences.css'
 
 function ExperienceCta() {
@@ -40,8 +41,8 @@ export function FeaturedExperiences() {
         <div className="experience-row">
           <div className="experience-image-wrap">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/f7a09040e7bf5cb625186aeb611304b37bc91a54?width=1067"
-              alt="Private tea estate verandah at dawn, Nuwara Eliya, Sri Lanka"
+              src={experienceImages.hillCountry}
+              alt="Nuwara Eliya hill country landscape, Sri Lanka"
             />
             <span className="experience-number">01</span>
           </div>
@@ -88,8 +89,8 @@ export function FeaturedExperiences() {
           </div>
           <div className="experience-image-wrap image-right">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/3482b083ed88536270a8ea701ac230a33f6c2e87?width=1067"
-              alt="Sigiriya rock fortress Sri Lanka at golden sunrise"
+              src={experienceImages.sigiriyaMain}
+              alt="Sigiriya rock fortress rising above the Sri Lankan landscape"
             />
             <span className="experience-number">02</span>
           </div>

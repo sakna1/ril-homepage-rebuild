@@ -14,11 +14,11 @@ export const sharedHeritageWorld = {
   description:
     "Rolling tea estates, timeless hill stations, railway journeys, old gardens, and civic architecture reveal a chapter of Sri Lanka's story still visible in daily life.",
   encounter: 'Heritage routes in development',
-  image: experienceImages.teaEstate,
-  imageAlt: 'Misty Sri Lankan tea country with soft morning light',
-  homepageTitle: 'A Shared Past, Read In The Landscape',
+  image: experienceImages.queenVictoriaStatue,
+  imageAlt: 'Marble statue of Queen Victoria, a British monument in Sri Lanka',
+  homepageTitle: 'Monuments, Memory, and a Shared Past',
   homepageCopy:
-    'For travellers curious about the relationship between Sri Lanka and Britain, history becomes something to move through gently: verandas, railways, tea country, gardens, schools, and harbour streets that still shape modern Sri Lanka.',
+    'For travellers curious about the relationship between Sri Lanka and Britain, history is read in marble and stone as much as landscape: civic monuments, harbour streets, tea country gardens, railway engineering, and the quiet sculpture that still marks a complicated colonial inheritance.',
 } as const
 
 export const sharedHeritageCollections = [

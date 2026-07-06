@@ -1,23 +1,15 @@
 import './JournalLandingPage.css'
 import type { CSSProperties } from 'react'
-import ahangamaImage from '../../assets/images/Ahangama.jpeg'
 import bopathEllaImage from '../../assets/images/Bopath Ella.jpeg'
-import galleImage from '../../assets/images/Galle.jpeg'
-import galleBeachImage from '../../assets/images/Galle beach.jpeg'
 import galleFaceBeachImage from '../../assets/images/Galle face beach.jpeg'
-import geogaryLakeImage from '../../assets/images/geogary lake nuwra eliya .jpg'
-import gorakaEllaImage from '../../assets/images/Goraka ella.jpg'
 import kandyPeraheraImage from '../../assets/images/Kandy Perahera.JPG'
-import kelaniTempleImage from '../../assets/images/Kelani temple.jpeg'
 import kelaniTempleDetailImage from '../../assets/images/Kelani temple(1).JPG'
 import maduRiverImage from '../../assets/images/Madu River.jpeg'
 import naalandaImage from '../../assets/images/Naalanda gedige Matale.jpg'
 import naalandaDetailImage from '../../assets/images/Naalanda gedige Matale(1).jpg'
-import nuwaraEliyaImage from '../../assets/images/NuwaraEliya .jpg'
-import peradeniyaImage from '../../assets/images/Peradeniya.jpg'
-import sigiriyaImage from '../../assets/images/Sigiriya.JPG'
 import sripadayaSkyImage from '../../assets/images/sripadaya sky.jpeg'
 import theruFestivalImage from '../../assets/images/theru festival.jpg'
+import { experienceImages } from '../ExperiencesPage/images'
 import { ArrowIcon } from '../ArrowIcon'
 
 type Texture = {
@@ -49,26 +41,26 @@ type Vignette = {
 }
 
 const journalAssets = {
-  coast: ahangamaImage,
-  teaMist: nuwaraEliyaImage,
-  galleFort: galleImage,
-  monk: kelaniTempleImage,
-  spices: peradeniyaImage,
+  coast: experienceImages.mirissaBoats,
+  teaMist: experienceImages.hillCountry,
+  galleFort: experienceImages.galleFort,
+  monk: experienceImages.monks,
+  spices: experienceImages.spices,
   cinnamon: naalandaDetailImage,
   silk: kandyPeraheraImage,
   glass: maduRiverImage,
-  boatPaint: galleBeachImage,
+  boatPaint: experienceImages.mirissaBoats,
   lotus: kelaniTempleDetailImage,
-  monsoonStone: gorakaEllaImage,
+  monsoonStone: sripadayaSkyImage,
   cardamom: bopathEllaImage,
-  galleAlley: galleImage,
+  galleAlley: experienceImages.galleFort,
   lighthouse: galleFaceBeachImage,
-  nilaveli: ahangamaImage,
+  nilaveli: experienceImages.mirissaBoats,
   dancer: theruFestivalImage,
   jaffnaFort: naalandaImage,
   hillRain: sripadayaSkyImage,
-  teaCup: geogaryLakeImage,
-  sigiriyaPanorama: sigiriyaImage,
+  teaCup: experienceImages.hillCountry,
+  sigiriyaPanorama: experienceImages.sigiriyaMain,
 } as const
 
 const textures: Texture[] = [
@@ -80,9 +72,9 @@ const textures: Texture[] = [
     quote: 'Every surface tells a story if you press your fingers against it long enough.',
     cite: '— From a letter, never sent',
   },
-  { label: 'Oruwa · Negombo', image: journalAssets.boatPaint, alt: 'Weathered teal paint on a Sri Lankan fishing boat', rotate: '1.5deg' },
-  { label: 'Temple Lotus · Dawn', image: journalAssets.lotus, alt: 'Lotus petals floating on reflective water', wide: true },
-  { label: 'Monsoon · Aug', image: journalAssets.monsoonStone, alt: 'Monsoon rain on ancient stone temple floor', rotate: '-2deg' },
+  { label: 'Oruwa · Negombo', image: journalAssets.boatPaint, alt: 'Fishing boats at Mirissa harbour at sunset', rotate: '1.5deg' },
+  { label: 'Temple Lotus · Dawn', image: journalAssets.lotus, alt: 'Sacred mural detail inside Kelani temple', wide: true },
+  { label: 'Monsoon · Aug', image: journalAssets.monsoonStone, alt: 'Highland horizon in mist above the Sri Lankan hills', rotate: '-2deg' },
   { label: 'Spice Garden · Matale', image: journalAssets.cardamom, alt: 'Ground cardamom and star anise on stone mortar', wide: true },
 ]
 
@@ -124,7 +116,7 @@ const vignettes: Vignette[] = [
     copy:
       'The water at Nilaveli had no adequate English description. Turquoise feels commercial. Aquamarine too mineral. The fishermen simply call it the sea.',
     image: journalAssets.nilaveli,
-    alt: 'Aerial view of turquoise water at Nilaveli beach',
+    alt: 'Fishing boats at Mirissa harbour at sunset',
     meta: 'The Coast · March 2024',
     rotate: '-1deg',
   },
@@ -333,7 +325,7 @@ export function JournalLandingPage() {
             <PhotoFrame
               className="journal-hero-coast"
               src={journalAssets.coast}
-              alt="Aerial view of Sri Lankan coastline with palms and turquoise ocean"
+              alt="Fishing boats at Mirissa harbour at sunset"
               caption="Southern Coast · Sri Lanka"
               dashed
             />
@@ -346,7 +338,7 @@ export function JournalLandingPage() {
             <PhotoFrame
               className="journal-hero-tea"
               src={journalAssets.teaMist}
-              alt="Mist rolling through Ella tea plantation"
+              alt="Nuwara Eliya hill country landscape"
               caption="Ella · Hill Country · 6°C"
             />
             <PhotoFrame
@@ -357,7 +349,7 @@ export function JournalLandingPage() {
             <PhotoFrame
               className="journal-hero-monk"
               src={journalAssets.monk}
-              alt="Buddhist monk walking through ancient temple"
+              alt="Buddhist monks walking through morning mist toward an ancient temple"
               dashed
             />
 
@@ -453,8 +445,8 @@ export function JournalLandingPage() {
 
           <article className="journal-story-entry journal-story-entry--monsoon">
             <div className="journal-image-cluster journal-image-cluster--monsoon">
-              <PhotoFrame src={journalAssets.hillRain} alt="Misty hill country tea plantation during monsoon rain" caption="Ella Rock · 1,041m" />
-              <PhotoFrame src={journalAssets.teaCup} alt="Steaming Sri Lankan tea cup near a rainy window" />
+              <PhotoFrame src={journalAssets.hillRain} alt="Highland horizon in mist above the Sri Lankan hills" caption="Ella Rock · 1,041m" />
+              <PhotoFrame src={journalAssets.teaCup} alt="Misty Sri Lankan tea estate at golden hour" />
             </div>
             <StoryCard
               number="Entry #031"
@@ -479,7 +471,7 @@ export function JournalLandingPage() {
       </section>
 
       <section className="journal-panorama">
-        <img src={journalAssets.sigiriyaPanorama} alt="Panoramic view from Sigiriya rock fortress at sunrise" />
+        <img src={journalAssets.sigiriyaPanorama} alt="Sigiriya rock fortress rising above the Sri Lankan landscape" />
         <div>
           <p>Featured Passage · Sigiriya · Feb 2024</p>
           <blockquote>

@@ -7,8 +7,8 @@ import mirissaBoats from '../assets/experiences/mirissa-boats.jpg'
 import monks from '../assets/experiences/monks.jpg'
 import oilLamps from '../assets/experiences/oil-lamps.jpg'
 import poolVilla from '../assets/experiences/pool-villa.jpg'
-import sigiriyaDawn from '../assets/experiences/sigiriya-dawn.jpg'
-import teaEstate from '../assets/experiences/tea-estate.jpg'
+import sigiriyaMain from '../assets/images/Sigiriya Main.jpg'
+import hillCountryNuwaraEliya from '../assets/images/Hill Country Nuwaraeliya.jpg'
 
 export type Experience = {
   id: string
@@ -106,7 +106,7 @@ const destinationExperienceSeeds: ExperienceSeed[] = [
     destinationId: 'ella',
     destinationName: 'Ella',
     bestSeason: 'January - April',
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     journeyMoods: ['Scenic', 'Romantic', 'Slow Travel', 'Soft Adventure'],
     luxuryLevel: 'Refined Comfort',
     experiences: [
@@ -146,7 +146,7 @@ const destinationExperienceSeeds: ExperienceSeed[] = [
     destinationId: 'sigiriya',
     destinationName: 'Sigiriya',
     bestSeason: 'January - September',
-    heroImage: sigiriyaDawn,
+    heroImage: sigiriyaMain,
     journeyMoods: ['Wonder', 'Culture', 'Dawn', 'Luxury'],
     luxuryLevel: 'Signature Luxury',
     experiences: [
@@ -257,7 +257,7 @@ const destinationExperienceSeeds: ExperienceSeed[] = [
     destinationId: 'nuwara-eliya',
     destinationName: 'Nuwara Eliya',
     bestSeason: 'January - April',
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     journeyMoods: ['Elegant', 'Reflective', 'Cool-climate'],
     luxuryLevel: 'Heritage Luxury',
     experiences: [
@@ -271,7 +271,7 @@ const destinationExperienceSeeds: ExperienceSeed[] = [
     destinationId: 'haputale',
     destinationName: 'Haputale',
     bestSeason: 'January - April',
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     journeyMoods: ['Quiet', 'Scenic', 'Reflective'],
     luxuryLevel: 'Refined Comfort',
     experiences: [
@@ -481,7 +481,7 @@ const destinationExperienceSeeds: ExperienceSeed[] = [
     destinationId: 'belihuloya',
     destinationName: 'Belihuloya',
     bestSeason: 'January - April',
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     journeyMoods: ['Nature', 'Soft Adventure', 'Quiet'],
     luxuryLevel: 'Nature Comfort',
     experiences: [
@@ -497,7 +497,7 @@ const createExperience = (seed: ExperienceSeed, index: number): Experience => {
   const entry = seed.experiences[index]
   const slug = slugify(entry.title)
   const id = `${seed.destinationId}-${slug}`
-  const gallery = entry.gallery ?? [seed.heroImage, teaEstate, poolVilla].filter(Boolean)
+  const gallery = entry.gallery ?? [seed.heroImage, hillCountryNuwaraEliya, poolVilla].filter(Boolean)
 
   return {
     id,

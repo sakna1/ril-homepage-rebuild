@@ -1,16 +1,12 @@
 import './JournalArticlePage.css'
 import type { CSSProperties, ReactNode } from 'react'
-import galleBeachImage from '../../assets/images/Galle beach.jpeg'
-import gorakaEllaImage from '../../assets/images/Goraka ella.jpg'
 import kelaniTempleDetailImage from '../../assets/images/Kelani temple(1).JPG'
-import kithulgalaImage from '../../assets/images/Kithulgala.jpeg'
 import maduRiverImage from '../../assets/images/Madu River.jpeg'
 import naalandaImage from '../../assets/images/Naalanda gedige Matale.jpg'
 import naalandaDetailImage from '../../assets/images/Naalanda gedige Matale(1).jpg'
-import nuwaraEliyaImage from '../../assets/images/NuwaraEliya .jpg'
 import peradeniyaImage from '../../assets/images/Peradeniya.jpg'
-import sigiriyaImage from '../../assets/images/Sigiriya.JPG'
 import sripadayaSkyImage from '../../assets/images/sripadaya sky.jpeg'
+import { experienceImages } from '../ExperiencesPage/images'
 
 type Note = {
   label: string
@@ -39,21 +35,21 @@ type ArchiveEntry = {
 }
 
 const articleAssets = {
-  hero: sigiriyaImage,
+  hero: experienceImages.sigiriyaMain,
   staircase: sripadayaSkyImage,
-  steps: sigiriyaImage,
+  steps: experienceImages.sigiriyaMain,
   frescoes: kelaniTempleDetailImage,
   summit: sripadayaSkyImage,
   gardens: peradeniyaImage,
-  langur: kithulgalaImage,
+  langur: experienceImages.sigiriyaMain,
   sunrise: sripadayaSkyImage,
   cave: naalandaDetailImage,
-  paw: gorakaEllaImage,
-  panorama: sigiriyaImage,
+  paw: experienceImages.sigiriyaMain,
+  panorama: experienceImages.sigiriyaMain,
   spiral: naalandaImage,
   reflection: maduRiverImage,
-  tea: nuwaraEliyaImage,
-  galle: galleBeachImage,
+  tea: experienceImages.hillCountry,
+  galle: experienceImages.galleFort,
   jaffna: naalandaImage,
 } as const
 

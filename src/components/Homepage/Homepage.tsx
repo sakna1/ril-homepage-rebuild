@@ -1,18 +1,14 @@
 import { useState } from 'react'
 import './Homepage.css'
 import { ArrowIcon } from '../ArrowIcon'
+import { experienceImages } from '../ExperiencesPage/images'
 import { sharedHeritageWorld } from '../../journey/discoveryWorlds'
-import ahangamaImage from '../../assets/images/Ahangama.jpeg'
-import galleBeachImage from '../../assets/images/Galle beach.jpeg'
-import kelaniTempleImage from '../../assets/images/Kelani temple.jpeg'
-import kithulgalaImage from '../../assets/images/Kithulgala.jpeg'
+import kelaniTempleDetailImage from '../../assets/images/Kelani temple(1).JPG'
 import kandyPeraheraImage from '../../assets/images/Kandy Perahera.JPG'
-import nuwaraEliyaImage from '../../assets/images/NuwaraEliya .jpg'
-import peradeniyaImage from '../../assets/images/Peradeniya.jpg'
+import queenVictoriaStatueImage from '../../assets/images/queen-victoria-statue-colombo.jpg'
 import royaleIslesLogoImage from '../../assets/images/logo_bg_remove.png'
 import royaleIslesMapImage from '../../assets/images/royale-isles-map-transparent-clean.png'
-import sigiriyaImage from '../../assets/images/Sigiriya.JPG'
-import travelOneImage from '../../assets/images/travel1.jpg'
+import sripadayaSkyImage from '../../assets/images/sripadaya sky.jpeg'
 import travelTwoImage from '../../assets/images/travel2.jpg'
 
 const images = {
@@ -33,23 +29,18 @@ const images = {
 }
 
 const localImages = {
-  ahangama: ahangamaImage,
-  galleBeach: galleBeachImage,
-  kelaniTemple: kelaniTempleImage,
-  kithulgala: kithulgalaImage,
+  kelaniTempleDetail: kelaniTempleDetailImage,
   kandyPerahera: kandyPeraheraImage,
-  nuwaraEliya: nuwaraEliyaImage,
-  peradeniya: peradeniyaImage,
+  queenVictoriaStatue: queenVictoriaStatueImage,
   royaleIslesMap: royaleIslesMapImage,
-  sigiriya: sigiriyaImage,
-  travelOne: travelOneImage,
+  sripadayaSky: sripadayaSkyImage,
   travelTwo: travelTwoImage,
 } as const
 
 const experiences = [
   {
-    image: localImages.kithulgala,
-    imageAlt: 'Forest river landscape in Kithulgala, Sri Lanka',
+    image: experienceImages.leopardFeature,
+    imageAlt: 'Sri Lankan leopard resting on rock at dusk in the wild',
     region: 'Wildlife & Wilderness',
     identity: 'For the Seeker of Silence',
     access: 'Fieldcraft - Private naturalist - Stillness',
@@ -58,7 +49,7 @@ const experiences = [
       'For the traveller who does not want nature performed, wilderness begins with patience: a field naturalist, a protected route, and the discipline to wait until the island reveals itself.',
   },
   {
-    image: localImages.sigiriya,
+    image: experienceImages.heroSigiriya,
     imageAlt: 'Sigiriya rock fortress rising above the Sri Lankan landscape',
     region: 'Heritage & Memory',
     identity: 'For the Heritage Guardian',
@@ -78,11 +69,11 @@ const experiences = [
       'Private introductions to artisans, dancers, custodians, and families turn a route through Sri Lanka into something more personal: a sequence of welcomes, briefly and respectfully shared.',
   },
   {
-    image: localImages.nuwaraEliya,
-    imageAlt: 'Nuwara Eliya hill country landscape shaped by tea estates and colonial memory',
+    image: localImages.queenVictoriaStatue,
+    imageAlt: 'Marble statue of Queen Victoria, a British monument in Sri Lanka',
     region: sharedHeritageWorld.name,
     identity: sharedHeritageWorld.traveller,
-    access: 'Tea country - Railways - Civic memory',
+    access: 'Civic monuments - Tea country - Colonial memory',
     title: sharedHeritageWorld.homepageTitle,
     copy: sharedHeritageWorld.homepageCopy,
   },
@@ -125,8 +116,8 @@ const sriLankaStats = [
 
 const journalItems = [
   {
-    image: localImages.peradeniya,
-    imageAlt: 'Peradeniya gardens in soft daylight',
+    image: localImages.sripadayaSky,
+    imageAlt: 'Mountain horizon at dawn above the Sri Lankan highlands',
     type: 'Field Notes',
     date: 'Timing & Pace',
     title: 'The Art of Protecting Unscheduled Time',
@@ -134,8 +125,8 @@ const journalItems = [
     path: '/journal/protecting-unscheduled-time',
   },
   {
-    image: localImages.kelaniTemple,
-    imageAlt: 'Kelani temple architecture and sacred details in Sri Lanka',
+    image: localImages.kelaniTempleDetail,
+    imageAlt: 'Sacred mural detail inside Kelani temple in Sri Lanka',
     type: 'Private Interview',
     date: 'Sacred Access',
     title: 'The Temple Keeper Who Knows When Not to Speak',
@@ -143,8 +134,8 @@ const journalItems = [
     path: '/journal/the-temple-keeper',
   },
   {
-    image: localImages.nuwaraEliya,
-    imageAlt: 'Nuwara Eliya highland landscape and tea country',
+    image: experienceImages.hillCountry,
+    imageAlt: 'Misty Sri Lankan tea estate at golden hour',
     type: 'Seasonal Briefing',
     date: 'Highland Residences',
     title: 'When Tea Country Feels Entirely Yours',
@@ -168,7 +159,7 @@ const travellerStories = [
     videoCaption: 'A discreet film of the moments between the formal itinerary: arrival, laughter, silence, sea air.',
   },
   {
-    image: localImages.travelOne,
+    image: experienceImages.monks,
     format: 'Photo Journal',
     duration: 'I:LVI',
     title: 'A quiet return to wonder',
@@ -180,7 +171,7 @@ const travellerStories = [
     videoCaption: 'A soft visual record of rituals, thresholds, hands at work, and highland mornings.',
   },
   {
-    image: localImages.galleBeach,
+    image: experienceImages.mirissaBoats,
     format: 'Hosted Story',
     duration: 'III:XII',
     title: 'A family gathered without agenda',
@@ -331,9 +322,6 @@ export function Homepage() {
               </p>
             </aside>
           </header>
-          <span className="figma-watermark" aria-hidden="true">
-            R
-          </span>
           <div className="figma-philosophy-lines">
             {philosophyLines.map((line) => (
               <article key={line.title}>
@@ -445,7 +433,7 @@ export function Homepage() {
                 </a>
               </div>
               <figure className="figma-feature-story-stamp">
-                <img src={localImages.sigiriya} alt="Sigiriya rock fortress before the public ascent" />
+                <img src={experienceImages.sigiriyaMain} alt="Sigiriya rock fortress rising above the Sri Lankan landscape" />
                 <figcaption>
                   <span>Private Access</span>
                   <small>Sigiriya before the first public ascent</small>
@@ -455,6 +443,9 @@ export function Homepage() {
             <div className="figma-journal-list">
               {journalItems.map((item) => (
                 <article key={item.title}>
+                  <figure className="figma-journal-thumb">
+                    <img src={item.image} alt={item.imageAlt} />
+                  </figure>
                   <div>
                     <p>
                       {item.type} <span>{item.date}</span>
@@ -559,11 +550,10 @@ export function Homepage() {
             would make Sri Lanka feel personally meaningful. We will respond with considered next
             steps, not a catalogue.
           </p>
-          <form className="figma-email-form">
-            <input type="email" aria-label="Your email address" placeholder="Your email address" />
-            <button type="submit">Begin the Conversation</button>
-          </form>
-          <small>Held privately, with no obligation.</small>
+          <a className="figma-invitation-cta" href="/discover-sri-lanka">
+            Begin With Discovery
+          </a>
+          <small>Explore the island privately, with no obligation.</small>
           <p className="figma-invitation-aside">
             Planning your arrival?{' '}
             <a href="/travel-preparation#assurance">See what we arrange before you land</a>

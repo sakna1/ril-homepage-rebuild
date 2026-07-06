@@ -1,23 +1,64 @@
 import { useState } from 'react'
 import './DiscoveryGuide.css'
-import ahangama from '../../assets/images/Ahangama.jpeg'
 import galle from '../../assets/images/Galle.jpeg'
 import galleFaceBeach from '../../assets/images/Galle face beach.jpeg'
-import kithulgala from '../../assets/images/Kithulgala.jpeg'
-import nuwaraEliya from '../../assets/images/NuwaraEliya .jpg'
-import sigiriya from '../../assets/images/Sigiriya.JPG'
 import theruFestival from '../../assets/images/theru festival.jpg'
+import { experienceImages } from '../ExperiencesPage/images'
 
 const images = {
-  hero: sigiriya,
   westernGateway: galleFaceBeach,
   southernArc: galle,
-  wildSouth: kithulgala,
-  eastCoast: ahangama,
-  hillCountry: nuwaraEliya,
-  ancientKingdoms: sigiriya,
+  wildSouth: experienceImages.leopardFeature,
+  eastCoast: experienceImages.mirissaBoats,
+  hillCountry: experienceImages.hillCountry,
+  ancientKingdoms: experienceImages.sigiriyaMain,
   northernReaches: theruFestival,
 } as const
+
+const heroCollage = [
+  {
+    id: 'ancient-kingdoms',
+    label: 'Ancient Kingdoms',
+    image: images.ancientKingdoms,
+    alt: 'Sigiriya rock fortress rising above the Sri Lankan forest',
+    placement: 'heritage',
+  },
+  {
+    id: 'hill-country',
+    label: 'Hill Country',
+    image: images.hillCountry,
+    alt: 'Misty Sri Lankan tea estate at golden hour',
+    placement: 'hills',
+  },
+  {
+    id: 'wild-south',
+    label: 'Wild South',
+    image: images.wildSouth,
+    alt: 'Sri Lankan leopard resting on rock at dusk',
+    placement: 'wild',
+  },
+  {
+    id: 'southern-arc',
+    label: 'Southern Arc',
+    image: images.southernArc,
+    alt: 'Galle Fort ramparts above the southern coast',
+    placement: 'coast',
+  },
+  {
+    id: 'east-coast',
+    label: 'East Coast',
+    image: images.eastCoast,
+    alt: 'Fishing boats at Mirissa harbour at sunset',
+    placement: 'east',
+  },
+  {
+    id: 'northern-reaches',
+    label: 'Northern Reaches',
+    image: images.northernReaches,
+    alt: 'Temple festival procession in northern Sri Lanka',
+    placement: 'north',
+  },
+] as const
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const
 
@@ -163,11 +204,21 @@ export function DiscoveryGuide() {
             journeys, Sri Lanka reveals a different character with every region you explore.
           </p>
         </div>
-        <figure className="guide-hero-image">
-          <img src={images.hero} alt="Sigiriya at dawn surrounded by forest" />
-          <figcaption>
-            <span>The Ancient Kingdoms</span>
-            <small>Dawn, forest, stone, and the quiet intelligence of timing.</small>
+        <figure className="guide-hero-collage" aria-label="Sri Lanka regions collage">
+          <div className="guide-hero-collage-grid">
+            {heroCollage.map((tile) => (
+              <figure
+                key={tile.id}
+                className={`guide-hero-collage-tile guide-hero-collage-tile--${tile.placement}`}
+              >
+                <img src={tile.image} alt={tile.alt} />
+                <figcaption>{tile.label}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <figcaption className="guide-hero-collage-note">
+            <span>Seven regions. One island.</span>
+            <small>Tea country, ancient stone, wild coast, and northern light — held in a single journey.</small>
           </figcaption>
         </figure>
       </section>

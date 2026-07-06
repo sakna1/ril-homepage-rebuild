@@ -47,7 +47,7 @@ const relatedEncounters = [
     province: 'Uva Province - Sri Lanka',
     title: 'The Ella Dawn Walk',
     copy: 'A solitary walk through tea country as morning light breaks over the Nine Arch Bridge.',
-    image: experienceImages.teaEstate,
+    image: experienceImages.hillCountry,
     alt: 'Rolling Sri Lankan tea plantation terraces at dawn',
   },
   {
@@ -226,7 +226,7 @@ export function ExperienceDetailPage() {
           />
           <div>
             <img src={experienceImages.blueWhaleAerial} alt="Aerial view of dense jungle canopy" />
-            <img src={experienceImages.teaEstate} alt="Rolling Sri Lanka tea plantation terraces at dawn" />
+            <img src={experienceImages.hillCountry} alt="Nuwara Eliya hill country landscape at dawn" />
           </div>
         </div>
       </section>

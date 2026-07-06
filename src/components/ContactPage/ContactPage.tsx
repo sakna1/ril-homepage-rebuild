@@ -1,10 +1,11 @@
 import './ContactPage.css'
 import { ArrowIcon } from '../ArrowIcon'
+import { experienceImages } from '../ExperiencesPage/images'
 import { ContactInquiryPanel } from './ContactInquiryPanel'
 import { ContactLocationMap } from './ContactLocationMap'
 
 const images = {
-  hero: '/contact/hero-highlands.jpg',
+  hero: experienceImages.poolVilla,
 } as const
 
 const pathways = [
@@ -69,11 +70,11 @@ export function ContactPage() {
         </div>
 
         <figure className="contact-hero-media">
-          <img src={images.hero} alt="Misty layered mountains and forest in the Sri Lankan highlands" />
+          <img src={images.hero} alt="Private villa pool overlooking misty Sri Lankan highlands at dawn" />
           <div className="contact-hero-media-overlay" aria-hidden="true" />
           <span className="contact-frame-mark contact-frame-mark--top-left" aria-hidden="true" />
           <span className="contact-frame-mark contact-frame-mark--bottom-right" aria-hidden="true" />
-          <figcaption>Sri Lankan Highlands</figcaption>
+          <figcaption>Private Residences · Sri Lanka</figcaption>
         </figure>
       </section>
 

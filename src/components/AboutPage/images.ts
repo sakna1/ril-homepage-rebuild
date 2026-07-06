@@ -1,5 +1,5 @@
 import heroForest from '../../assets/about/hero-forest.jpg'
-import sigiriya from '../../assets/about/sigiriya.jpg'
+import sigiriyaMain from '../../assets/images/Sigiriya Main.jpg'
 import craftsman from '../../assets/about/craftsman.jpg'
 import spa from '../../assets/about/spa.jpg'
 import portraitAnika from '../../assets/about/portrait-anika.jpg'
@@ -13,7 +13,7 @@ import sunsetBeach from '../../assets/about/sunset-beach.jpg'
 
 export const aboutImages = {
   heroForest,
-  sigiriya,
+  sigiriya: sigiriyaMain,
   craftsman,
   spa,
   portraitAnika,

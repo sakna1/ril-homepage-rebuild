@@ -44,14 +44,14 @@ const defaultRecommendations = [
 
 const sharedHeritageRecommendations = [
   {
-    image: experienceImages.teaEstate,
+    image: experienceImages.hillCountry,
     number: '01',
     title: 'Nuwara Eliya',
     region: 'Hill Country Legacy',
     copy: 'A cool highland chapter of tea estates, gardens, old hotels, and hill-station atmosphere, best read with context rather than nostalgia.',
   },
   {
-    image: experienceImages.teaEstate,
+    image: experienceImages.hillCountry,
     number: '02',
     title: 'Nine Arches Bridge',
     region: 'Railway Legacy',

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import './TravelPreparationPage.css'
+import { experienceImages } from '../ExperiencesPage/images'
 import { sharedHeritageWorld } from '../../journey/discoveryWorlds'
-import nuwaraEliya from '../../assets/images/NuwaraEliya .jpg'
 
 const images = {
-  hero: nuwaraEliya,
+  hero: experienceImages.poolVilla,
 } as const
 
 const handbookLinks = [
@@ -137,7 +137,7 @@ export function TravelPreparationPage() {
           </nav>
         </div>
         <div className="prep-hero-image">
-          <img src={images.hero} alt="Sri Lankan tea country in soft morning light" />
+          <img src={images.hero} alt="Private villa pool overlooking misty Sri Lankan highlands at dawn" />
           <aside className="prep-hero-protocol" aria-label="Arrival care highlights">
             <p>Arrival Care</p>
             <h2>Everything is in motion before you land.</h2>
@@ -251,7 +251,7 @@ export function TravelPreparationPage() {
             enter the journey.
           </p>
           <div className="prep-cta-actions">
-            <a href="/concierge">Begin A Private Conversation</a>
+            <a href="/discover-sri-lanka">Begin With Discovery</a>
           </div>
           <small>Personally welcomed. Thoughtfully prepared. Held from the moment you arrive.</small>
         </div>

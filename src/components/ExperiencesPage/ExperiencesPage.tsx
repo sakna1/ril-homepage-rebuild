@@ -6,17 +6,9 @@ import { useJourney } from '../../journey/useJourney'
 import { inferJourneyRegion } from '../../journey/journeyTaxonomy'
 import { normalizeRegionLabel } from '../../journey/savedJourneyDisplay'
 import { sharedHeritageRecommendations, sharedHeritageWorld } from '../../journey/discoveryWorlds'
-import ahangama from '../../assets/images/Ahangama.jpeg'
-import galle from '../../assets/images/Galle.jpeg'
-import galleBeach from '../../assets/images/Galle beach.jpeg'
-import gorakaElla from '../../assets/images/Goraka ella.jpg'
+import kelaniTempleDetail from '../../assets/images/Kelani temple(1).JPG'
 import kandyPerahera from '../../assets/images/Kandy Perahera.JPG'
-import kelaniTemple from '../../assets/images/Kelani temple.jpeg'
-import kithulgala from '../../assets/images/Kithulgala.jpeg'
-import maduRiver from '../../assets/images/Madu River.jpeg'
-import nuwaraEliya from '../../assets/images/NuwaraEliya .jpg'
-import peradeniya from '../../assets/images/Peradeniya.jpg'
-import sigiriya from '../../assets/images/Sigiriya.JPG'
+import sripadayaSky from '../../assets/images/sripadaya sky.jpeg'
 
 type Detail = {
   label: string
@@ -70,17 +62,9 @@ const stats = [
 const heroProofs = ['Private routing', 'Discreet hosts', 'Closed-door access'] as const
 
 const localImages = {
-  ahangama,
-  galle,
-  galleBeach,
-  gorakaElla,
   kandyPerahera,
-  kelaniTemple,
-  kithulgala,
-  maduRiver,
-  nuwaraEliya,
-  peradeniya,
-  sigiriya,
+  kelaniTempleDetail,
+  sripadayaSky,
 } as const
 
 const encounters: Encounter[] = [
@@ -93,7 +77,7 @@ const encounters: Encounter[] = [
       'There are two Sigiriyas. The one you visit at 9am with three thousand other people, and the one that exists between 5 and 7am — when the frescoes catch low light no photograph has ever adequately described. We negotiated singular access. It takes eight months of patience per year to maintain.',
     curator: `Amara Weerasinghe, ${curatorTitles.amara}`,
     curatorImage: experienceImages.amara,
-    image: localImages.sigiriya,
+    image: experienceImages.sigiriyaMain,
     imageAlt: 'Sigiriya rock fortress rising above the Sri Lankan landscape',
     badge: "Curator's Choice",
     caption: 'Cultural Heritage — Central Province',
@@ -114,8 +98,8 @@ const encounters: Encounter[] = [
       'Tea tourism is everywhere. What is almost nowhere is the thing that precedes it: the stillness of a working estate at 4:45am, before the pickers arrive, when the mist sits exactly at shoulder height and the silence has a particular quality I can only describe as earned. This is the version we offer.',
     curator: `Dilini Perera, ${curatorTitles.dilini}`,
     curatorImage: experienceImages.dilini,
-    image: localImages.nuwaraEliya,
-    imageAlt: 'Nuwara Eliya hill country in soft morning light',
+    image: experienceImages.hillCountry,
+    imageAlt: 'Nuwara Eliya hill country landscape in soft morning light',
     caption: 'Tea Country — Hill Province',
     details: [
       { label: 'Duration', value: 'Full Day' },
@@ -131,18 +115,18 @@ const encounters: Encounter[] = [
     category: 'Shared History — Editorial Route',
     title: 'Shared Heritage, Quietly Read',
     note:
-      "This is not a tour of colonial relics. It is a considered route through tea country, railway engineering, old gardens, civic streets, and grand hotels where Sri Lankan and British histories still meet in architecture, education, hospitality, and daily ritual.",
+      "This is not a tour of colonial relics. It is a considered route through civic monuments, tea country, railway engineering, old gardens, and grand hotels where Sri Lankan and British histories still meet in architecture, education, hospitality, and daily ritual.",
     curator: `Amara Weerasinghe, ${curatorTitles.amara}`,
     curatorImage: experienceImages.amara,
-    image: localImages.nuwaraEliya,
-    imageAlt: 'Nuwara Eliya hill country shaped by tea estates and colonial memory',
+    image: experienceImages.queenVictoriaStatue,
+    imageAlt: 'Marble statue of Queen Victoria, a British monument in Sri Lanka',
     badge: 'New Discovery World',
-    caption: 'Tea Country — Railways — Colombo',
+    caption: 'Monuments — Tea Country — Colombo',
     details: [
       { label: 'Duration', value: '3–7 Days' },
       { label: 'Best Season', value: 'Dec — Apr' },
       { label: 'Group Size', value: 'Private' },
-      { label: 'Key Highlight', value: 'Tea, railways, gardens, and civic memory' },
+      { label: 'Key Highlight', value: 'Civic monuments, tea, railways, and gardens' },
       { label: 'Curator', value: 'Amara W.' },
     ],
   },
@@ -176,8 +160,8 @@ const encounters: Encounter[] = [
       'The coast, for most visitors, is an amenity. A view. A backdrop. But Mirissa runs on a different clock — one that starts at 3am, when the tuna boats come in and the auction begins. I have spent years building trust with three families on this stretch of water. You are not joining a tour. You are, briefly, joining a life.',
     curator: `Sahan Mendis, ${curatorTitles.sahan}`,
     curatorImage: experienceImages.sahan,
-    image: localImages.ahangama,
-    imageAlt: 'Southern Sri Lankan coast at Ahangama',
+    image: experienceImages.mirissaBoats,
+    imageAlt: 'Fishing boats at Mirissa harbour at sunset',
     caption: 'Southern Coast — Mirissa',
     details: [
       { label: 'Duration', value: '1 Day' },
@@ -237,8 +221,8 @@ const encounters: Encounter[] = [
       "Access to the inner sanctum of the Temple of the Tooth is never treated as spectacle. A private audience with the temple's senior custodian begins with context, restraint, and the understanding that the ceremony is not adjusted for visitors — you adjust yourself to the ceremony.",
     curator: `Malini Fernando, ${curatorTitles.malini}`,
     curatorImage: experienceImages.portraitMalini,
-    image: localImages.kandyPerahera,
-    imageAlt: 'Kandy Perahera ceremonial procession in Sri Lanka',
+    image: experienceImages.oilLamps,
+    imageAlt: 'Oil lamps lit during a sacred evening ceremony in Kandy',
     caption: 'Ceremony — Kandy',
     details: [
       { label: 'Duration', value: 'Evening' },
@@ -257,8 +241,8 @@ const encounters: Encounter[] = [
       'Embedded within a rainforest reserve, this five-day Ayurvedic immersion is guided by a fourth-generation vaidya. It is not a spa and not a retreat in the decorative sense. It is a diagnostic and restorative system refined for two thousand years, entered slowly and with discipline.',
     curator: `Dilini Perera, ${curatorTitles.dilini}`,
     curatorImage: experienceImages.dilini,
-    image: localImages.gorakaElla,
-    imageAlt: 'Rainforest waterfall landscape in Sri Lanka',
+    image: experienceImages.ayurveda,
+    imageAlt: 'Ayurvedic treatment pavilion set within a tropical rainforest retreat',
     badge: 'By Consultation',
     caption: 'Restoration — Sinharaja',
     details: [
@@ -277,8 +261,8 @@ const experienceThemes = [
     description:
       'Leopards, elephants, forests, field researchers, remote ecosystems, and nature without performance.',
     traveller: 'For the Seeker of Silence',
-    image: localImages.kithulgala,
-    imageAlt: 'Forest river landscape in Kithulgala, Sri Lanka',
+    image: experienceImages.leopardFeature,
+    imageAlt: 'Sri Lankan leopard resting on rock at dusk in the wild',
     href: '#leopard-research-circuit',
     encounter: 'The Leopard Research Circuit',
   },
@@ -287,8 +271,8 @@ const experienceThemes = [
     description:
       'For travellers drawn to the sea as a living world: whale paths, quiet lagoons, sailing days, and coastlines that reveal themselves with patience.',
     traveller: 'For the Unhurried Wanderer',
-    image: localImages.galleBeach,
-    imageAlt: 'Southern Sri Lankan beach and ocean light',
+    image: experienceImages.mirissaBoats,
+    imageAlt: 'Fishing boats at Mirissa harbour at sunset',
     href: '#deep-water-hour',
     encounter: 'The Deep-Water Hour',
   },
@@ -297,7 +281,7 @@ const experienceThemes = [
     description:
       'Ancient kingdoms, sacred spaces, archaeology, historians, and living traditions carried forward.',
     traveller: 'For the Heritage Guardian',
-    image: localImages.sigiriya,
+    image: experienceImages.sigiriyaMain,
     imageAlt: 'Sigiriya rock fortress in Sri Lanka',
     href: '#sigiriya-dawn-ascent',
     encounter: 'The Sigiriya Dawn Ascent',
@@ -307,8 +291,8 @@ const experienceThemes = [
     description:
       'Ayurveda, healing traditions, retreats, slow living, and the quiet work of personal renewal.',
     traveller: 'For the Restorer',
-    image: localImages.gorakaElla,
-    imageAlt: 'Rainforest waterfall landscape in Sri Lanka',
+    image: experienceImages.ayurveda,
+    imageAlt: 'Ayurvedic treatment pavilion set within a tropical rainforest retreat',
     href: '#ancient-grammar-of-healing',
     encounter: 'The Ancient Grammar of Healing',
   },
@@ -317,7 +301,7 @@ const experienceThemes = [
     description:
       'Hill country train journeys, tea estates, mountain routes, and scenery that changes by the hour.',
     traveller: 'For the Reflective Wanderer',
-    image: localImages.nuwaraEliya,
+    image: experienceImages.hillCountry,
     imageAlt: 'Nuwara Eliya hill country landscape',
     href: '#private-tea-estate',
     encounter: 'A Private Tea Estate, Locked Before Dawn',
@@ -336,19 +320,19 @@ const experienceThemes = [
     title: sharedHeritageWorld.name,
     description: sharedHeritageWorld.description,
     traveller: sharedHeritageWorld.traveller,
-    image: localImages.nuwaraEliya,
-    imageAlt: 'Nuwara Eliya hill country shaped by tea estates and colonial memory',
+    image: experienceImages.queenVictoriaStatue,
+    imageAlt: 'Marble statue of Queen Victoria, a British monument in Sri Lanka',
     href: '#shared-heritage-quietly-read',
     encounter: 'Shared Heritage, Quietly Read',
   },
 ] as const
 
 const photoStrip = [
-  { src: localImages.peradeniya, alt: 'Peradeniya gardens in soft daylight', wide: false },
-  { src: localImages.nuwaraEliya, alt: 'Nuwara Eliya hill country landscape', wide: true },
-  { src: localImages.kelaniTemple, alt: 'Kelani temple sacred architecture and ritual setting', wide: false },
-  { src: localImages.maduRiver, alt: 'Madu River winding through coastal wetland and jungle', wide: true },
-  { src: localImages.galle, alt: 'Galle coastal heritage landscape', wide: false },
+  { src: localImages.sripadayaSky, alt: 'Highland horizon at dawn above the Sri Lankan hills', wide: false },
+  { src: experienceImages.hillCountry, alt: 'Nuwara Eliya hill country landscape', wide: true },
+  { src: localImages.kelaniTempleDetail, alt: 'Sacred mural detail inside Kelani temple', wide: false },
+  { src: experienceImages.mirissaBoats, alt: 'Fishing boats at Mirissa harbour at sunset', wide: true },
+  { src: experienceImages.galleFort, alt: 'Galle Fort ramparts above the southern coast', wide: false },
   { src: localImages.kandyPerahera, alt: 'Kandy Perahera ceremonial procession', wide: false },
 ] as const
 
@@ -363,7 +347,7 @@ function Eyebrow({ children, dark = false }: { children: ReactNode; dark?: boole
 
 function TextLink({
   children,
-  href = '#begin',
+  href = '/contact',
   inverse = false,
   onClick,
 }: {
@@ -400,7 +384,7 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
   const enquiryHref =
     encounter.title === 'The Sigiriya Dawn Ascent'
       ? '/expectations/the-sigiriya-dawn-ascent'
-      : '#begin'
+      : '/contact'
   const journeyId = toJourneyId('experience', encounter.title)
   const isEncounterIncluded = isIncluded(journeyId)
 
@@ -640,7 +624,7 @@ export function ExpectationsPage() {
 
           <div className="experiences-hero-image">
             <div className="hero-image-frame">
-              <img src={localImages.sigiriya} alt="Sigiriya rock fortress in Sri Lanka" />
+              <img src={experienceImages.sigiriyaMain} alt="Sigiriya rock fortress rising above the Sri Lankan landscape" />
             </div>
             <span className="hero-feature-label">Featured Private Access</span>
             <span className="hero-choice">By Introduction Only</span>
@@ -792,32 +776,6 @@ export function ExpectationsPage() {
               <img key={`repeat-${photo.alt}`} className={photo.wide ? 'wide' : ''} src={photo.src} alt="" />
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="experiences-final-cta experiences-reveal" id="begin">
-        <div className="experiences-final-cta-inner">
-          <div className="experiences-final-cta-mark" aria-hidden="true">
-            ✦
-          </div>
-          <p>Expectation Briefing</p>
-          <h2>
-            Begin with the question
-            <br />
-            <em>that opens the right door.</em>
-          </h2>
-          <p>
-            A quiet conversation with Arjun or Dilini, shaped around privacy, timing, and the kind of
-            access that should never feel public. If an encounter cannot be arranged with integrity, we
-            will say so.
-          </p>
-          <div className="experiences-final-cta-actions">
-            <a href="#begin" className="primary-cta">
-              Request A Private Briefing
-            </a>
-            <TextLink inverse>Review Expectations</TextLink>
-          </div>
-          <small>Discreet planning. No packaged itineraries. Introductions only where trust exists.</small>
         </div>
       </section>
     </main>

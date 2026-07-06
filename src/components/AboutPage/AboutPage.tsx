@@ -1,19 +1,8 @@
 import { useEffect, useState } from 'react'
 import './AboutPage.css'
 import { aboutImages } from './images'
-import ahangama from '../../assets/images/Ahangama.jpeg'
-import galleBeach from '../../assets/images/Galle beach.jpeg'
-import gorakaElla from '../../assets/images/Goraka ella.jpg'
-import kithulgala from '../../assets/images/Kithulgala.jpeg'
-import sigiriya from '../../assets/images/Sigiriya.JPG'
-
-const localImages = {
-  ahangama,
-  galleBeach,
-  gorakaElla,
-  kithulgala,
-  sigiriya,
-} as const
+import { experienceImages } from '../ExperiencesPage/images'
+import breathSeaImage from '../../assets/images/breath-sea.jpg'
 
 const storyPillars = [
   {
@@ -141,12 +130,12 @@ export function AboutPage() {
           <figure className="about-hero-image-wrap">
             <img
               className="about-hero-image"
-              src={localImages.kithulgala}
-              alt="Forest river landscape in Kithulgala, Sri Lanka"
+              src={experienceImages.sigiriyaDawn}
+              alt="Sigiriya rock fortress rising above the Sri Lankan landscape"
             />
             <figcaption>
               <span>Private Access</span>
-              <span>Hill Country — Sri Lanka</span>
+              <span>Ancient Kingdoms — Sri Lanka</span>
             </figcaption>
           </figure>
         </div>
@@ -167,7 +156,7 @@ export function AboutPage() {
           <figure className="about-summary-media">
             <img
               className="about-summary-image"
-              src={localImages.sigiriya}
+              src={experienceImages.heroSigiriya}
               alt="Sigiriya rock fortress surrounded by Sri Lankan landscape"
             />
             <figcaption>
@@ -192,8 +181,8 @@ export function AboutPage() {
           <figure className="about-full-image-frame">
             <img
               className="about-full-image-img"
-              src={localImages.gorakaElla}
-              alt="Rainforest waterfall landscape in Sri Lanka"
+              src={experienceImages.ayurveda}
+              alt="Ayurvedic treatment pavilion set within a tropical rainforest retreat"
             />
             <figcaption>
               <span>Restoration At The Heart Of The Journey</span>
@@ -326,8 +315,8 @@ export function AboutPage() {
           <div className="about-breath-image-wrap">
             <img
               className="about-breath-image"
-              src={localImages.ahangama}
-              alt="Ocean shoreline at Ahangama in Sri Lanka"
+              src={breathSeaImage}
+              alt="Calm turquoise sea and sandy shore at golden hour"
             />
             <div className="about-breath-overlay">
               <p className="about-breath-label">THE BREATH</p>
@@ -366,7 +355,9 @@ export function AboutPage() {
             We accept a limited number of enquiries each season so each journey can be shaped with
             care, discretion, and the right custodians around it.
           </p>
-          <a className="about-invitation-button" href="#begin">ENTER THE ISLES</a>
+          <a className="about-invitation-button" href="/discover-sri-lanka">
+            Begin With Discovery
+          </a>
         </div>
       </section>
 
@@ -374,8 +365,8 @@ export function AboutPage() {
       <section className="about-section about-footer-cta">
         <img
           className="about-footer-cta-image"
-          src={localImages.galleBeach}
-          alt="Galle beach at sunset in Sri Lanka"
+          src={experienceImages.heroSigiriya}
+          alt="Sigiriya rock fortress rising above the Sri Lankan forest canopy"
         />
         <div className="about-footer-cta-overlay">
           <p>Royale Isles Lanka</p>

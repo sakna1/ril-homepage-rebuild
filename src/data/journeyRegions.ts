@@ -7,8 +7,8 @@ import mirissaBoats from '../assets/experiences/mirissa-boats.jpg'
 import monks from '../assets/experiences/monks.jpg'
 import oilLamps from '../assets/experiences/oil-lamps.jpg'
 import poolVilla from '../assets/experiences/pool-villa.jpg'
-import sigiriyaDawn from '../assets/experiences/sigiriya-dawn.jpg'
-import teaEstate from '../assets/experiences/tea-estate.jpg'
+import sigiriyaMain from '../assets/images/Sigiriya Main.jpg'
+import hillCountryNuwaraEliya from '../assets/images/Hill Country Nuwaraeliya.jpg'
 import { getDestinationRecommendationMetadata } from './journeyConsultation'
 import { getExperienceIdsForDestination } from './experiences'
 import { MapMode, type MapMode as MapModeValue } from './mapModes'
@@ -196,7 +196,7 @@ export const journeyRegions: JourneyRegion[] = [
     id: 'hill-country',
     title: 'Hill Country',
     description: 'Tea estates, slow rail journeys and cloud-soft mornings in Sri Lanka’s interior.',
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     center: [80.83, 6.93],
     zoom: 9,
     polygon: [
@@ -219,7 +219,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'ella',
         title: 'Ella',
         coordinates: [81.0463, 6.8667],
-        coverImage: teaEstate,
+        coverImage: hillCountryNuwaraEliya,
         description: 'A mountain village framed by tea, ridgelines and railway romance.',
         bestTimeToVisit: 'January - April',
         journeyMood: ['Romantic', 'Scenic', 'Gentle adventure'],
@@ -241,7 +241,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'haputale',
         title: 'Haputale',
         coordinates: [80.9595, 6.7654],
-        coverImage: teaEstate,
+        coverImage: hillCountryNuwaraEliya,
         description: 'A high ridge of tea country where morning light moves across the valleys.',
         bestTimeToVisit: 'January - April',
         journeyMood: ['Quiet', 'Scenic', 'Reflective'],
@@ -254,7 +254,7 @@ export const journeyRegions: JourneyRegion[] = [
     id: 'cultural-triangle',
     title: 'Cultural Triangle',
     description: 'Ancient capitals, rock citadels and sacred landscapes held in jungle quiet.',
-    heroImage: sigiriyaDawn,
+    heroImage: sigiriyaMain,
     center: [80.62, 8.02],
     zoom: 8.55,
     polygon: [
@@ -276,7 +276,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'sigiriya',
         title: 'Sigiriya',
         coordinates: [80.7603, 7.957],
-        coverImage: sigiriyaDawn,
+        coverImage: sigiriyaMain,
         description: 'A rock citadel rising from jungle and morning gold, best approached before the day gathers.',
         bestTimeToVisit: 'January - September',
         journeyMood: ['Wonder', 'Iconic', 'Dawn'],
@@ -591,7 +591,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
     id: 'romantic-central-province',
     title: 'Central Province',
     description: 'Cultural romance, gardens, tea estates and colonial highland charm.',
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     center: [80.72, 7.16],
     zoom: 8.75,
     polygon: [
@@ -633,7 +633,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'nuwara-eliya-romantic',
         title: 'Nuwara Eliya',
         coordinates: [80.7829, 6.9497],
-        coverImage: teaEstate,
+        coverImage: hillCountryNuwaraEliya,
         description:
           'Little England romance: cool air, Gregory Lake, tea estates and old-world highland hospitality.',
         bestTimeToVisit: 'January - April',
@@ -645,7 +645,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'ella-romantic-central',
         title: 'Ella',
         coordinates: [81.0463, 6.8667],
-        coverImage: teaEstate,
+        coverImage: hillCountryNuwaraEliya,
         description:
           'A scenic mountain escape of Nine Arch Bridge, Little Adam’s Peak and the island’s most romantic train approach.',
         bestTimeToVisit: 'January - April',
@@ -713,7 +713,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
     id: 'romantic-uva-province',
     title: 'Uva Province',
     description: 'Mountain escapes, eco-lodges, waterfalls and panoramic tea-country views.',
-    heroImage: teaEstate,
+    heroImage: hillCountryNuwaraEliya,
     center: [80.99, 6.81],
     zoom: 8.9,
     polygon: [
@@ -743,7 +743,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'ella-romantic-uva',
         title: 'Ella',
         coordinates: [81.0463, 6.8667],
-        coverImage: teaEstate,
+        coverImage: hillCountryNuwaraEliya,
         description: 'Eco-lodges, waterfalls, tea walks and sunrise hikes wrapped in mountain romance.',
         bestTimeToVisit: 'January - April',
         journeyMood: ['Mountain', 'Romantic', 'Adventure'],
@@ -765,7 +765,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'haputale-romantic',
         title: 'Haputale',
         coordinates: [80.9595, 6.7654],
-        coverImage: teaEstate,
+        coverImage: hillCountryNuwaraEliya,
         description: 'A panoramic ridge of tea country views, cool air and dramatic highland mornings.',
         bestTimeToVisit: 'January - April',
         journeyMood: ['Panoramic', 'Reflective', 'Mountain'],
@@ -819,7 +819,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'belihuloya',
         title: 'Belihuloya',
         coordinates: [80.7543, 6.7167],
-        coverImage: teaEstate,
+        coverImage: hillCountryNuwaraEliya,
         description: 'A nature-led valley for trekking, canoeing, bird watching and quiet outdoor romance.',
         bestTimeToVisit: 'January - April',
         journeyMood: ['Nature', 'Soft adventure', 'Quiet'],
