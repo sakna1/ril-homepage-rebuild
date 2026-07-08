@@ -2,6 +2,7 @@ import './ExperiencesPage.css'
 import { useState, type MouseEvent, type ReactNode } from 'react'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from './images'
+import { PackageMapOverlay } from './PackageMapOverlay'
 import { useJourney } from '../../journey/useJourney'
 import { inferJourneyRegion } from '../../journey/journeyTaxonomy'
 import { normalizeRegionLabel } from '../../journey/savedJourneyDisplay'
@@ -9,6 +10,7 @@ import { sharedHeritageRecommendations, sharedHeritageWorld } from '../../journe
 import kelaniTempleDetail from '../../assets/images/Kelani temple(1).JPG'
 import kandyPerahera from '../../assets/images/Kandy Perahera.JPG'
 import sripadayaSky from '../../assets/images/sripadaya sky.jpeg'
+import type { PackageThemeTitle } from './packageMapCatalog'
 
 type Detail = {
   label: string
@@ -30,7 +32,7 @@ type ExperienceTheme = (typeof experienceThemeOptions)[number]
 
 type Encounter = {
   id: string
-  theme?: Exclude<ExperienceTheme, 'All Encounters'>
+  theme?: PackageThemeTitle
   category: string
   title: string
   note: string
@@ -379,7 +381,15 @@ function readInitialExpectationTheme(): ExperienceTheme {
   return experienceThemeOptions.includes(world as ExperienceTheme) ? (world as ExperienceTheme) : 'All Encounters'
 }
 
-function EncounterCard({ encounter, index }: { encounter: Encounter; index: number }) {
+function EncounterCard({
+  encounter,
+  index,
+  onOpenPackageMap,
+}: {
+  encounter: Encounter
+  index: number
+  onOpenPackageMap: (encounter: Encounter) => void
+}) {
   const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
   const enquiryHref =
     encounter.title === 'The Sigiriya Dawn Ascent'
@@ -387,6 +397,7 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
       : '/contact'
   const journeyId = toJourneyId('experience', encounter.title)
   const isEncounterIncluded = isIncluded(journeyId)
+  const canOpenPackageMap = Boolean(encounter.theme)
 
   function includeEncounterInJourney() {
     const parentRegion = inferJourneyRegion({
@@ -439,16 +450,38 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
     includeEncounterInJourney()
   }
 
-  function handleEnquireClick() {
+  function handleEnquireClick(event: MouseEvent<HTMLAnchorElement>) {
+    event.stopPropagation()
     if (!isEncounterIncluded) {
       includeEncounterInJourney()
     }
   }
 
+  function openPackageMap(event?: MouseEvent) {
+    event?.preventDefault()
+    event?.stopPropagation()
+    if (!canOpenPackageMap) {
+      return
+    }
+    onOpenPackageMap(encounter)
+  }
+
+  function handleRowClick(event: MouseEvent<HTMLElement>) {
+    if (!canOpenPackageMap) {
+      return
+    }
+    const target = event.target as HTMLElement
+    if (target.closest('a, button')) {
+      return
+    }
+    openPackageMap()
+  }
+
   return (
     <article
       id={encounter.id}
-      className={`encounter-row experiences-reveal journey-selectable${isEncounterIncluded ? ' is-included' : ''}`}
+      className={`encounter-row experiences-reveal journey-selectable${isEncounterIncluded ? ' is-included' : ''}${canOpenPackageMap ? ' is-package-openable' : ''}`}
+      onClick={canOpenPackageMap ? handleRowClick : undefined}
     >
       <div className="encounter-index">
         <span>{encounterNumerals[index] ?? String(index + 1)}</span>
@@ -461,10 +494,32 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
         </div>
         {encounter.badge ? <span className="encounter-badge">{encounter.badge}</span> : null}
         <span className="encounter-caption">{encounter.caption}</span>
+        {canOpenPackageMap ? (
+          <button
+            className="encounter-map-cue"
+            type="button"
+            onClick={openPackageMap}
+            aria-label={`Open ${encounter.theme} package map for ${encounter.title}`}
+          >
+            View on map
+          </button>
+        ) : null}
+      </div>
+
+      <div className="encounter-meta">
+        <p className="experiences-kicker">{encounter.category}</p>
+        <button
+          className="encounter-journey-toggle"
+          type="button"
+          aria-pressed={isEncounterIncluded}
+          aria-label={`${isEncounterIncluded ? 'Remove' : 'Add'} ${encounter.title} ${isEncounterIncluded ? 'from' : 'to'} your journey`}
+          onClick={toggleEncounterJourney}
+        >
+          {isEncounterIncluded ? 'Remove from Journey' : 'Add to Journey'}
+        </button>
       </div>
 
       <div className="encounter-copy">
-        <p className="experiences-kicker">{encounter.category}</p>
         <h2>{encounter.title}</h2>
         <div className="curator-note">
           <p className="curator-note-label">Curator's Note</p>
@@ -480,17 +535,6 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
       </div>
 
       <aside className="encounter-details-panel" aria-label={`${encounter.title} details`}>
-        <div className="encounter-details-toolbar">
-          <button
-            className="encounter-journey-toggle"
-            type="button"
-            aria-pressed={isEncounterIncluded}
-            aria-label={`${isEncounterIncluded ? 'Remove' : 'Add'} ${encounter.title} ${isEncounterIncluded ? 'from' : 'to'} your journey`}
-            onClick={toggleEncounterJourney}
-          >
-            {isEncounterIncluded ? 'Remove from Journey' : 'Add to Journey'}
-          </button>
-        </div>
         <dl className="encounter-details">
         {encounter.details.map((detail) => (
           <div key={detail.label}>
@@ -506,12 +550,17 @@ function EncounterCard({ encounter, index }: { encounter: Encounter; index: numb
 
 export function ExpectationsPage() {
   const [selectedTheme, setSelectedTheme] = useState<ExperienceTheme>(readInitialExpectationTheme)
+  const [activePackageEncounterId, setActivePackageEncounterId] = useState<string | null>(null)
   const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
   const filteredEncounters =
     selectedTheme === 'All Encounters'
       ? encounters
       : encounters.filter((encounter) => encounter.theme === selectedTheme)
   const curatedOpeningsCount = filteredEncounters.length
+  const activePackageEncounter = encounters.find((encounter) => encounter.id === activePackageEncounterId) ?? null
+  const themeEncountersForOverlay = activePackageEncounter?.theme
+    ? encounters.filter((encounter) => encounter.theme === activePackageEncounter.theme)
+    : []
 
   function includeSharedHeritageRecommendations() {
     sharedHeritageRecommendations.slice(1, 5).forEach(({ destination }) => {
@@ -753,7 +802,12 @@ export function ExpectationsPage() {
           </header>
           {filteredEncounters.length > 0 ? (
             filteredEncounters.map((encounter, index) => (
-              <EncounterCard key={encounter.title} encounter={encounter} index={index} />
+              <EncounterCard
+                key={encounter.title}
+                encounter={encounter}
+                index={index}
+                onOpenPackageMap={(selected) => setActivePackageEncounterId(selected.id)}
+              />
             ))
           ) : (
             <div className="encounters-empty experiences-reveal">
@@ -778,6 +832,15 @@ export function ExpectationsPage() {
           </div>
         </div>
       </section>
+
+      {activePackageEncounter?.theme ? (
+        <PackageMapOverlay
+          encounter={activePackageEncounter}
+          themeEncounters={themeEncountersForOverlay}
+          onClose={() => setActivePackageEncounterId(null)}
+          onFocusEncounter={(encounterId) => setActivePackageEncounterId(encounterId)}
+        />
+      ) : null}
     </main>
   )
 }

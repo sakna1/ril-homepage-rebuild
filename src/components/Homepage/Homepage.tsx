@@ -343,11 +343,13 @@ export function Homepage() {
           </div>
           <footer className="figma-founder">
             <div>
-              <span>Sir Arthur C. Clarke</span>
-              <small>Visionary, Futurist, & Author</small>
+              <span>Robert Knox</span>
+              <small>An Historical Relation of the Island Ceylon, 1681</small>
             </div>
             <p>
-              Enter a realm of legendary allure. As Sir Arthur C. Clarke famously observed, this is 'a paradise on Earth.' Let us curate your private journey into its most exquisite, hidden depths.
+              “The Land is full of Hills, but exceedingly well watered, there being many pure and
+              clear Rivers running through them.” Four centuries later, that same green quiet still
+              waits — entered privately, and without hurry.
             </p>
           </footer>
         </div>

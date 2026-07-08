@@ -7,7 +7,6 @@ import portraitRoshan from '../../assets/about/portrait-roshan.jpg'
 import portraitMalini from '../../assets/about/portrait-malini.jpg'
 import portraitDrRaghavan from '../../assets/about/portrait-drRaghavan.jpeg'
 import portraitSakna from '../../assets/about/portrait-Sakna.jpeg'
-import portraitConella from '../../assets/about/portrait-Conella.jpeg'
 import coastline from '../../assets/about/coastline.jpg'
 import sunsetBeach from '../../assets/about/sunset-beach.jpg'
 
@@ -21,7 +20,6 @@ export const aboutImages = {
   portraitMalini,
   portraitDrRaghavan,
   portraitSakna,
-  portraitConella,
   coastline,
   sunsetBeach,
 } as const

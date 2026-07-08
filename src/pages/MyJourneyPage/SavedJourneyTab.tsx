@@ -165,7 +165,7 @@ export function SavedJourneyTab() {
             Save a few places or encounters, and we will begin to trace how the island might unfold
             around them.
           </p>
-          <a href="/my-journey?view=explore">Explore the Island</a>
+          <a href="/expectations">Explore the Island</a>
         </div>
 
         <div className="saved-journey-tab__handoff">
@@ -291,7 +291,7 @@ export function SavedJourneyTab() {
             >
               {showRhythmReason ? 'Hide' : 'Why this route?'}
             </button>
-            <a className="saved-journey-tab__rhythm-link" href="/my-journey?view=explore">
+            <a className="saved-journey-tab__rhythm-link" href="/expectations">
               Refine selections
             </a>
           </div>

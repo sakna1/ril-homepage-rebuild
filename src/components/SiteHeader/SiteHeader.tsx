@@ -5,13 +5,13 @@ const primaryNavLinks = [
   { href: '/discover-sri-lanka', label: 'Discover' },
   { href: '/expectations', label: 'Expectations' },
   { href: '/my-journey', label: 'My Journey' },
+  { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ] as const
 
 const menuNavLinks = [
   { href: '/travel-preparation', label: 'On Arrival' },
   { href: '/journal', label: 'Journal' },
-  { href: '/about', label: 'About' },
 ] as const
 
 const navAliases: Record<string, string[]> = {

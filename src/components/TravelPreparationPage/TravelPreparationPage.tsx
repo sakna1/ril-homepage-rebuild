@@ -116,12 +116,10 @@ export function TravelPreparationPage() {
         <div className="prep-hero-copy">
           <div className="prep-kicker">
             <span />
-            <p>Before Your Journey Begins</p>
+            <p>Your Journey Begins</p>
           </div>
           <h1>
-            Before
-            <br />
-            You Arrive
+            On Arrival
           </h1>
           <i className="prep-gold-rule" />
           <p className="prep-hero-intro">

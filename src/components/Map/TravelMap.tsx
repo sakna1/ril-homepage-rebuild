@@ -162,6 +162,11 @@ export function TravelMap({
 
     map.on('zoomend', handleZoomEnd)
 
+    const resizeObserver = new ResizeObserver(() => {
+      map.resize()
+    })
+    resizeObserver.observe(containerRef.current)
+
     if (map.loaded()) {
       handleMapLoad()
     } else {
@@ -169,6 +174,7 @@ export function TravelMap({
     }
 
     return () => {
+      resizeObserver.disconnect()
       map.off('load', handleMapLoad)
       map.off('zoomend', handleZoomEnd)
       map.remove()

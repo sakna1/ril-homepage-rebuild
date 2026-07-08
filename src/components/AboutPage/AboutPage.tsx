@@ -70,9 +70,9 @@ const custodians = [
 
 const digitalStudio = {
   name: 'Eunoia Solutions Pvt Ltd',
-  founders: 'Conella Belleth & Sakna Perera',
-  role: 'Founders',
-  images: [aboutImages.portraitConella, aboutImages.portraitSakna],
+  founder: 'Sakna Perera',
+  role: 'Founder',
+  image: aboutImages.portraitSakna,
   copy:
     "Eunoia Solutions is an independent digital product studio specialising in research, design, software engineering, and emerging technologies. Every product is shaped through thoughtful strategy, human-centred design, and robust technical implementation to create experiences that feel intuitive, accessible, and effortless.",
   focus:
@@ -255,14 +255,12 @@ export function AboutPage() {
           <div className="about-digital-credit-grid">
             <article className="about-digital-credit about-digital-credit--studio">
               <div className="about-digital-credit-images" aria-hidden="true">
-                {digitalStudio.images.map((image, index) => (
-                  <img key={image} src={image} alt="" className={index === 1 ? 'is-secondary' : undefined} />
-                ))}
+                <img src={digitalStudio.image} alt="" />
               </div>
               <div>
                 <h3>{digitalStudio.name}</h3>
                 <span>
-                  {digitalStudio.founders} — {digitalStudio.role}
+                  {digitalStudio.founder} — {digitalStudio.role}
                 </span>
                 <p>{digitalStudio.copy}</p>
                 <small>{digitalStudio.focus}</small>
