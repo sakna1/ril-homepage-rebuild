@@ -1,4 +1,5 @@
 import './ContactPage.css'
+import { CONTACT_EMAIL, contactMailtoHref } from '../../contact/contactEmail'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from '../ExperiencesPage/images'
 import { ContactInquiryPanel } from './ContactInquiryPanel'
@@ -35,7 +36,7 @@ const pathways = [
 const contactDetails = [
   { label: 'Private Office', value: 'Colombo · By appointment' },
   { label: 'Concierge Line', value: 'Available upon enquiry' },
-  { label: 'Correspondence', value: 'Held discreetly, by arrangement' },
+  { label: 'Correspondence', value: CONTACT_EMAIL, href: contactMailtoHref },
   { label: 'Consultations', value: 'In person, by video, or in writing' },
 ] as const
 
@@ -143,7 +144,15 @@ export function ContactPage() {
             {contactDetails.map((detail) => (
               <div key={detail.label}>
                 <dt>{detail.label}</dt>
-                <dd>{detail.value}</dd>
+                <dd>
+                  {'href' in detail ? (
+                    <a className="contact-details-email" href={detail.href}>
+                      {detail.value}
+                    </a>
+                  ) : (
+                    detail.value
+                  )}
+                </dd>
               </div>
             ))}
           </dl>

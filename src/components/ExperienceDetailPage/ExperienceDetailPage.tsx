@@ -1,4 +1,5 @@
 import './ExperienceDetailPage.css'
+import { contactMailtoHref } from '../../contact/contactEmail'
 import { experienceImages } from '../ExperiencesPage/images'
 
 const themes = ['Ancient History', 'Dawn Ritual', 'Physical Ascent', 'Living Archive'] as const
@@ -306,7 +307,7 @@ export function ExperienceDetailPage() {
             availability, and the quiet conditions required for Sigiriya to feel properly held.
             Nothing is confirmed until the access is worthy of the moment.
           </p>
-          <a href="mailto:hello@royaleisleslanka.com">Speak With a Curator</a>
+          <a href={contactMailtoHref}>Speak With a Curator</a>
           <small>Private response within 48 hours. Access is reviewed before confirmation.</small>
         </div>
       </section>
