@@ -11,7 +11,7 @@ import royaleIslesMapImage from '../../assets/images/royale-isles-map-transparen
 import sripadayaSkyImage from '../../assets/images/sripadaya sky.jpeg'
 import travelTwoImage from '../../assets/images/travel2.jpg'
 
-const images = {
+/*const images = {
   hero: '/figma-homepage/hero.jpg',
   consultation: '/figma-homepage/consultation.jpg',
   teaEstate: '/figma-homepage/tea-estate.jpg',
@@ -26,7 +26,7 @@ const images = {
   journalGuide: '/figma-homepage/journal-guide.jpg',
   hiroko: '/figma-homepage/hiroko.jpg',
   guideCover: '/figma-homepage/guide-cover.jpg',
-}
+}*/
 
 const localImages = {
   kelaniTempleDetail: kelaniTempleDetailImage,
