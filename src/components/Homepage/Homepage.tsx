@@ -186,16 +186,7 @@ const travellerStories = [
 
 const storyPromises = ['Photos and films handled privately', 'Hosted by discreet local experts', 'Built around your pace, not a schedule']
 
-const heroScenes = [
-  {
-    image: images.coastJungle,
-    label: 'Ocean at Dusk',
-  },
-  {
-    image: images.beachDinner,
-    label: 'Private Dinner',
-  },
-]
+const heroVideo = '/figma-homepage/Video Project 3.mp4'
 
 const brochureHighlights = [
   'Private residences, villas, and estate houses',
@@ -225,13 +216,16 @@ export function Homepage() {
   return (
     <main className="figma-homepage" data-node-id="101:12274">
       <section className="figma-hero" data-node-id="101:12275">
-        <div className="figma-hero-scenes" aria-hidden="true">
-          {heroScenes.map((scene) => (
-            <figure className="figma-hero-scene" key={scene.label}>
-              <img src={scene.image} alt="" />
-            </figure>
-          ))}
-        </div>
+        <video
+          className="figma-hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
         <div className="figma-hero-overlay" />
         <div className="figma-hero-content">
           <h1>
@@ -242,7 +236,7 @@ export function Homepage() {
             <a href="#begin">Begin a Private Conversation</a>
           </div>
         </div>
-        <p className="figma-hero-caption">Bespoke journeys for private families, principals, and those who travel rarely, and only well.</p>
+         {/*<p className="figma-hero-caption">Bespoke journeys for private families, principals, and those who travel rarely, and only well.</p>*/}
       </section>
 
       <section className="figma-experiences" id="experiences" data-node-id="103:12794">
