@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './Homepage.css'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from '../ExperiencesPage/images'
@@ -186,7 +186,8 @@ const travellerStories = [
 
 const storyPromises = ['Photos and films handled privately', 'Hosted by discreet local experts', 'Built around your pace, not a schedule']
 
-const heroVideo = '/figma-homepage/Video Project 3.mp4'
+const heroVideo = '/figma-homepage/hero.mp4'
+const heroPoster = '/figma-homepage/hero.jpg'
 
 const brochureHighlights = [
   'Private residences, villas, and estate houses',
@@ -202,8 +203,41 @@ function getExpectationsHref(world: string) {
 }
 
 export function Homepage() {
+  const heroVideoRef = useRef<HTMLVideoElement>(null)
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
   const activeStory = travellerStories[activeStoryIndex]
+
+  useEffect(() => {
+    const video = heroVideoRef.current
+    if (!video) return
+
+    video.defaultMuted = true
+    video.muted = true
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
+
+    const attemptPlay = () => {
+      void video.play().catch(() => {})
+    }
+
+    attemptPlay()
+    video.addEventListener('loadeddata', attemptPlay)
+    video.addEventListener('canplay', attemptPlay)
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        attemptPlay()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      video.removeEventListener('loadeddata', attemptPlay)
+      video.removeEventListener('canplay', attemptPlay)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [])
 
   const showPreviousStory = () => {
     setActiveStoryIndex((currentIndex) => (currentIndex === 0 ? travellerStories.length - 1 : currentIndex - 1))
@@ -217,15 +251,18 @@ export function Homepage() {
     <main className="figma-homepage" data-node-id="101:12274">
       <section className="figma-hero" data-node-id="101:12275">
         <video
+          ref={heroVideoRef}
           className="figma-hero-video"
+          src={heroVideo}
+          poster={heroPoster}
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
+          disablePictureInPicture
           aria-hidden="true"
-        >
-          <source src={heroVideo} type="video/mp4" />
-        </video>
+        />
         <div className="figma-hero-overlay" />
         <div className="figma-hero-content">
           <h1>
