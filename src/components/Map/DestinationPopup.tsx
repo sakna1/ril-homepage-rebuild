@@ -16,7 +16,7 @@ export function DestinationPopup({ destination }: DestinationPopupProps) {
         <p className="destination-popup-card__eyebrow">{destination.province}</p>
         <h2>{destination.name}</h2>
         <p>{destination.shortDescription}</p>
-        <a className="destination-popup-card__link" href={`/my-journey?view=explore#${destination.id}`}>
+        <a className="destination-popup-card__link" href={`/my-journey#${destination.id}`}>
           Explore Destination
         </a>
       </div>

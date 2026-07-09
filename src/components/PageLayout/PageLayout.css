@@ -1,10 +1,20 @@
 .page-layout-content {
-  /* padding-top: 88px; */
+  /* Clear the fixed site header so page content is not hidden underneath it. */
+  padding-top: 88px;
   background: var(--color-surface);
+}
+
+/* Full-bleed homepage hero should sit under the fixed header. */
+.page-layout-content:has(.figma-homepage) {
+  padding-top: 0;
 }
 
 @media (max-width: 680px) {
   .page-layout-content {
     padding-top: 96px;
+  }
+
+  .page-layout-content:has(.figma-homepage) {
+    padding-top: 0;
   }
 }

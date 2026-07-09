@@ -59,11 +59,7 @@ function AppContent() {
     return renderPage(<TravelPreparationPage />)
   }
 
-  if (path === '/travel-planner') {
-    return renderPage(<MyJourneyPage defaultView="explore" />)
-  }
-
-  if (path === '/my-journey') {
+  if (path === '/travel-planner' || path === '/my-journey') {
     return renderPage(<MyJourneyPage />)
   }
 

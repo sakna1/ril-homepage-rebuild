@@ -78,7 +78,7 @@ export function YourDirectionsPanel({
                     {normalized.parentRegion ? <p>In {normalized.parentRegion}</p> : null}
                   </div>
                   <div className="your-directions__also-saved-actions">
-                    <a className="your-directions__quiet-link" href="/my-journey?view=explore">
+                    <a className="your-directions__quiet-link" href="/expectations">
                       Explore where this may connect
                     </a>
                     <button

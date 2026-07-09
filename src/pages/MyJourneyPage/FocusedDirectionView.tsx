@@ -278,7 +278,7 @@ export function FocusedDirectionView({ directionId, onClose }: FocusedDirectionV
             >
               {showRhythmReason ? 'Hide' : 'Why this route?'}
             </button>
-            <a className="saved-journey-tab__rhythm-link" href="/my-journey?view=explore">
+            <a className="saved-journey-tab__rhythm-link" href="/expectations">
               Refine selections
             </a>
           </div>
