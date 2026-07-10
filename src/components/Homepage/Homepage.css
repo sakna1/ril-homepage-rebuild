@@ -129,6 +129,49 @@
     linear-gradient(90deg, rgba(0, 66, 37, 0.22), transparent 45%, rgba(12, 10, 8, 0.24));
 }
 
+.figma-hero-sound {
+  position: absolute;
+  z-index: 2;
+  left: 28px;
+  bottom: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px 12px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(20, 15, 11, 0.48);
+  color: var(--color-text-inverse);
+  font-family: var(--font-body);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.figma-hero-sound span {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.figma-hero-sound span::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  margin: 12px 0 0 15px;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid var(--color-text-inverse);
+}
+
+.figma-hero-sound small {
+  font-size: 11px;
+  letter-spacing: 1.7px;
+  line-height: var(--line-height-caption);
+  text-transform: uppercase;
+}
+
 .figma-hero-content {
   position: relative;
   z-index: 2;
@@ -3403,6 +3446,11 @@
     left: 24px;
     max-width: none;
     text-align: center;
+  }
+
+  .figma-hero-sound {
+    left: 24px;
+    bottom: 28px;
   }
 
   .figma-private-standards {
