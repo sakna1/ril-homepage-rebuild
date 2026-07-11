@@ -8,6 +8,9 @@ import { ExpectationsPage } from './components/ExperiencesPage/ExperiencesPage'
 import { Homepage } from './components/Homepage/Homepage'
 import { JournalArticlePage } from './components/JournalArticlePage/JournalArticlePage'
 import { JournalLandingPage } from './components/JournalLandingPage/JournalLandingPage'
+import { AdminLoginPage } from './components/LoginPage/AdminLoginPage'
+import { LoginChooserPage } from './components/LoginPage/LoginChooserPage'
+import { TravellerLoginPage } from './components/LoginPage/TravellerLoginPage'
 import { PageLayout } from './components/PageLayout/PageLayout'
 import { TravelPreparationPage } from './components/TravelPreparationPage/TravelPreparationPage'
 import { MyJourneyPage } from './pages/MyJourneyPage/MyJourneyPage'
@@ -45,6 +48,18 @@ function AppContent() {
 
   if (path === '/journal/the-sigiriya-dawn-ascent') {
     return renderPage(<JournalArticlePage />)
+  }
+
+  if (path === '/login') {
+    return renderPage(<LoginChooserPage />)
+  }
+
+  if (path === '/login/traveller') {
+    return renderPage(<TravellerLoginPage />)
+  }
+
+  if (path === '/login/admin') {
+    return renderPage(<AdminLoginPage />)
   }
 
   if (path === '/about') {

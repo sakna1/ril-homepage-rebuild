@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './Homepage.css'
 import { ArrowIcon } from '../ArrowIcon'
+import { BrochureRequestForm } from './BrochureRequestForm'
 import { experienceImages } from '../ExperiencesPage/images'
 import { sharedHeritageWorld } from '../../journey/discoveryWorlds'
 import kelaniTempleDetailImage from '../../assets/images/Kelani temple(1).JPG'
@@ -206,7 +207,6 @@ export function Homepage() {
   const heroVideoRef = useRef<HTMLVideoElement>(null)
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
   const [isHeroMuted, setIsHeroMuted] = useState(false)
-  const [showSoundPrompt, setShowSoundPrompt] = useState(false)
   const activeStory = travellerStories[activeStoryIndex]
 
   useEffect(() => {
@@ -217,21 +217,28 @@ export function Homepage() {
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
 
+    let hasStartedPlaying = false
+
     const attemptPlay = async () => {
+      // Guard against loadeddata/canplay firing again after playback has
+      // already started — re-issuing play() on a playing video can cause
+      // an audible restart/overlap ("double sound").
+      if (hasStartedPlaying) return
+
       video.muted = false
 
       try {
         await video.play()
+        hasStartedPlaying = true
         setIsHeroMuted(false)
-        setShowSoundPrompt(false)
         return
       } catch {
         video.muted = true
         setIsHeroMuted(true)
-        setShowSoundPrompt(true)
 
         try {
           await video.play()
+          hasStartedPlaying = true
         } catch {
           // Autoplay can still be blocked on some devices.
         }
@@ -251,7 +258,7 @@ export function Homepage() {
     video.addEventListener('canplay', handleCanPlay)
 
     const handleVisibilityChange = () => {
-      if (!document.hidden) {
+      if (!document.hidden && video.paused) {
         void video.play().catch(() => {})
       }
     }
@@ -265,19 +272,18 @@ export function Homepage() {
     }
   }, [])
 
-  const enableHeroSound = async () => {
+  const toggleHeroSound = () => {
     const video = heroVideoRef.current
     if (!video) return
 
-    video.muted = false
-    video.volume = 1
-    setIsHeroMuted(false)
-    setShowSoundPrompt(false)
-
-    try {
-      await video.play()
-    } catch {
-      setShowSoundPrompt(true)
+    if (video.muted) {
+      video.muted = false
+      video.volume = 1
+      setIsHeroMuted(false)
+      void video.play().catch(() => {})
+    } else {
+      video.muted = true
+      setIsHeroMuted(true)
     }
   }
 
@@ -304,12 +310,15 @@ export function Homepage() {
           preload="auto"
           disablePictureInPicture
         />
-        {showSoundPrompt ? (
-          <button type="button" className="figma-hero-sound" onClick={() => void enableHeroSound()}>
-            <span aria-hidden="true" />
-            <small>Enable sound</small>
-          </button>
-        ) : null}
+        <button
+          type="button"
+          className="figma-hero-sound"
+          onClick={toggleHeroSound}
+          aria-label={isHeroMuted ? 'Unmute video' : 'Mute video'}
+        >
+          <span aria-hidden="true" data-state={isHeroMuted ? 'muted' : 'unmuted'} />
+          <small>{isHeroMuted ? 'Unmute sound' : 'Mute sound'}</small>
+        </button>
         <div className="figma-hero-overlay" />
         <div className="figma-hero-content">
           <h1>
@@ -664,10 +673,7 @@ export function Homepage() {
               Sent privately, without an automated itinerary or mailing-list noise: a polished first
               briefing for travellers who expect careful judgement before any recommendation is made.
             </p>
-            <form className="figma-brochure-form">
-              <input type="email" aria-label="Your email address" placeholder="Your email address" />
-              <button type="submit">Request Brochure</button>
-            </form>
+            <BrochureRequestForm />
           </div>
           <aside className="figma-brochure-card" aria-label="Private brochure preview">
             <figure className="figma-brochure-preview" aria-hidden="true">
