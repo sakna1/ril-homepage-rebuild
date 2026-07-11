@@ -205,81 +205,39 @@ function getExpectationsHref(world: string) {
 export function Homepage() {
   const heroVideoRef = useRef<HTMLVideoElement>(null)
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
-  const [isHeroMuted, setIsHeroMuted] = useState(false)
-  const [showSoundPrompt, setShowSoundPrompt] = useState(false)
   const activeStory = travellerStories[activeStoryIndex]
 
   useEffect(() => {
     const video = heroVideoRef.current
     if (!video) return
 
-    video.volume = 1
+    video.defaultMuted = true
+    video.muted = true
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
 
-    const attemptPlay = async () => {
-      video.muted = false
-
-      try {
-        await video.play()
-        setIsHeroMuted(false)
-        setShowSoundPrompt(false)
-        return
-      } catch {
-        video.muted = true
-        setIsHeroMuted(true)
-        setShowSoundPrompt(true)
-
-        try {
-          await video.play()
-        } catch {
-          // Autoplay can still be blocked on some devices.
-        }
-      }
+    const attemptPlay = () => {
+      void video.play().catch(() => {})
     }
 
-    const handleLoadedData = () => {
-      void attemptPlay()
-    }
-
-    const handleCanPlay = () => {
-      void attemptPlay()
-    }
-
-    void attemptPlay()
-    video.addEventListener('loadeddata', handleLoadedData)
-    video.addEventListener('canplay', handleCanPlay)
+    attemptPlay()
+    video.addEventListener('loadeddata', attemptPlay)
+    video.addEventListener('canplay', attemptPlay)
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        void video.play().catch(() => {})
+        attemptPlay()
       }
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      video.removeEventListener('loadeddata', handleLoadedData)
-      video.removeEventListener('canplay', handleCanPlay)
+      video.removeEventListener('loadeddata', attemptPlay)
+      video.removeEventListener('canplay', attemptPlay)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
-
-  const enableHeroSound = async () => {
-    const video = heroVideoRef.current
-    if (!video) return
-
-    video.muted = false
-    video.volume = 1
-    setIsHeroMuted(false)
-    setShowSoundPrompt(false)
-
-    try {
-      await video.play()
-    } catch {
-      setShowSoundPrompt(true)
-    }
-  }
 
   const showPreviousStory = () => {
     setActiveStoryIndex((currentIndex) => (currentIndex === 0 ? travellerStories.length - 1 : currentIndex - 1))
@@ -298,18 +256,13 @@ export function Homepage() {
           src={heroVideo}
           poster={heroPoster}
           autoPlay
-          muted={isHeroMuted}
+          muted
           loop
           playsInline
           preload="auto"
           disablePictureInPicture
+          aria-hidden="true"
         />
-        {showSoundPrompt ? (
-          <button type="button" className="figma-hero-sound" onClick={() => void enableHeroSound()}>
-            <span aria-hidden="true" />
-            <small>Enable sound</small>
-          </button>
-        ) : null}
         <div className="figma-hero-overlay" />
         <div className="figma-hero-content">
           <h1>
