@@ -207,35 +207,38 @@ export function Homepage() {
   const heroVideoRef = useRef<HTMLVideoElement>(null)
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
   const [isHeroMuted, setIsHeroMuted] = useState(false)
-  const [showSoundPrompt, setShowSoundPrompt] = useState(false)
   const activeStory = travellerStories[activeStoryIndex]
 
   useEffect(() => {
     const video = heroVideoRef.current
     if (!video) return
 
-    video.defaultMuted = true
-    video.muted = true
+    video.volume = 1
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
 
     let hasStartedPlaying = false
 
     const attemptPlay = async () => {
+      // Guard against loadeddata/canplay firing again after playback has
+      // already started — re-issuing play() on a playing video can cause
+      // an audible restart/overlap ("double sound").
+      if (hasStartedPlaying) return
+
       video.muted = false
 
       try {
         await video.play()
+        hasStartedPlaying = true
         setIsHeroMuted(false)
-        setShowSoundPrompt(false)
         return
       } catch {
         video.muted = true
         setIsHeroMuted(true)
-        setShowSoundPrompt(true)
 
         try {
           await video.play()
+          hasStartedPlaying = true
         } catch {
           // Autoplay can still be blocked on some devices.
         }
@@ -250,12 +253,12 @@ export function Homepage() {
       void attemptPlay()
     }
 
-    attemptPlay()
-    video.addEventListener('loadeddata', attemptPlay)
-    video.addEventListener('canplay', attemptPlay)
+    void attemptPlay()
+    video.addEventListener('loadeddata', handleLoadedData)
+    video.addEventListener('canplay', handleCanPlay)
 
     const handleVisibilityChange = () => {
-      if (!document.hidden) {
+      if (!document.hidden && video.paused) {
         void video.play().catch(() => {})
       }
     }
@@ -263,25 +266,24 @@ export function Homepage() {
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      video.removeEventListener('loadeddata', attemptPlay)
-      video.removeEventListener('canplay', attemptPlay)
+      video.removeEventListener('loadeddata', handleLoadedData)
+      video.removeEventListener('canplay', handleCanPlay)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
-  const enableHeroSound = async () => {
+  const toggleHeroSound = () => {
     const video = heroVideoRef.current
     if (!video) return
 
-    video.muted = false
-    video.volume = 1
-    setIsHeroMuted(false)
-    setShowSoundPrompt(false)
-
-    try {
-      await video.play()
-    } catch {
-      setShowSoundPrompt(true)
+    if (video.muted) {
+      video.muted = false
+      video.volume = 1
+      setIsHeroMuted(false)
+      void video.play().catch(() => {})
+    } else {
+      video.muted = true
+      setIsHeroMuted(true)
     }
   }
 
@@ -302,18 +304,21 @@ export function Homepage() {
           src={heroVideo}
           poster={heroPoster}
           autoPlay
-          muted
+          muted={isHeroMuted}
           loop
           playsInline
           preload="auto"
           disablePictureInPicture
         />
-        {showSoundPrompt ? (
-          <button type="button" className="figma-hero-sound" onClick={() => void enableHeroSound()}>
-            <span aria-hidden="true" />
-            <small>Enable sound</small>
-          </button>
-        ) : null}
+        <button
+          type="button"
+          className="figma-hero-sound"
+          onClick={toggleHeroSound}
+          aria-label={isHeroMuted ? 'Unmute video' : 'Mute video'}
+        >
+          <span aria-hidden="true" data-state={isHeroMuted ? 'muted' : 'unmuted'} />
+          <small>{isHeroMuted ? 'Unmute sound' : 'Mute sound'}</small>
+        </button>
         <div className="figma-hero-overlay" />
         <div className="figma-hero-content">
           <h1>
