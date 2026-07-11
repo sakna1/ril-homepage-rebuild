@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './Homepage.css'
 import { ArrowIcon } from '../ArrowIcon'
+import { BrochureRequestForm } from './BrochureRequestForm'
 import { experienceImages } from '../ExperiencesPage/images'
 import { sharedHeritageWorld } from '../../journey/discoveryWorlds'
 import kelaniTempleDetailImage from '../../assets/images/Kelani temple(1).JPG'
@@ -205,39 +206,86 @@ function getExpectationsHref(world: string) {
 export function Homepage() {
   const heroVideoRef = useRef<HTMLVideoElement>(null)
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
+  const [isHeroMuted, setIsHeroMuted] = useState(false)
   const activeStory = travellerStories[activeStoryIndex]
 
   useEffect(() => {
     const video = heroVideoRef.current
     if (!video) return
 
-    video.defaultMuted = true
-    video.muted = true
+    video.volume = 1
     video.setAttribute('playsinline', '')
     video.setAttribute('webkit-playsinline', '')
 
-    const attemptPlay = () => {
-      void video.play().catch(() => {})
+    let hasStartedPlaying = false
+
+    const attemptPlay = async () => {
+      // Guard against loadeddata/canplay firing again after playback has
+      // already started — re-issuing play() on a playing video can cause
+      // an audible restart/overlap ("double sound").
+      if (hasStartedPlaying) return
+
+      video.muted = false
+
+      try {
+        await video.play()
+        hasStartedPlaying = true
+        setIsHeroMuted(false)
+        return
+      } catch {
+        video.muted = true
+        setIsHeroMuted(true)
+
+        try {
+          await video.play()
+          hasStartedPlaying = true
+        } catch {
+          // Autoplay can still be blocked on some devices.
+        }
+      }
     }
 
-    attemptPlay()
-    video.addEventListener('loadeddata', attemptPlay)
-    video.addEventListener('canplay', attemptPlay)
+    const handleLoadedData = () => {
+      void attemptPlay()
+    }
+
+    const handleCanPlay = () => {
+      void attemptPlay()
+    }
+
+    void attemptPlay()
+    video.addEventListener('loadeddata', handleLoadedData)
+    video.addEventListener('canplay', handleCanPlay)
 
     const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        attemptPlay()
+      if (!document.hidden && video.paused) {
+        void video.play().catch(() => {})
       }
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      video.removeEventListener('loadeddata', attemptPlay)
-      video.removeEventListener('canplay', attemptPlay)
+      video.removeEventListener('loadeddata', handleLoadedData)
+      video.removeEventListener('canplay', handleCanPlay)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
+
+  const toggleHeroSound = () => {
+    const video = heroVideoRef.current
+    if (!video) return
+
+    if (video.muted) {
+      video.muted = false
+      video.volume = 1
+      setIsHeroMuted(false)
+      void video.play().catch(() => {})
+    } else {
+      video.muted = true
+      setIsHeroMuted(true)
+    }
+  }
 
   const showPreviousStory = () => {
     setActiveStoryIndex((currentIndex) => (currentIndex === 0 ? travellerStories.length - 1 : currentIndex - 1))
@@ -256,13 +304,21 @@ export function Homepage() {
           src={heroVideo}
           poster={heroPoster}
           autoPlay
-          muted
+          muted={isHeroMuted}
           loop
           playsInline
           preload="auto"
           disablePictureInPicture
-          aria-hidden="true"
         />
+        <button
+          type="button"
+          className="figma-hero-sound"
+          onClick={toggleHeroSound}
+          aria-label={isHeroMuted ? 'Unmute video' : 'Mute video'}
+        >
+          <span aria-hidden="true" data-state={isHeroMuted ? 'muted' : 'unmuted'} />
+          <small>{isHeroMuted ? 'Unmute sound' : 'Mute sound'}</small>
+        </button>
         <div className="figma-hero-overlay" />
         <div className="figma-hero-content">
           <h1>
@@ -617,10 +673,7 @@ export function Homepage() {
               Sent privately, without an automated itinerary or mailing-list noise: a polished first
               briefing for travellers who expect careful judgement before any recommendation is made.
             </p>
-            <form className="figma-brochure-form">
-              <input type="email" aria-label="Your email address" placeholder="Your email address" />
-              <button type="submit">Request Brochure</button>
-            </form>
+            <BrochureRequestForm />
           </div>
           <aside className="figma-brochure-card" aria-label="Private brochure preview">
             <figure className="figma-brochure-preview" aria-hidden="true">
