@@ -596,9 +596,17 @@
 
 .theme-chapter-shell {
   position: relative;
+  z-index: 1;
   display: grid;
   grid-column: span 3;
   min-height: 330px;
+  transition: transform 0.3s ease, z-index 0.3s ease;
+}
+
+.theme-chapter-shell:hover,
+.theme-chapter-shell:focus-within {
+  z-index: 4;
+  transform: scale(1.06);
 }
 
 @media (min-width: 1441px) {
