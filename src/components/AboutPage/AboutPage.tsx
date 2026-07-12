@@ -254,9 +254,6 @@ export function AboutPage() {
           </div>
           <div className="about-digital-credit-grid">
             <article className="about-digital-credit about-digital-credit--studio">
-              <div className="about-digital-credit-images" aria-hidden="true">
-                <img src={digitalStudio.image} alt="" />
-              </div>
               <div>
                 <h3>{digitalStudio.name}</h3>
                 <span>

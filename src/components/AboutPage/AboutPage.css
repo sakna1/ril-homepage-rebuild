@@ -835,23 +835,8 @@
 }
 
 .about-digital-credit--studio {
-  grid-template-columns: minmax(180px, 0.36fr) minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 48px);
+  grid-template-columns: minmax(0, 1fr);
   padding: clamp(28px, 4vw, 42px);
-}
-
-.about-digital-credit-images {
-  min-height: 220px;
-}
-
-.about-digital-credit-images img {
-  display: block;
-  width: 100%;
-  max-width: 220px;
-  height: 220px;
-  object-fit: cover;
-  border: 1px solid var(--color-border);
-  filter: grayscale(100%) contrast(1.04);
 }
 
 .about-digital-credit h3 {
@@ -1292,10 +1277,6 @@
     height: 108px;
   }
 
-  .about-digital-credit--studio {
-    grid-template-columns: minmax(150px, 0.36fr) minmax(0, 1fr);
-  }
-
   .about-summary-media {
     min-height: 360px;
   }
@@ -1405,18 +1386,6 @@
   .about-digital-credit > img {
     width: 100%;
     height: 260px;
-  }
-
-  .about-digital-credit--studio {
-    grid-template-columns: 1fr;
-  }
-
-  .about-digital-credit-images {
-    min-height: 280px;
-  }
-
-  .about-digital-credit-images img {
-    height: 220px;
   }
 
   .about-invitation::before {
