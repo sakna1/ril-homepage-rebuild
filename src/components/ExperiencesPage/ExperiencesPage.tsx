@@ -2,56 +2,16 @@ import './ExperiencesPage.css'
 import { useState, type MouseEvent, type ReactNode } from 'react'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from './images'
-import { PackageMapOverlay } from './PackageMapOverlay'
+import { ThemeMapExplorer } from './ThemeMapExplorer'
 import { useJourney } from '../../journey/useJourney'
 import { inferJourneyRegion } from '../../journey/journeyTaxonomy'
 import { normalizeRegionLabel } from '../../journey/savedJourneyDisplay'
 import { sharedHeritageRecommendations, sharedHeritageWorld } from '../../journey/discoveryWorlds'
-import kelaniTempleDetail from '../../assets/images/Kelani temple(1).JPG'
 import kandyPerahera from '../../assets/images/Kandy Perahera.JPG'
-import sripadayaSky from '../../assets/images/sripadaya sky.jpeg'
 import type { PackageThemeTitle } from './packageMapCatalog'
-
-type Detail = {
-  label: string
-  value: string
-}
-
-const experienceThemeOptions = [
-  'All Encounters',
-  'Wildlife & Wilderness',
-  'Ocean & Discovery',
-  'Heritage & Memory',
-  'Wellness & Restoration',
-  'Rail & Landscape',
-  'Culture & Human Connection',
-  sharedHeritageWorld.name,
-] as const
-
-type ExperienceTheme = (typeof experienceThemeOptions)[number]
-
-type Encounter = {
-  id: string
-  theme?: PackageThemeTitle
-  category: string
-  title: string
-  note: string
-  curator: string
-  curatorImage: string
-  image: string
-  imageAlt: string
-  badge?: string
-  caption: string
-  details: Detail[]
-}
 
 const curatorTitles = {
   arjun: 'Founder & Lead Curator',
-  amara: 'Head of Heritage & Cultural Research',
-  dilini: 'Co-Founder',
-  kavindra: 'Head Naturalist',
-  sahan: 'Coastal Experiences Lead',
-  malini: 'Cultural Lead',
 } as const
 
 const stats = [
@@ -63,199 +23,6 @@ const stats = [
 
 const heroProofs = ['Private routing', 'Discreet hosts', 'Closed-door access'] as const
 
-const localImages = {
-  kandyPerahera,
-  kelaniTempleDetail,
-  sripadayaSky,
-} as const
-
-const encounters: Encounter[] = [
-  {
-    id: 'sigiriya-dawn-ascent',
-    theme: 'Heritage & Memory',
-    category: 'Heritage — Singular Access',
-    title: 'The Sigiriya Dawn Ascent',
-    note:
-      'There are two Sigiriyas. The one you visit at 9am with three thousand other people, and the one that exists between 5 and 7am — when the frescoes catch low light no photograph has ever adequately described. We negotiated singular access. It takes eight months of patience per year to maintain.',
-    curator: `Amara Weerasinghe, ${curatorTitles.amara}`,
-    curatorImage: experienceImages.amara,
-    image: experienceImages.sigiriyaMain,
-    imageAlt: 'Sigiriya rock fortress rising above the Sri Lankan landscape',
-    badge: "Curator's Choice",
-    caption: 'Cultural Heritage — Central Province',
-    details: [
-      { label: 'Duration', value: '3 Hours' },
-      { label: 'Best Season', value: 'Jan — Apr' },
-      { label: 'Group Size', value: 'Max 4' },
-      { label: 'Key Highlight', value: 'Pre-dawn private access, fresco viewing' },
-      { label: 'Curator', value: 'Amara W.' },
-    ],
-  },
-  {
-    id: 'private-tea-estate',
-    theme: 'Rail & Landscape',
-    category: 'Tea Country — Immersive',
-    title: 'A Private Tea Estate, Locked Before Dawn',
-    note:
-      'Tea tourism is everywhere. What is almost nowhere is the thing that precedes it: the stillness of a working estate at 4:45am, before the pickers arrive, when the mist sits exactly at shoulder height and the silence has a particular quality I can only describe as earned. This is the version we offer.',
-    curator: `Dilini Perera, ${curatorTitles.dilini}`,
-    curatorImage: experienceImages.dilini,
-    image: experienceImages.hillCountry,
-    imageAlt: 'Nuwara Eliya hill country landscape in soft morning light',
-    caption: 'Tea Country — Hill Province',
-    details: [
-      { label: 'Duration', value: 'Full Day' },
-      { label: 'Best Season', value: 'Feb — May' },
-      { label: 'Group Size', value: 'Max 2' },
-      { label: 'Key Highlight', value: 'Private estate access, master blender session' },
-      { label: 'Curator', value: 'Dilini P.' },
-    ],
-  },
-  {
-    id: 'shared-heritage-quietly-read',
-    theme: sharedHeritageWorld.name,
-    category: 'Shared History — Editorial Route',
-    title: 'Shared Heritage, Quietly Read',
-    note:
-      "This is not a tour of colonial relics. It is a considered route through civic monuments, tea country, railway engineering, old gardens, and grand hotels where Sri Lankan and British histories still meet in architecture, education, hospitality, and daily ritual.",
-    curator: `Amara Weerasinghe, ${curatorTitles.amara}`,
-    curatorImage: experienceImages.amara,
-    image: experienceImages.queenVictoriaStatue,
-    imageAlt: 'Marble statue of Queen Victoria, a British monument in Sri Lanka',
-    badge: 'New Discovery World',
-    caption: 'Monuments — Tea Country — Colombo',
-    details: [
-      { label: 'Duration', value: '3–7 Days' },
-      { label: 'Best Season', value: 'Dec — Apr' },
-      { label: 'Group Size', value: 'Private' },
-      { label: 'Key Highlight', value: 'Civic monuments, tea, railways, and gardens' },
-      { label: 'Curator', value: 'Amara W.' },
-    ],
-  },
-  {
-    id: 'leopard-research-circuit',
-    theme: 'Wildlife & Wilderness',
-    category: 'Wildlife — Expert-Led',
-    title: 'The Leopard Research Circuit',
-    note:
-      "I spent seven years in Yala before I joined this team. I know which vehicles to avoid, which blocks to enter at which hour, and — more importantly — when to stop the engine and simply wait. Safari isn't about luck. It's about discipline. I've only ever taken four people into Block 5 at dawn. The fifth will be you.",
-    curator: `Kavindra Silva, ${curatorTitles.kavindra}`,
-    curatorImage: experienceImages.kavindra,
-    image: experienceImages.leopardCircuit,
-    imageAlt: 'Wild Sri Lankan leopard resting on ancient rock at dusk',
-    badge: 'Rare Access',
-    caption: 'Wildlife — Southern Province',
-    details: [
-      { label: 'Duration', value: '3 Days' },
-      { label: 'Best Season', value: 'Jun — Oct' },
-      { label: 'Group Size', value: 'Max 4' },
-      { label: 'Key Highlight', value: 'Block 5 private access, research biologist guide' },
-      { label: 'Curator', value: 'Kavindra S.' },
-    ],
-  },
-  {
-    id: 'mirissa-fishermens-dawn',
-    theme: 'Ocean & Discovery',
-    category: 'Southern Coast — Immersive',
-    title: "The Mirissa Fishermen's Dawn",
-    note:
-      'The coast, for most visitors, is an amenity. A view. A backdrop. But Mirissa runs on a different clock — one that starts at 3am, when the tuna boats come in and the auction begins. I have spent years building trust with three families on this stretch of water. You are not joining a tour. You are, briefly, joining a life.',
-    curator: `Sahan Mendis, ${curatorTitles.sahan}`,
-    curatorImage: experienceImages.sahan,
-    image: experienceImages.mirissaBoats,
-    imageAlt: 'Fishing boats at Mirissa harbour at sunset',
-    caption: 'Southern Coast — Mirissa',
-    details: [
-      { label: 'Duration', value: '1 Day' },
-      { label: 'Best Season', value: 'Nov — Apr' },
-      { label: 'Group Size', value: 'Max 3' },
-      { label: 'Key Highlight', value: 'Pre-dawn tuna auction, private boat expedition' },
-      { label: 'Curator', value: 'Sahan M.' },
-    ],
-  },
-  {
-    id: 'kandyan-dance-rehearsal',
-    theme: 'Culture & Human Connection',
-    category: 'Cultural — Intimate Access',
-    title: 'A Private Kandyan Dance Rehearsal',
-    note:
-      'Performances are for audiences. Rehearsals are where the art lives. We arranged access to a family that has been training in the Kandyan tradition for four generations. You will watch a senior dancer guide a younger student. You will understand something about transmission, about inheritance, that no performance could ever convey.',
-    curator: `Amara Weerasinghe, ${curatorTitles.amara}`,
-    curatorImage: experienceImages.amara,
-    image: localImages.kandyPerahera,
-    imageAlt: 'Kandy Perahera procession with ceremonial performers',
-    badge: 'By Arrangement',
-    caption: 'Cultural — Kandy',
-    details: [
-      { label: 'Duration', value: '2 Hours' },
-      { label: 'Best Season', value: 'Year-round' },
-      { label: 'Group Size', value: 'Max 6' },
-      { label: 'Key Highlight', value: '4th-generation family, private studio, contextual briefing' },
-      { label: 'Curator', value: 'Amara W.' },
-    ],
-  },
-  {
-    id: 'deep-water-hour',
-    theme: 'Ocean & Discovery',
-    category: 'Ocean — Singular Access',
-    title: 'The Deep-Water Hour',
-    note:
-      'At 5am, a private vessel departs before the tour boats have woken. The blue whale, the largest creature alive, surfaces without warning and without ceremony — merely because it must. The privilege is not proximity alone. It is entering the water on its own terms, without performance.',
-    curator: `Sahan Mendis, ${curatorTitles.sahan}`,
-    curatorImage: experienceImages.sahan,
-    image: experienceImages.blueWhaleAerial,
-    imageAlt: 'Blue whale surfacing in the Indian Ocean near Mirissa',
-    caption: 'Ocean — Mirissa',
-    details: [
-      { label: 'Duration', value: 'Half Day' },
-      { label: 'Best Season', value: 'Nov — Apr' },
-      { label: 'Group Size', value: 'Max 4' },
-      { label: 'Key Highlight', value: 'Private pre-dawn vessel, marine naturalist' },
-      { label: 'Curator', value: 'Sahan M.' },
-    ],
-  },
-  {
-    id: 'sacred-fire-private-vantage',
-    theme: 'Culture & Human Connection',
-    category: 'Ceremony — Private Vantage',
-    title: 'Sacred Fire, Private Vantage',
-    note:
-      "Access to the inner sanctum of the Temple of the Tooth is never treated as spectacle. A private audience with the temple's senior custodian begins with context, restraint, and the understanding that the ceremony is not adjusted for visitors — you adjust yourself to the ceremony.",
-    curator: `Malini Fernando, ${curatorTitles.malini}`,
-    curatorImage: experienceImages.portraitMalini,
-    image: experienceImages.oilLamps,
-    imageAlt: 'Oil lamps lit during a sacred evening ceremony in Kandy',
-    caption: 'Ceremony — Kandy',
-    details: [
-      { label: 'Duration', value: 'Evening' },
-      { label: 'Best Season', value: 'Year-round' },
-      { label: 'Group Size', value: 'Max 4' },
-      { label: 'Key Highlight', value: 'Senior custodian context, protected vantage' },
-      { label: 'Curator', value: 'Malini F.' },
-    ],
-  },
-  {
-    id: 'ancient-grammar-of-healing',
-    theme: 'Wellness & Restoration',
-    category: 'Restoration — Healing Traditions',
-    title: 'The Ancient Grammar of Healing',
-    note:
-      'Embedded within a rainforest reserve, this five-day Ayurvedic immersion is guided by a fourth-generation vaidya. It is not a spa and not a retreat in the decorative sense. It is a diagnostic and restorative system refined for two thousand years, entered slowly and with discipline.',
-    curator: `Dilini Perera, ${curatorTitles.dilini}`,
-    curatorImage: experienceImages.dilini,
-    image: experienceImages.ayurveda,
-    imageAlt: 'Ayurvedic treatment pavilion set within a tropical rainforest retreat',
-    badge: 'By Consultation',
-    caption: 'Restoration — Sinharaja',
-    details: [
-      { label: 'Duration', value: '5 Days' },
-      { label: 'Best Season', value: 'All Year' },
-      { label: 'Group Size', value: 'Individual' },
-      { label: 'Key Highlight', value: 'Fourth-generation vaidya, rainforest setting' },
-      { label: 'Curator', value: 'Dilini P.' },
-    ],
-  },
-]
 
 const experienceThemes = [
   {
@@ -313,7 +80,7 @@ const experienceThemes = [
     description:
       'Artisans, musicians, dancers, family traditions, private introductions, and everyday Sri Lanka.',
     traveller: 'For the Curious Witness',
-    image: localImages.kandyPerahera,
+    image: kandyPerahera,
     imageAlt: 'Kandy Perahera cultural procession in Sri Lanka',
     href: '#kandyan-dance-rehearsal',
     encounter: 'A Private Kandyan Dance Rehearsal',
@@ -327,15 +94,6 @@ const experienceThemes = [
     href: '#shared-heritage-quietly-read',
     encounter: 'Shared Heritage, Quietly Read',
   },
-] as const
-
-const photoStrip = [
-  { src: localImages.sripadayaSky, alt: 'Highland horizon at dawn above the Sri Lankan hills', wide: false },
-  { src: experienceImages.hillCountry, alt: 'Nuwara Eliya hill country landscape', wide: true },
-  { src: localImages.kelaniTempleDetail, alt: 'Sacred mural detail inside Kelani temple', wide: false },
-  { src: experienceImages.mirissaBoats, alt: 'Fishing boats at Mirissa harbour at sunset', wide: true },
-  { src: experienceImages.galleFort, alt: 'Galle Fort ramparts above the southern coast', wide: false },
-  { src: localImages.kandyPerahera, alt: 'Kandy Perahera ceremonial procession', wide: false },
 ] as const
 
 function Eyebrow({ children, dark = false }: { children: ReactNode; dark?: boolean }) {
@@ -366,201 +124,24 @@ function TextLink({
   )
 }
 
-const encounterNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'] as const
-
 function toJourneyId(kind: string, value: string) {
   return `${kind}:${value.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
 }
 
-function readInitialExpectationTheme(): ExperienceTheme {
+const mapThemeTitles = experienceThemes.map((theme) => theme.title)
+
+function readInitialExpectationTheme(): PackageThemeTitle | null {
   if (typeof window === 'undefined') {
-    return 'All Encounters'
+    return null
   }
 
   const world = new URLSearchParams(window.location.search).get('world')
-  return experienceThemeOptions.includes(world as ExperienceTheme) ? (world as ExperienceTheme) : 'All Encounters'
-}
-
-function EncounterCard({
-  encounter,
-  index,
-  onOpenPackageMap,
-}: {
-  encounter: Encounter
-  index: number
-  onOpenPackageMap: (encounter: Encounter) => void
-}) {
-  const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
-  const enquiryHref =
-    encounter.title === 'The Sigiriya Dawn Ascent'
-      ? '/expectations/the-sigiriya-dawn-ascent'
-      : '/contact'
-  const journeyId = toJourneyId('experience', encounter.title)
-  const isEncounterIncluded = isIncluded(journeyId)
-  const canOpenPackageMap = Boolean(encounter.theme)
-
-  function includeEncounterInJourney() {
-    const parentRegion = inferJourneyRegion({
-      kind: 'experience',
-      label: encounter.title,
-      detail: encounter.note,
-      source: `${encounter.category} ${encounter.caption}`,
-    })
-
-    if (encounter.theme) {
-      includeItem({
-        id: toJourneyId('theme', encounter.theme),
-        kind: 'theme',
-        label: encounter.theme,
-        source: 'Expectations',
-      })
-    }
-
-    if (encounter.theme && parentRegion && !isIncluded(toJourneyId('region', normalizeRegionLabel(parentRegion)))) {
-      const editorialRegion = normalizeRegionLabel(parentRegion)
-      includeItem({
-        id: toJourneyId('region', editorialRegion),
-        kind: 'region',
-        label: editorialRegion,
-        source: 'Expectations',
-        parentTheme: encounter.theme,
-      })
-    }
-
-    includeItem({
-      id: journeyId,
-      kind: 'experience',
-      label: encounter.title,
-      detail: encounter.note,
-      source: encounter.category,
-      parentTheme: encounter.theme,
-      parentRegion: parentRegion ? normalizeRegionLabel(parentRegion) : undefined,
-    })
-  }
-
-  function toggleEncounterJourney(event: MouseEvent<HTMLButtonElement>) {
-    event.preventDefault()
-    event.stopPropagation()
-
-    if (isEncounterIncluded) {
-      confirmRemoveItem(journeyId)
-      return
-    }
-
-    includeEncounterInJourney()
-  }
-
-  function handleEnquireClick(event: MouseEvent<HTMLAnchorElement>) {
-    event.stopPropagation()
-    if (!isEncounterIncluded) {
-      includeEncounterInJourney()
-    }
-  }
-
-  function openPackageMap(event?: MouseEvent) {
-    event?.preventDefault()
-    event?.stopPropagation()
-    if (!canOpenPackageMap) {
-      return
-    }
-    onOpenPackageMap(encounter)
-  }
-
-  function handleRowClick(event: MouseEvent<HTMLElement>) {
-    if (!canOpenPackageMap) {
-      return
-    }
-    const target = event.target as HTMLElement
-    if (target.closest('a, button')) {
-      return
-    }
-    openPackageMap()
-  }
-
-  return (
-    <article
-      id={encounter.id}
-      className={`encounter-row experiences-reveal journey-selectable${isEncounterIncluded ? ' is-included' : ''}${canOpenPackageMap ? ' is-package-openable' : ''}`}
-      onClick={canOpenPackageMap ? handleRowClick : undefined}
-    >
-      <div className="encounter-index">
-        <span>{encounterNumerals[index] ?? String(index + 1)}</span>
-        <i />
-      </div>
-
-      <div className="encounter-image-panel">
-        <div className="encounter-image-frame">
-          <img src={encounter.image} alt={encounter.imageAlt} />
-        </div>
-        {encounter.badge ? <span className="encounter-badge">{encounter.badge}</span> : null}
-        <span className="encounter-caption">{encounter.caption}</span>
-        {canOpenPackageMap ? (
-          <button
-            className="encounter-map-cue"
-            type="button"
-            onClick={openPackageMap}
-            aria-label={`Open ${encounter.theme} package map for ${encounter.title}`}
-          >
-            View on map
-          </button>
-        ) : null}
-      </div>
-
-      <div className="encounter-meta">
-        <p className="experiences-kicker">{encounter.category}</p>
-        <button
-          className="encounter-journey-toggle"
-          type="button"
-          aria-pressed={isEncounterIncluded}
-          aria-label={`${isEncounterIncluded ? 'Remove' : 'Add'} ${encounter.title} ${isEncounterIncluded ? 'from' : 'to'} your journey`}
-          onClick={toggleEncounterJourney}
-        >
-          {isEncounterIncluded ? 'Remove from Journey' : 'Add to Journey'}
-        </button>
-      </div>
-
-      <div className="encounter-copy">
-        <h2>{encounter.title}</h2>
-        <div className="curator-note">
-          <p className="curator-note-label">Curator's Note</p>
-          <blockquote>"{encounter.note}"</blockquote>
-          <div className="curator-byline">
-            <img src={encounter.curatorImage} alt="" />
-            <span>— {encounter.curator}</span>
-          </div>
-        </div>
-        <TextLink href={enquiryHref} onClick={handleEnquireClick}>
-          Enquire About This Encounter
-        </TextLink>
-      </div>
-
-      <aside className="encounter-details-panel" aria-label={`${encounter.title} details`}>
-        <dl className="encounter-details">
-        {encounter.details.map((detail) => (
-          <div key={detail.label}>
-            <dt>{detail.label}</dt>
-            <dd>{detail.value}</dd>
-          </div>
-        ))}
-        </dl>
-      </aside>
-    </article>
-  )
+  return (mapThemeTitles as readonly string[]).includes(world ?? '') ? (world as PackageThemeTitle) : null
 }
 
 export function ExpectationsPage() {
-  const [selectedTheme, setSelectedTheme] = useState<ExperienceTheme>(readInitialExpectationTheme)
-  const [activePackageEncounterId, setActivePackageEncounterId] = useState<string | null>(null)
+  const [selectedTheme, setSelectedTheme] = useState<PackageThemeTitle | null>(readInitialExpectationTheme)
   const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
-  const filteredEncounters =
-    selectedTheme === 'All Encounters'
-      ? encounters
-      : encounters.filter((encounter) => encounter.theme === selectedTheme)
-  const curatedOpeningsCount = filteredEncounters.length
-  const activePackageEncounter = encounters.find((encounter) => encounter.id === activePackageEncounterId) ?? null
-  const themeEncountersForOverlay = activePackageEncounter?.theme
-    ? encounters.filter((encounter) => encounter.theme === activePackageEncounter.theme)
-    : []
 
   function includeSharedHeritageRecommendations() {
     sharedHeritageRecommendations.slice(1, 5).forEach(({ destination }) => {
@@ -580,19 +161,16 @@ export function ExpectationsPage() {
     })
   }
 
-  function handleThemeExplore(
-    theme: Exclude<ExperienceTheme, 'All Encounters'>,
-    event: MouseEvent<HTMLAnchorElement>,
-  ) {
+  function handleThemeExplore(theme: PackageThemeTitle, event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault()
     setSelectedTheme(theme)
 
     window.requestAnimationFrame(() => {
-      document.getElementById('encounters')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      document.getElementById('discover-map')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
   }
 
-  function toggleThemeJourney(theme: Exclude<ExperienceTheme, 'All Encounters'>) {
+  function toggleThemeJourney(theme: PackageThemeTitle) {
     const journeyId = toJourneyId('theme', theme)
 
     if (isIncluded(journeyId)) {
@@ -602,25 +180,6 @@ export function ExpectationsPage() {
 
     includeItem({
       id: journeyId,
-      kind: 'theme',
-      label: theme,
-      source: 'Expectations',
-    })
-
-    if (theme === sharedHeritageWorld.name) {
-      includeSharedHeritageRecommendations()
-    }
-  }
-
-  function handleThemeFilter(theme: ExperienceTheme) {
-    setSelectedTheme(theme)
-
-    if (theme === 'All Encounters') {
-      return
-    }
-
-    includeItem({
-      id: toJourneyId('theme', theme),
       kind: 'theme',
       label: theme,
       source: 'Expectations',
@@ -746,7 +305,7 @@ export function ExpectationsPage() {
                     </button>
                     <a
                       className="theme-chapter"
-                      href="#encounters"
+                      href="#discover-map"
                       onClick={(event) => handleThemeExplore(theme.title, event)}
                       aria-label={`${theme.title}: explore matching expectation paths`}
                     >
@@ -768,79 +327,7 @@ export function ExpectationsPage() {
         </div>
       </section>
 
-      <section className="region-filter experiences-reveal" aria-label="Set journey expectations by theme">
-        <div className="region-filter-copy">
-          <span>Set A Preference</span>
-          <label htmlFor="experience-theme">Preferred Journey Theme</label>
-        </div>
-        <div className="region-filter-select-wrap">
-          <select
-            id="experience-theme"
-            value={selectedTheme}
-            onChange={(event) => handleThemeFilter(event.target.value as ExperienceTheme)}
-          >
-            {experienceThemeOptions.map((theme) => (
-              <option key={theme} value={theme}>
-                {theme}
-              </option>
-            ))}
-          </select>
-        </div>
-        <p>
-          {curatedOpeningsCount} {curatedOpeningsCount === 1 ? 'Expectation Path' : 'Expectation Paths'}
-        </p>
-      </section>
-
-      <section className="encounters-collection" id="encounters">
-        <div className="experiences-container">
-          <header className="encounters-collection-header experiences-reveal">
-            <p>Personally Introduced</p>
-            <h2>
-              These are quiet signals that help your concierge understand the kind of journey to begin
-              composing.
-            </h2>
-          </header>
-          {filteredEncounters.length > 0 ? (
-            filteredEncounters.map((encounter, index) => (
-              <EncounterCard
-                key={encounter.title}
-                encounter={encounter}
-                index={index}
-                onOpenPackageMap={(selected) => setActivePackageEncounterId(selected.id)}
-              />
-            ))
-          ) : (
-            <div className="encounters-empty experiences-reveal">
-              <p>New encounters are being prepared for this expectation path.</p>
-              <span>This pathway is currently available through private consultation.</span>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="photo-strip experiences-reveal" aria-label="Expectation photography carousel">
-        <div className="photo-strip-track">
-          <div className="photo-strip-set">
-            {photoStrip.map((photo) => (
-              <img key={photo.alt} className={photo.wide ? 'wide' : ''} src={photo.src} alt={photo.alt} />
-            ))}
-          </div>
-          <div className="photo-strip-set" aria-hidden="true">
-            {photoStrip.map((photo) => (
-              <img key={`repeat-${photo.alt}`} className={photo.wide ? 'wide' : ''} src={photo.src} alt="" />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {activePackageEncounter?.theme ? (
-        <PackageMapOverlay
-          encounter={activePackageEncounter}
-          themeEncounters={themeEncountersForOverlay}
-          onClose={() => setActivePackageEncounterId(null)}
-          onFocusEncounter={(encounterId) => setActivePackageEncounterId(encounterId)}
-        />
-      ) : null}
+      <ThemeMapExplorer themes={experienceThemes} selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
     </main>
   )
 }

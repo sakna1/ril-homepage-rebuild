@@ -8,11 +8,9 @@ import { ILLUSTRATIVE_DISCLAIMER } from '../../data/journey/mockJourneyTypes'
 import { journeyRegions } from '../../data/journeyRegions'
 import { getSavedDestinationIds, getSavedRegionIds } from '../../journey/contextualRecommendations'
 import type { JourneyItem } from '../../journey/JourneyContext'
+import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
-import {
-  buildJourneyGlanceSummary,
-  getTravellerFacingDetail,
-} from '../../journey/savedJourneyDisplay'
+import { buildJourneyGlanceSummary } from '../../journey/savedJourneyDisplay'
 import { orderDestinationIdsEditorially } from '../../journey/savedPlaceResolution'
 import {
   adaptSavedItemsToRepositoryInput,
@@ -57,7 +55,12 @@ function isPackageTheme(item: JourneyItem) {
 }
 
 function isPackagePlace(item: JourneyItem) {
-  return item.kind === 'destination' || item.kind === 'experience' || item.kind === 'region'
+  return (
+    item.kind === 'destination' ||
+    item.kind === 'experience' ||
+    item.kind === 'region' ||
+    item.kind === 'accommodation'
+  )
 }
 
 export function MyJourneyPage() {
@@ -69,16 +72,21 @@ export function MyJourneyPage() {
   const stepsId = useId()
 
   const themes = useMemo(() => items.filter(isPackageTheme), [items])
-  const places = useMemo(
-    () => items.filter((item) => item.kind === 'destination' || item.kind === 'experience'),
-    [items],
-  )
   const destinations = useMemo(() => items.filter((item) => item.kind === 'destination'), [items])
   const experiences = useMemo(() => items.filter((item) => item.kind === 'experience'), [items])
+  const accommodations = useMemo(() => items.filter((item) => item.kind === 'accommodation'), [items])
   const regions = useMemo(() => items.filter((item) => item.kind === 'region'), [items])
+  const placeGroups = useMemo(() => groupJourneyPlaces(items), [items])
   /** Cart shows package composition only — not auto-saved regions/moods/seasons. */
-  const cartItems = useMemo(() => [...themes, ...destinations, ...experiences], [destinations, experiences, themes])
-  const placeCount = destinations.length
+  const cartItems = useMemo(
+    () => [...themes, ...destinations, ...experiences, ...accommodations],
+    [accommodations, destinations, experiences, themes],
+  )
+  const packageLineItems = useMemo(
+    () => [...destinations, ...experiences, ...accommodations],
+    [accommodations, destinations, experiences],
+  )
+  const placeCount = placeGroups.length
   const otherItems = useMemo(
     () => items.filter((item) => !isPackageTheme(item) && !isPackagePlace(item)),
     [items],
@@ -112,22 +120,22 @@ export function MyJourneyPage() {
     if (themes.length > 0) {
       done.add('theme')
     }
-    if (places.length > 0) {
+    if (placeGroups.length > 0) {
       done.add('places')
     }
     if (itinerary && itinerary.segments.length >= 2) {
       done.add('itinerary')
     }
-    if (places.length > 0) {
+    if (placeGroups.length > 0) {
       done.add('cart')
     }
     return done
-  }, [itinerary, places.length, themes.length])
+  }, [itinerary, placeGroups.length, themes.length])
 
   const activeStep: JourneyStep['id'] =
     mode === 'itinerary' || mode === 'edit' || mode === 'builder'
       ? 'itinerary'
-      : places.length === 0
+      : placeGroups.length === 0
         ? themes.length === 0
           ? 'theme'
           : 'places'
@@ -305,62 +313,84 @@ export function MyJourneyPage() {
               </ul>
             ) : null}
 
-            <div className="journey-workspace__places">
-              <div className="journey-workspace__places-head">
-                <h3>Places in this package</h3>
+            <div className="myj-places">
+              <div className="myj-places-head">
+                <h3>Places In This Journey</h3>
                 <a href="/expectations">Add more places</a>
               </div>
 
-              {places.length === 0 ? (
+              {placeGroups.length === 0 ? (
                 <div className="journey-workspace__callout">
-                  <p>Your package needs places.</p>
+                  <p>Your journey needs places.</p>
                   <span>
-                    Open the theme on Expectations, highlight companions on the map, and add what
-                    belongs.
+                    Open a theme on Expectations, explore the map, and add the hotels or things to do
+                    that belong.
                   </span>
-                  <a href="/expectations">Open package map</a>
+                  <a href="/expectations">Open the map explorer</a>
                 </div>
               ) : (
-                <ul className="journey-workspace__place-list">
-                  {destinations.map((item) => (
-                    <li key={item.id}>
-                      <div>
-                        <strong>{item.label}</strong>
-                        <span>Place</span>
-                        {item.parentTheme ? <small>In {item.parentTheme}</small> : null}
-                        {getTravellerFacingDetail(item) ? (
-                          <p>{getTravellerFacingDetail(item)}</p>
-                        ) : null}
-                      </div>
-                      <button type="button" onClick={() => confirmRemoveItem(item.id)}>
-                        Remove
-                      </button>
-                    </li>
+                <div className="myj-place-groups">
+                  {placeGroups.map((group) => (
+                    <article className="myj-place-group" key={group.placeName}>
+                      <header className="myj-place-group-header">
+                        <h4>{group.placeName}</h4>
+                      </header>
+
+                      {group.accommodations.length > 0 ? (
+                        <div className="myj-place-section">
+                          <p className="myj-place-section-label">Where To Stay</p>
+                          <ul className="myj-place-item-list">
+                            {group.accommodations.map((item) => (
+                              <li key={item.id}>
+                                <div>
+                                  <strong>{item.label}</strong>
+                                  {item.detail ? <span>{item.detail}</span> : null}
+                                </div>
+                                <button type="button" onClick={() => confirmRemoveItem(item.id)}>
+                                  Remove
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+
+                      {group.activities.length > 0 ? (
+                        <div className="myj-place-section">
+                          <p className="myj-place-section-label">Things To Do</p>
+                          <ul className="myj-place-item-list myj-place-item-list--compact">
+                            {group.activities.map((item) => (
+                              <li key={item.id}>
+                                <strong>{item.label}</strong>
+                                <button type="button" onClick={() => confirmRemoveItem(item.id)}>
+                                  Remove
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+                    </article>
                   ))}
-                  {experiences.map((item) => (
-                    <li key={item.id}>
-                      <div>
-                        <strong>{item.label}</strong>
-                        <span>Encounter</span>
-                        {item.parentTheme ? <small>In {item.parentTheme}</small> : null}
-                      </div>
-                      <button type="button" onClick={() => confirmRemoveItem(item.id)}>
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                </div>
               )}
             </div>
 
             <div className="journey-workspace__next">
               <h3>Next</h3>
               <div className="journey-workspace__actions">
+                <a
+                  className={`myj-start-journey${placeGroups.length === 0 ? ' is-disabled' : ''}`}
+                  href={placeGroups.length === 0 ? undefined : '/checkout'}
+                  aria-disabled={placeGroups.length === 0}
+                >
+                  Start Journey
+                </a>
                 <button
-                  className="journey-workspace__cta"
+                  className="journey-workspace__ghost"
                   type="button"
                   onClick={handleGenerateItinerary}
-                  disabled={places.length === 0}
+                  disabled={placeGroups.length === 0}
                 >
                   {itinerary ? 'View itinerary' : 'Generate itinerary'}
                 </button>
@@ -383,8 +413,8 @@ export function MyJourneyPage() {
                   Add to cart
                 </button>
               </div>
-              {places.length === 0 ? (
-                <p className="journey-workspace__hint">Add at least one place before generating days.</p>
+              {placeGroups.length === 0 ? (
+                <p className="journey-workspace__hint">Add at least one place before starting your journey.</p>
               ) : null}
             </div>
           </section>
@@ -436,7 +466,7 @@ export function MyJourneyPage() {
                     </div>
                     <div>
                       <dt>Places</dt>
-                      <dd>{destinations.length}</dd>
+                      <dd>{placeGroups.length}</dd>
                     </div>
                     <div>
                       <dt>Encounters</dt>
@@ -525,14 +555,20 @@ export function MyJourneyPage() {
                     custom sequencing; for now, use places as the building blocks.
                   </p>
                   <ul className="journey-workspace__builder-blocks">
-                    {places.map((item) => (
+                    {packageLineItems.map((item) => (
                       <li key={item.id}>
                         <strong>{item.label}</strong>
-                        <span>{item.kind === 'destination' ? 'Place block' : 'Encounter block'}</span>
+                        <span>
+                          {item.kind === 'destination'
+                            ? 'Place block'
+                            : item.kind === 'accommodation'
+                              ? 'Stay block'
+                              : 'Encounter block'}
+                        </span>
                       </li>
                     ))}
                   </ul>
-                  {places.length === 0 ? (
+                  {packageLineItems.length === 0 ? (
                     <a href="/expectations">Add places to build with</a>
                   ) : (
                     <div className="journey-workspace__actions is-compact">

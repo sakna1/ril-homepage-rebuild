@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { AboutPage } from './components/AboutPage/AboutPage'
+import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage'
 import { ContactPage } from './components/ContactPage/ContactPage'
 import { ConciergeDesk } from './components/ConciergeDesk/ConciergeDesk'
 import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
@@ -76,6 +77,10 @@ function AppContent() {
 
   if (path === '/travel-planner' || path === '/my-journey') {
     return renderPage(<MyJourneyPage />)
+  }
+
+  if (path === '/checkout') {
+    return renderPage(<CheckoutPage />)
   }
 
   return renderPage(<Homepage />)

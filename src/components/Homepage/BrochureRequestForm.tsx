@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { apiUrl } from '../../services/apiConfig'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -23,7 +24,7 @@ export function BrochureRequestForm() {
     setErrorMessage('')
 
     try {
-      const response = await fetch('/api/request-brochure', {
+      const response = await fetch(apiUrl('/api/brochure/request'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: trimmedEmail }),
@@ -31,7 +32,8 @@ export function BrochureRequestForm() {
 
       if (!response.ok) {
         const body = await response.json().catch(() => null)
-        throw new Error(body?.error ?? 'We could not send the brochure right now.')
+        const detail = Array.isArray(body?.detail) ? body.detail[0]?.msg : body?.detail
+        throw new Error(detail ?? 'We could not send the brochure right now.')
       }
 
       setStatus('success')

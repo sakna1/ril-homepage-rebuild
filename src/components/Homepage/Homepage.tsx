@@ -50,6 +50,16 @@ const experiences = [
       'For the traveller who does not want nature performed, wilderness begins with patience: a field naturalist, a protected route, and the discipline to wait until the island reveals itself.',
   },
   {
+    image: experienceImages.mirissaBoats,
+    imageAlt: 'Fishing boats at Mirissa harbour at sunset',
+    region: 'Ocean & Discovery',
+    identity: 'For the Unhurried Wanderer',
+    access: 'Whale paths - Quiet lagoons - Sailing days',
+    title: 'The Deep-Water Hour',
+    copy:
+      'For travellers drawn to the sea as a living world: whale paths, quiet lagoons, sailing days, and coastlines that reveal themselves with patience.',
+  },
+  {
     image: experienceImages.heroSigiriya,
     imageAlt: 'Sigiriya rock fortress rising above the Sri Lankan landscape',
     region: 'Heritage & Memory',
@@ -58,6 +68,24 @@ const experiences = [
     title: 'Ancient Places, Entered With Care',
     copy:
       'Some travellers are drawn to what time has left behind. We shape access around light, silence, scholarship, and the dignity of places that should never feel consumed.',
+  },
+  {
+    image: experienceImages.ayurveda,
+    imageAlt: 'Ayurvedic treatment pavilion set within a tropical rainforest retreat',
+    region: 'Wellness & Restoration',
+    identity: 'For the Restorer',
+    access: 'Ayurveda - Slow living - Personal renewal',
+    title: 'The Ancient Grammar of Healing',
+    copy: 'Ayurveda, healing traditions, retreats, slow living, and the quiet work of personal renewal.',
+  },
+  {
+    image: experienceImages.hillCountry,
+    imageAlt: 'Nuwara Eliya hill country landscape',
+    region: 'Rail & Landscape',
+    identity: 'For the Reflective Wanderer',
+    access: 'Hill trains - Tea estates - Mountain light',
+    title: 'A Private Tea Estate, Locked Before Dawn',
+    copy: 'Hill country train journeys, tea estates, mountain routes, and scenery that changes by the hour.',
   },
   {
     image: localImages.kandyPerahera,
@@ -80,15 +108,7 @@ const experiences = [
   },
 ]
 
-const experienceThreads = [
-  'Wildlife & Wilderness',
-  'Ocean & Discovery',
-  'Heritage & Memory',
-  'Wellness & Restoration',
-  'Rail & Landscape',
-  'Culture & Human Connection',
-  sharedHeritageWorld.name,
-] as const
+const experienceThreads = experiences.map((experience) => experience.region)
 
 const philosophyLines = [
   {
@@ -207,7 +227,21 @@ export function Homepage() {
   const heroVideoRef = useRef<HTMLVideoElement>(null)
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
   const [isHeroMuted, setIsHeroMuted] = useState(false)
+  const [activeExperienceIndex, setActiveExperienceIndex] = useState(0)
   const activeStory = travellerStories[activeStoryIndex]
+  const activeExperience = experiences[activeExperienceIndex]
+
+  useEffect(() => {
+    const rotationId = setInterval(() => {
+      setActiveExperienceIndex((current) => (current + 1) % experiences.length)
+    }, 7000)
+
+    return () => clearInterval(rotationId)
+  }, [activeExperienceIndex])
+
+  const showNextExperience = () => {
+    setActiveExperienceIndex((current) => (current + 1) % experiences.length)
+  }
 
   useEffect(() => {
     const video = heroVideoRef.current
@@ -364,32 +398,45 @@ export function Homepage() {
             </aside>
           </header>
 
-          <div className="figma-theme-thread" aria-label="Experience themes">
-            {experienceThreads.map((thread) => (
-              <span key={thread}>{thread}</span>
+          <div className="figma-theme-thread" aria-label="Discovery worlds" role="tablist">
+            {experienceThreads.map((thread, index) => (
+              <button
+                type="button"
+                key={thread}
+                className={index === activeExperienceIndex ? 'is-active' : undefined}
+                onClick={() => setActiveExperienceIndex(index)}
+                role="tab"
+                aria-selected={index === activeExperienceIndex}
+              >
+                {thread}
+              </button>
             ))}
           </div>
 
-          <div className="figma-experience-list">
-            {experiences.map((experience) => (
-              <article className="figma-experience" key={experience.title}>
-                <figure className="figma-experience-media">
-                  <img src={experience.image} alt={experience.imageAlt} />
-                  <figcaption>
-                    <small>{experience.access}</small>
-                  </figcaption>
-                </figure>
-                <div className="figma-experience-copy">
-                  <p className="figma-card-label">{experience.region}</p>
-                  <small>{experience.identity}</small>
-                  <h3>{experience.title}</h3>
-                  <p>{experience.copy}</p>
-                  <a className="figma-button-secondary" href={getExpectationsHref(experience.region)}>
+          <div className="figma-experience-list" aria-live="polite">
+            <article className="figma-experience">
+              <figure className="figma-experience-media">
+                <img src={activeExperience.image} alt={activeExperience.imageAlt} />
+                <figcaption>
+                  <small>{activeExperience.access}</small>
+                </figcaption>
+              </figure>
+              <div className="figma-experience-copy">
+                <p className="figma-card-label">{activeExperience.region}</p>
+                <small>{activeExperience.identity}</small>
+                <h3>{activeExperience.title}</h3>
+                <p>{activeExperience.copy}</p>
+                <div className="figma-experience-actions">
+                  <a className="figma-button-secondary" href={getExpectationsHref(activeExperience.region)}>
                     Continue To Expectations
                   </a>
+                  <button type="button" className="figma-experience-next" onClick={showNextExperience}>
+                    Next World
+                    <ArrowIcon />
+                  </button>
                 </div>
-              </article>
-            ))}
+              </div>
+            </article>
           </div>
         </div>
       </section>

@@ -20,6 +20,8 @@ function kindLabel(kind: JourneyItem['kind']) {
       return 'Place'
     case 'experience':
       return 'Encounter'
+    case 'accommodation':
+      return 'Stay'
     case 'region':
       return 'Region'
     default:
@@ -100,15 +102,9 @@ export function JourneyCartPopup({
             <button type="button" className="journey-cart__ghost" onClick={onClose}>
               Keep composing
             </button>
-            <button
-              type="button"
-              className="journey-cart__checkout"
-              onClick={() => {
-                window.alert('Checkout coming soon. Your package is saved in My Journey.')
-              }}
-            >
+            <a className="journey-cart__checkout" href="/checkout">
               Checkout
-            </button>
+            </a>
           </div>
         </footer>
       </div>
