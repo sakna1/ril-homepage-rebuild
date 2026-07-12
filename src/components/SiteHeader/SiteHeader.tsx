@@ -14,8 +14,18 @@ const menuNavLinks = [
   { href: '/journal', label: 'Journal' },
 ] as const
 
+const loginLink = { href: '/login', label: 'Login' } as const
+
 const navAliases: Record<string, string[]> = {
   '/expectations': ['/experiences'],
+}
+
+function LoginIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0 2c-4.2 0-8 2.1-8 5.2V21h16v-1.8c0-3.1-3.8-5.2-8-5.2Z" />
+    </svg>
+  )
 }
 
 function normalizePath(path: string) {
@@ -139,6 +149,17 @@ export function SiteHeader() {
           <div className="site-header-more-panel" id="site-header-more-panel" role="menu" aria-label="More pages">
             <p className="site-header-more-heading">More</p>
             {menuNavLinks.map((link) => renderNavLink(link, 'site-header-more-link'))}
+            <a
+              className={`site-header-more-link site-header-more-link--login${
+                isActivePath(loginLink.href) ? ' is-active' : ''
+              }`}
+              href={loginLink.href}
+              aria-current={isActivePath(loginLink.href) ? 'page' : undefined}
+              onClick={closeMenus}
+            >
+              <LoginIcon />
+              {loginLink.label}
+            </a>
           </div>
         </div>
 
@@ -175,6 +196,17 @@ export function SiteHeader() {
         <nav className="site-header-mobile-section" aria-label="More pages">
           <p className="site-header-mobile-heading">More</p>
           {menuNavLinks.map((link) => renderNavLink(link, 'site-header-mobile-link'))}
+          <a
+            className={`site-header-mobile-link site-header-mobile-link--login${
+              isActivePath(loginLink.href) ? ' is-active' : ''
+            }`}
+            href={loginLink.href}
+            aria-current={isActivePath(loginLink.href) ? 'page' : undefined}
+            onClick={closeMenus}
+          >
+            <LoginIcon />
+            {loginLink.label}
+          </a>
         </nav>
 
         <a className="site-header-cta site-header-cta--mobile" href="/expectations" onClick={closeMenus}>

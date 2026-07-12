@@ -269,6 +269,21 @@
   right: 20px;
 }
 
+.site-header-more-link--login {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.site-header-more-link--login svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
 .site-header-cta {
   padding: 10px 20px;
   border-radius: 999px;
@@ -380,6 +395,22 @@
   .site-header-mobile-link.is-active::after {
     width: 64px;
     opacity: 0.86;
+  }
+
+  .site-header-mobile-link--login {
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .site-header-mobile-link--login svg {
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
   }
 
   .site-header-cta--mobile {
