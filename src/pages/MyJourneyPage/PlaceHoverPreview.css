@@ -1,0 +1,148 @@
+.place-hover {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+  outline: none;
+}
+
+.place-hover:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.place-hover__card {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  z-index: 40;
+  width: min(320px, 84vw);
+  overflow: hidden;
+  border: 1px solid var(--color-accent-subtle);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(251, 249, 245, 0.78));
+  backdrop-filter: blur(18px);
+  box-shadow: 0 30px 70px rgba(13, 31, 23, 0.22);
+  pointer-events: none;
+}
+
+.place-hover__hero {
+  margin: 0;
+  aspect-ratio: 16 / 9;
+}
+
+.place-hover__hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.place-hover__body {
+  padding: 18px 20px 20px;
+}
+
+.place-hover__location {
+  color: var(--color-accent);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.place-hover__body h4 {
+  margin-top: 4px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.place-hover__description {
+  margin-top: 8px;
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.place-hover__meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.place-hover__meta dt {
+  color: var(--color-text-subtle);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.place-hover__meta dd {
+  margin-top: 4px;
+  color: var(--color-primary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.place-hover__siblings {
+  margin-top: 14px;
+}
+
+.place-hover__siblings > span {
+  color: var(--color-text-faint);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.place-hover__siblings > div {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.place-hover__siblings figure {
+  margin: 0;
+  width: 68px;
+}
+
+.place-hover__siblings img {
+  width: 100%;
+  height: 46px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.place-hover__siblings figcaption {
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--color-text-faint);
+  font-size: 9px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.place-hover__cta {
+  display: inline-flex;
+  margin-top: 16px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-accent);
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  pointer-events: auto;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+@media (max-width: 560px) {
+  .place-hover__card {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

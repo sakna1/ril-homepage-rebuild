@@ -220,7 +220,7 @@ const brochureHighlights = [
 ]
 
 function getExpectationsHref(world: string) {
-  return `/expectations?world=${encodeURIComponent(world)}`
+  return `/expectations?world=${encodeURIComponent(world)}#discover-map`
 }
 
 export function Homepage() {

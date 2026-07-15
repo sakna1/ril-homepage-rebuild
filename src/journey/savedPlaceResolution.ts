@@ -54,6 +54,17 @@ export function resolveSavedDestinationIds(
       const experience = experiences.find((entry) => entry.title === item.label)
       if (experience?.destinationId) {
         ids.add(experience.destinationId)
+        return
+      }
+    }
+
+    // Accommodation and activity items saved from the Expectations map explorer
+    // don't match the curated experiences catalogue above, but do carry the
+    // place they belong to in parentRegion — resolve through that instead.
+    if ((item.kind === 'accommodation' || item.kind === 'experience') && item.parentRegion) {
+      const byParentRegion = findDestinationIdByLabel(item.parentRegion, regions)
+      if (byParentRegion) {
+        ids.add(byParentRegion)
       }
     }
   })

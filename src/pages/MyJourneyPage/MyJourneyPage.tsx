@@ -8,15 +8,31 @@ import { ILLUSTRATIVE_DISCLAIMER } from '../../data/journey/mockJourneyTypes'
 import { journeyRegions } from '../../data/journeyRegions'
 import { getSavedDestinationIds, getSavedRegionIds } from '../../journey/contextualRecommendations'
 import type { JourneyItem } from '../../journey/JourneyContext'
+import { checkJourneyDistances } from '../../journey/journeyDistanceCheck'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
 import { buildJourneyGlanceSummary } from '../../journey/savedJourneyDisplay'
 import { orderDestinationIdsEditorially } from '../../journey/savedPlaceResolution'
 import {
+  companionOptions,
+  readStoredCompanion,
+  readStoredTransport,
+  transportOptions,
+  writeStoredCompanion,
+  writeStoredTransport,
+  type CompanionId,
+  type TransportId,
+} from '../../journey/travelPreferences'
+import {
   adaptSavedItemsToRepositoryInput,
   journeyRepository,
 } from '../../services/journeyRepository'
+import { DistanceAdvisoryBanner } from './DistanceAdvisoryBanner'
+import { HealthInsuranceCard } from './HealthInsuranceCard'
 import { JourneyCartPopup } from './JourneyCartPopup'
+import { PlaceHoverPreview } from './PlaceHoverPreview'
+import { RoadTransportSection } from './RoadTransportSection'
+import { TravelCompanionsSection } from './TravelCompanionsSection'
 import './MyJourneyPage.css'
 
 type WorkspaceMode = 'package' | 'itinerary' | 'edit' | 'builder'
@@ -69,7 +85,18 @@ export function MyJourneyPage() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [itinerary, setItinerary] = useState<IllustrativeItinerary | undefined>()
   const [isGenerating, setIsGenerating] = useState(false)
+  const [companion, setCompanion] = useState<CompanionId | null>(readStoredCompanion)
+  const [transport, setTransport] = useState<TransportId | null>(readStoredTransport)
+  const [dismissedDistancePair, setDismissedDistancePair] = useState<string | null>(null)
   const stepsId = useId()
+
+  useEffect(() => {
+    writeStoredCompanion(companion)
+  }, [companion])
+
+  useEffect(() => {
+    writeStoredTransport(transport)
+  }, [transport])
 
   const themes = useMemo(() => items.filter(isPackageTheme), [items])
   const destinations = useMemo(() => items.filter((item) => item.kind === 'destination'), [items])
@@ -114,6 +141,10 @@ export function MyJourneyPage() {
 
   const constellationDestinationIds =
     savedDestinationIds.length >= 2 ? savedDestinationIds : []
+
+  const distanceAdvisory = useMemo(() => checkJourneyDistances(savedDestinationIds), [savedDestinationIds])
+  const distancePairKey = distanceAdvisory ? `${distanceAdvisory.from}::${distanceAdvisory.to}` : null
+  const showDistanceAdvisory = Boolean(distanceAdvisory) && distancePairKey !== dismissedDistancePair
 
   const completedSteps = useMemo(() => {
     const done = new Set<JourneyStep['id']>()
@@ -333,7 +364,9 @@ export function MyJourneyPage() {
                   {placeGroups.map((group) => (
                     <article className="myj-place-group" key={group.placeName}>
                       <header className="myj-place-group-header">
-                        <h4>{group.placeName}</h4>
+                        <PlaceHoverPreview placeName={group.placeName}>
+                          <h4>{group.placeName}</h4>
+                        </PlaceHoverPreview>
                       </header>
 
                       {group.accommodations.length > 0 ? (
@@ -375,6 +408,17 @@ export function MyJourneyPage() {
                 </div>
               )}
             </div>
+
+            {showDistanceAdvisory && distanceAdvisory ? (
+              <DistanceAdvisoryBanner
+                advisory={distanceAdvisory}
+                onKeepSelection={() => setDismissedDistancePair(distancePairKey)}
+              />
+            ) : null}
+
+            <TravelCompanionsSection selected={companion} onSelect={setCompanion} />
+            <RoadTransportSection selected={transport} onSelect={setTransport} />
+            <HealthInsuranceCard />
 
             <div className="journey-workspace__next">
               <h3>Next</h3>
@@ -458,19 +502,31 @@ export function MyJourneyPage() {
             <div className="journey-workspace__panel">
               {mode === 'package' ? (
                 <>
-                  <h3>Package summary</h3>
+                  <h3>Journey summary</h3>
                   <dl>
                     <div>
                       <dt>Theme</dt>
                       <dd>{primaryTheme?.label ?? 'Not set'}</dd>
                     </div>
                     <div>
-                      <dt>Places</dt>
+                      <dt>Stops</dt>
                       <dd>{placeGroups.length}</dd>
                     </div>
                     <div>
-                      <dt>Encounters</dt>
+                      <dt>Activities</dt>
                       <dd>{experiences.length}</dd>
+                    </div>
+                    <div>
+                      <dt>Travelling With</dt>
+                      <dd>{companionOptions.find((option) => option.id === companion)?.label ?? 'Not set'}</dd>
+                    </div>
+                    <div>
+                      <dt>Transport</dt>
+                      <dd>{transportOptions.find((option) => option.id === transport)?.label ?? 'Not set'}</dd>
+                    </div>
+                    <div>
+                      <dt>Health Insurance</dt>
+                      <dd>Included ✓</dd>
                     </div>
                   </dl>
                   <p>{ILLUSTRATIVE_DISCLAIMER}</p>

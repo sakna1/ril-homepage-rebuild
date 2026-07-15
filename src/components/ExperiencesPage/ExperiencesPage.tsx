@@ -1,5 +1,5 @@
 import './ExperiencesPage.css'
-import { useState, type MouseEvent, type ReactNode } from 'react'
+import { useEffect, useState, type MouseEvent, type ReactNode } from 'react'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from './images'
 import { ThemeMapExplorer } from './ThemeMapExplorer'
@@ -142,6 +142,29 @@ function readInitialExpectationTheme(): PackageThemeTitle | null {
 export function ExpectationsPage() {
   const [selectedTheme, setSelectedTheme] = useState<PackageThemeTitle | null>(readInitialExpectationTheme)
   const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
+
+  // Arriving here with a theme already chosen (e.g. "Continue To Expectations"
+  // from the homepage) should land straight on the map, not the page top.
+  // Wait for full page load (not just the next frame) — otherwise images
+  // still loading above the map push it further down after we've scrolled,
+  // leaving the map out of view.
+  useEffect(() => {
+    if (!selectedTheme) return
+
+    const scrollToMap = () => {
+      document.getElementById('discover-map')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    if (document.readyState === 'complete') {
+      window.requestAnimationFrame(scrollToMap)
+      return
+    }
+
+    window.addEventListener('load', scrollToMap, { once: true })
+    return () => window.removeEventListener('load', scrollToMap)
+    // Only ever run this for the theme the page was loaded with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function includeSharedHeritageRecommendations() {
     sharedHeritageRecommendations.slice(1, 5).forEach(({ destination }) => {
