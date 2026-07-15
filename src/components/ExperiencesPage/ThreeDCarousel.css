@@ -13,13 +13,13 @@
 }
 
 .exp-carousel-stage {
-  --exp-carousel-radius: 240px;
-  --exp-carousel-card-w: 200px;
-  --exp-carousel-card-h: 250px;
+  --exp-carousel-radius: 300px;
+  --exp-carousel-card-w: 260px;
+  --exp-carousel-card-h: 330px;
 
   position: relative;
-  height: 380px;
-  perspective: 1100px;
+  height: 470px;
+  perspective: 1300px;
 }
 
 .exp-carousel-cylinder {
@@ -54,10 +54,10 @@
 
 @media (max-width: 1200px) {
   .exp-carousel-stage {
-    --exp-carousel-radius: 210px;
-    --exp-carousel-card-w: 175px;
-    --exp-carousel-card-h: 220px;
-    height: 330px;
+    --exp-carousel-radius: 250px;
+    --exp-carousel-card-w: 210px;
+    --exp-carousel-card-h: 265px;
+    height: 390px;
   }
 }
 

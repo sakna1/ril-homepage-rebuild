@@ -91,7 +91,7 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
   const mapRef = useRef<Map | null>(null)
   const [mapReady, setMapReady] = useState(false)
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | undefined>()
-  const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
+  const { confirmRemoveItem, count, includeItem, isIncluded } = useJourney()
 
   const places = useMemo(() => (selectedTheme ? getPackagePlacesForTheme(selectedTheme) : []), [selectedTheme])
   const selectedPlace = places.find((place) => place.destination.id === selectedPlaceId) ?? places[0] ?? null
@@ -313,6 +313,14 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
           </div>
         </div>
       ) : null}
+
+      <footer className="theme-map-explorer-footer">
+        <a className="theme-map-journey-link" href="/my-journey">
+          View My Journey
+          {count > 0 ? <span className="theme-map-journey-link-count">{count}</span> : null}
+          <span aria-hidden="true">→</span>
+        </a>
+      </footer>
     </section>
   )
 }

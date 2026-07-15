@@ -219,17 +219,6 @@
   padding: 18px 18px 0 0;
 }
 
-.experiences-hero-image::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 72%;
-  height: 78%;
-  border: 1px solid rgba(197, 160, 89, 0.36);
-  pointer-events: none;
-}
-
 .encounter-image-frame {
   overflow: hidden;
   padding: 8px;

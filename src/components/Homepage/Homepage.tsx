@@ -480,14 +480,19 @@ export function Homepage() {
             </p>
           </div>
           <footer className="figma-founder reveal">
-            <div>
-              <span>Robert Knox</span>
-              <small>An Historical Relation of the Island Ceylon, 1681</small>
-            </div>
-            <p>
-              “The Land is full of Hills, but exceedingly well watered, there being many pure and
-              clear Rivers running through them.” Four centuries later, that same green quiet still
-              waits — entered privately, and without hurry.
+            <blockquote className="figma-founder-quote">
+              <p>
+                The Land is full of Hills, but exceedingly well watered, there being many pure and
+                clear Rivers running through them.
+              </p>
+              <cite>
+                <span>Robert Knox</span>
+                <small>An Historical Relation of the Island Ceylon, 1681</small>
+              </cite>
+            </blockquote>
+            <p className="figma-founder-note">
+              Four centuries later, that same green quiet still waits — entered privately, and
+              without hurry.
             </p>
           </footer>
         </div>
@@ -507,14 +512,14 @@ export function Homepage() {
         </figure>
         <div className="figma-island-stats-copy reveal">
           <div className="figma-island-stats-heading">
-            <p className="figma-overline">Why Sri Lanka</p>
+            <p className="figma-overline">Why Royale Isles</p>
             <h2>
-              A small island with <em>private worlds</em> within it.
+              Only Royale Isles opens this island as <em>your private world.</em>
             </h2>
             <p>
-              At this level of travel, scale matters. Sri Lanka is compact enough to move through with ease,
-              yet layered enough to hold wilderness, sacred cities, coastal privacy, wellness, and
-              family celebration in one carefully protected journey.
+              Many can show you Sri Lanka. Only Royale Isles holds it around you — hosts,
+              residences, timing, and access arranged so wilderness, sacred cities, coastline,
+              and celebration each feel reserved for you alone.
             </p>
           </div>
           <dl>

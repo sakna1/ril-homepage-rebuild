@@ -9,6 +9,7 @@ type JourneyConstellationLayerProps = {
 
 const CONSTELLATION_SOURCE_ID = 'journey-constellation'
 const CONSTELLATION_LAYER_ID = 'journey-constellation-line'
+const CONSTELLATION_CASING_LAYER_ID = 'journey-constellation-line-casing'
 
 function isMapStyleReady(map: Map): boolean {
   try {
@@ -56,6 +57,9 @@ function removeConstellationLayers(map: Map) {
     if (map.getLayer(CONSTELLATION_LAYER_ID)) {
       map.removeLayer(CONSTELLATION_LAYER_ID)
     }
+    if (map.getLayer(CONSTELLATION_CASING_LAYER_ID)) {
+      map.removeLayer(CONSTELLATION_CASING_LAYER_ID)
+    }
     if (map.getSource(CONSTELLATION_SOURCE_ID)) {
       map.removeSource(CONSTELLATION_SOURCE_ID)
     }
@@ -77,6 +81,23 @@ function applyConstellation(map: Map, destinationIds: string[]) {
       data: geoJson,
     })
 
+    // Google-Maps-style route: a white casing underneath keeps the red line
+    // readable over both light land and road colours.
+    map.addLayer({
+      id: CONSTELLATION_CASING_LAYER_ID,
+      type: 'line',
+      source: CONSTELLATION_SOURCE_ID,
+      layout: {
+        'line-cap': 'round',
+        'line-join': 'round',
+      },
+      paint: {
+        'line-color': '#ffffff',
+        'line-width': 7,
+        'line-opacity': 0.9,
+      },
+    })
+
     map.addLayer({
       id: CONSTELLATION_LAYER_ID,
       type: 'line',
@@ -86,10 +107,9 @@ function applyConstellation(map: Map, destinationIds: string[]) {
         'line-join': 'round',
       },
       paint: {
-        'line-color': 'rgba(197, 160, 89, 0.55)',
-        'line-width': 2,
-        'line-dasharray': [2, 3],
-        'line-opacity': 0.7,
+        'line-color': '#d93025',
+        'line-width': 4,
+        'line-opacity': 0.95,
       },
     })
     return

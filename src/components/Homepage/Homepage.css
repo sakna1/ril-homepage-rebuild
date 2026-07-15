@@ -1281,42 +1281,78 @@
 
 .figma-founder {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 64px;
-  margin-top: 48px;
-  padding-top: 0;
-  border-top: 0;
+  gap: 28px;
+  max-width: 760px;
+  margin: 56px auto 0;
+  text-align: center;
 }
 
-.figma-founder div {
+.figma-founder-quote {
+  position: relative;
+  margin: 0;
+  padding-top: 46px;
+}
+
+.figma-founder-quote::before {
+  content: '\201C';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-accent);
+  opacity: 0.85;
+  font-family: var(--font-display);
+  font-size: 72px;
+  line-height: 1;
+}
+
+.figma-founder-quote > p {
+  color: var(--color-surface);
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.4vw, 27px);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.figma-founder-quote cite {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 220px;
-  padding: 24px 32px;
-  border: 1px solid rgba(197, 160, 89, 0.18);
+  align-items: center;
+  gap: 6px;
+  margin-top: 26px;
+  font-style: normal;
 }
 
-.figma-founder span {
+.figma-founder-quote cite::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  margin-bottom: 12px;
+  background: rgba(197, 160, 89, 0.55);
+}
+
+.figma-founder-quote cite span {
   color: var(--color-surface);
-  opacity: 0.78;
+  opacity: 0.82;
   font-size: 12px;
   letter-spacing: 2.64px;
   text-transform: uppercase;
 }
 
-.figma-founder small {
+.figma-founder-quote cite small {
   color: var(--color-accent);
   opacity: 0.9;
   font-size: 12px;
+  letter-spacing: 0.4px;
 }
 
-.figma-founder p {
-  max-width: 576px;
+.figma-founder-note {
+  max-width: 520px;
   color: var(--color-text-muted-on-dark);
-  opacity: 1;
-  font-size: 16px;
+  font-size: 15px;
   line-height: var(--line-height-copy);
 }
 
@@ -1452,24 +1488,46 @@
 }
 
 .figma-island-stats dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(16px, 2vw, 24px);
   margin-top: clamp(40px, 5vw, 56px);
-  border-top: 1px solid rgba(197, 160, 89, 0.18);
 }
 
 .figma-island-stats dl div {
-  display: grid;
-  grid-template-columns: minmax(96px, 132px) 1fr;
-  gap: clamp(20px, 3vw, 32px);
-  align-items: center;
-  min-height: 96px;
-  border-bottom: 1px solid rgba(197, 160, 89, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(22px, 2.6vw, 30px);
+  border: 1px solid rgba(197, 160, 89, 0.22);
+  background: rgba(251, 249, 245, 0.035);
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.figma-island-stats dl div:hover {
+  border-color: rgba(197, 160, 89, 0.5);
+  background: rgba(251, 249, 245, 0.06);
+  transform: translateY(-3px);
 }
 
 .figma-island-stats dt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   color: var(--color-accent);
   font-family: var(--font-display);
-  font-size: clamp(28px, 2.6vw, var(--font-size-h2));
+  font-size: clamp(30px, 2.8vw, 40px);
   line-height: var(--line-height-heading);
+}
+
+.figma-island-stats dt::after {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: rgba(197, 160, 89, 0.45);
 }
 
 .figma-island-stats dd {
@@ -3481,10 +3539,8 @@
     padding: 48px 20px;
   }
 
-  .figma-island-stats dl div {
+  .figma-island-stats dl {
     grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 24px 0;
   }
 
   .figma-island-stats-media figcaption {

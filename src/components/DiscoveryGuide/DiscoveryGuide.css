@@ -557,6 +557,54 @@
   list-style: none;
 }
 
+.guide-region-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.guide-region-cta-row > p {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.guide-region-cta {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 30px;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-forest-shadow);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.guide-region-cta:hover,
+.guide-region-cta:focus-visible {
+  background: transparent;
+  color: var(--color-accent);
+  transform: translateX(2px);
+  outline: none;
+}
+
 .guide-region-heritage li {
   padding: 8px 14px;
   border: 1px solid var(--color-accent-subtle);

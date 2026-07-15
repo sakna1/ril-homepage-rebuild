@@ -28,10 +28,14 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 type GalleryImage = { src: string; alt: string }
 
+function getExpectationsHref(theme: string) {
+  return `/expectations?world=${encodeURIComponent(theme)}#discover-map`
+}
+
 const regions = [
   {
     name: 'The Western Gateway',
-    journeyRegion: 'The Western Gateway',
+    expectationsTheme: 'Culture & Human Connection',
     icon: 'city' as RegionIconId,
     teaser: 'Garden villas, old clubs, and a lagoon-lit welcome to the island.',
     climate: 'Warm & Coastal',
@@ -60,7 +64,7 @@ const regions = [
   },
   {
     name: 'The Southern Arc',
-    journeyRegion: 'The Southern Arc',
+    expectationsTheme: 'Ocean & Discovery',
     icon: 'coast' as RegionIconId,
     teaser: 'Fortified towns, golden light, and villas held close to the palms.',
     climate: 'Sunny & Coastal',
@@ -89,7 +93,7 @@ const regions = [
   },
   {
     name: 'The Wild South',
-    journeyRegion: 'The Wild South',
+    expectationsTheme: 'Wildlife & Wilderness',
     icon: 'wild' as RegionIconId,
     teaser: 'Leopard country, dry-zone wilderness, and patient wild encounters.',
     climate: 'Dry & Elemental',
@@ -113,7 +117,7 @@ const regions = [
   },
   {
     name: 'The East Coast',
-    journeyRegion: 'The East Coast',
+    expectationsTheme: 'Ocean & Discovery',
     icon: 'wave' as RegionIconId,
     teaser: 'Clear water, temple cliffs, and a gentler summer coastline.',
     climate: 'Warm & Calm Seas',
@@ -137,7 +141,7 @@ const regions = [
   },
   {
     name: 'The Hill Country',
-    journeyRegion: 'The Hill Country',
+    expectationsTheme: 'Rail & Landscape',
     icon: 'mountain' as RegionIconId,
     teaser: 'Misted tea estates, cool mornings, and quiet mountain rail.',
     climate: 'Cool & Misted',
@@ -166,7 +170,7 @@ const regions = [
   },
   {
     name: 'The Ancient Kingdoms',
-    journeyRegion: 'The Ancient Kingdoms',
+    expectationsTheme: 'Heritage & Memory',
     icon: 'temple' as RegionIconId,
     teaser: 'Ancient capitals rising from forest, rock, and sacred stone.',
     climate: 'Dry & Sacred',
@@ -190,7 +194,7 @@ const regions = [
   },
   {
     name: 'The Northern Reaches',
-    journeyRegion: 'The Northern Reaches',
+    expectationsTheme: 'Culture & Human Connection',
     icon: 'compass' as RegionIconId,
     teaser: 'Tamil culture, palmyrah landscapes, and luminous northern light.',
     climate: 'Dry & Luminous',
@@ -400,6 +404,14 @@ export function DiscoveryGuide() {
                     </ul>
                   </section>
                 ) : null}
+
+                <div className="guide-region-cta-row">
+                  <p>Ready to shape this into a journey? See {activeRegion.name}'s places and stays on the map.</p>
+                  <a className="guide-region-cta" href={getExpectationsHref(activeRegion.expectationsTheme)}>
+                    Explore on the Expectations Map
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </div>
               </div>
           </motion.article>
         </div>
