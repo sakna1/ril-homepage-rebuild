@@ -16,6 +16,27 @@
   font-family: var(--font-body);
 }
 
+.figma-homepage .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.figma-homepage .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-homepage .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 .figma-homepage a {
   color: inherit;
   text-decoration: none;
@@ -116,7 +137,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(1.08) contrast(1.04) brightness(1.06);
+  filter: saturate(1.08) contrast(1.04) brightness(1.12);
   background: var(--color-forest-deep);
 }
 
@@ -124,9 +145,9 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(7, 18, 12, 0.12), rgba(7, 18, 12, 0.48)),
-    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.32)),
-    linear-gradient(90deg, rgba(0, 66, 37, 0.22), transparent 45%, rgba(12, 10, 8, 0.24));
+    linear-gradient(180deg, rgba(7, 18, 12, 0.08), rgba(7, 18, 12, 0.36)),
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.22)),
+    linear-gradient(90deg, rgba(0, 66, 37, 0.16), transparent 45%, rgba(12, 10, 8, 0.17));
 }
 
 .figma-hero-sound {
@@ -699,6 +720,23 @@
   opacity: 0.18;
   transform: translate(-50%, -50%);
   object-fit: contain;
+  animation: figma-mark-float 6s ease-in-out infinite;
+}
+
+@keyframes figma-mark-float {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-homepage .figma-experiences-brand .figma-experiences-mark {
+    animation: none;
+  }
 }
 
 .figma-experience-brief {

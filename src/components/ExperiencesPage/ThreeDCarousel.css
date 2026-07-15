@@ -1,0 +1,72 @@
+/* Overflow clipping lives on this outer wrapper, outside the 3D subtree —
+   putting it on the perspective element would flatten preserve-3d. */
+.exp-carousel {
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.exp-carousel:active {
+  cursor: grabbing;
+}
+
+.exp-carousel-stage {
+  --exp-carousel-radius: 240px;
+  --exp-carousel-card-w: 200px;
+  --exp-carousel-card-h: 250px;
+
+  position: relative;
+  height: 380px;
+  perspective: 1100px;
+}
+
+.exp-carousel-cylinder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.exp-carousel-cylinder figure {
+  position: absolute;
+  top: calc(var(--exp-carousel-card-h) / -2);
+  left: calc(var(--exp-carousel-card-w) / -2);
+  width: var(--exp-carousel-card-w);
+  height: var(--exp-carousel-card-h);
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(13, 31, 23, 0.22);
+}
+
+.exp-carousel-cylinder img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+@media (max-width: 1200px) {
+  .exp-carousel-stage {
+    --exp-carousel-radius: 210px;
+    --exp-carousel-card-w: 175px;
+    --exp-carousel-card-h: 220px;
+    height: 330px;
+  }
+}
+
+@media (max-width: 560px) {
+  .exp-carousel-stage {
+    --exp-carousel-radius: 150px;
+    --exp-carousel-card-w: 130px;
+    --exp-carousel-card-h: 165px;
+    height: 250px;
+    perspective: 800px;
+  }
+}

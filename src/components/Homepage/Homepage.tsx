@@ -4,6 +4,7 @@ import { ArrowIcon } from '../ArrowIcon'
 import { BrochureRequestForm } from './BrochureRequestForm'
 import { experienceImages } from '../ExperiencesPage/images'
 import { sharedHeritageWorld } from '../../journey/discoveryWorlds'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 import kelaniTempleDetailImage from '../../assets/images/Kelani temple(1).JPG'
 import kandyPeraheraImage from '../../assets/images/Kandy Perahera.JPG'
 import queenVictoriaStatueImage from '../../assets/images/queen-victoria-statue-colombo.jpg'
@@ -224,12 +225,15 @@ function getExpectationsHref(world: string) {
 }
 
 export function Homepage() {
+  const pageRef = useRef<HTMLElement>(null)
   const heroVideoRef = useRef<HTMLVideoElement>(null)
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
   const [isHeroMuted, setIsHeroMuted] = useState(false)
   const [activeExperienceIndex, setActiveExperienceIndex] = useState(0)
   const activeStory = travellerStories[activeStoryIndex]
   const activeExperience = experiences[activeExperienceIndex]
+
+  useScrollReveal(pageRef)
 
   useEffect(() => {
     const rotationId = setInterval(() => {
@@ -330,7 +334,7 @@ export function Homepage() {
   }
 
   return (
-    <main className="figma-homepage" data-node-id="101:12274">
+    <main className="figma-homepage" ref={pageRef} data-node-id="101:12274">
       <section className="figma-hero" data-node-id="101:12275">
         <video
           ref={heroVideoRef}
@@ -368,7 +372,7 @@ export function Homepage() {
 
       <section className="figma-experiences" id="experiences" data-node-id="103:12794">
         <div className="figma-container">
-          <header className="figma-section-header figma-experiences-header">
+          <header className="figma-section-header figma-experiences-header reveal">
             <div>
               <p className="figma-overline">Inspiration Before Curation</p>
               <h2>
@@ -413,7 +417,7 @@ export function Homepage() {
             ))}
           </div>
 
-          <div className="figma-experience-list" aria-live="polite">
+          <div className="figma-experience-list reveal" aria-live="polite">
             <article className="figma-experience">
               <figure className="figma-experience-media">
                 <img src={activeExperience.image} alt={activeExperience.imageAlt} />
@@ -443,7 +447,7 @@ export function Homepage() {
 
       <section className="figma-philosophy" data-node-id="103:12834">
         <div className="figma-container">
-          <header className="figma-philosophy-header">
+          <header className="figma-philosophy-header reveal">
             <div>
               <p className="figma-overline">The Philosophy</p>
               <h2>The Standard Behind The Journey</h2>
@@ -456,7 +460,7 @@ export function Homepage() {
               </p>
             </aside>
           </header>
-          <div className="figma-philosophy-lines">
+          <div className="figma-philosophy-lines reveal">
             {philosophyLines.map((line) => (
               <article key={line.title}>
                 <span className="figma-roman">{line.numeral}</span>
@@ -467,7 +471,7 @@ export function Homepage() {
               </article>
             ))}
           </div>
-          <div className="figma-discover-statement">
+          <div className="figma-discover-statement reveal">
             <strong>And then, the journey disappears into ease.</strong>
             <p>
               What you experience in Sri Lanka should not feel managed. It should feel inevitable:
@@ -475,7 +479,7 @@ export function Homepage() {
               silence protected, the right celebration unfolding without strain.
             </p>
           </div>
-          <footer className="figma-founder">
+          <footer className="figma-founder reveal">
             <div>
               <span>Robert Knox</span>
               <small>An Historical Relation of the Island Ceylon, 1681</small>
@@ -490,7 +494,7 @@ export function Homepage() {
       </section>
 
       <section className="figma-island-stats" id="destinations" data-node-id="103:12887">
-        <figure className="figma-island-stats-media">
+        <figure className="figma-island-stats-media reveal">
           <img
             className="figma-island-stats-map"
             src={localImages.royaleIslesMap}
@@ -501,7 +505,7 @@ export function Homepage() {
             <small>Regions, coastlines, highlands, and cultural routes arranged as one private island journey.</small>
           </figcaption>
         </figure>
-        <div className="figma-island-stats-copy">
+        <div className="figma-island-stats-copy reveal">
           <div className="figma-island-stats-heading">
             <p className="figma-overline">Why Sri Lanka</p>
             <h2>
@@ -526,7 +530,7 @@ export function Homepage() {
 
       <section className="figma-journal" id="journal" data-node-id="103:12936">
         <div className="figma-container">
-          <header className="figma-section-header figma-journal-header">
+          <header className="figma-section-header figma-journal-header reveal">
             <div>
               <p className="figma-kicker-line">The Private Journal</p>
               <h2>
@@ -548,7 +552,7 @@ export function Homepage() {
               </a>
             </aside>
           </header>
-          <div className="figma-journal-grid">
+          <div className="figma-journal-grid reveal">
             <article className="figma-feature-story">
               <div className="figma-feature-story-copy">
                 <p>
@@ -601,7 +605,7 @@ export function Homepage() {
 
       <section className="figma-testimonials" data-node-id="103:13017">
         <div className="figma-container figma-testimonials-inner">
-          <header className="figma-testimonials-heading">
+          <header className="figma-testimonials-heading reveal">
             <p className="figma-centered-kicker">Traveller Stories</p>
             <h2>Traveller stories, held in photographs and private film.</h2>
             <p>
@@ -611,7 +615,7 @@ export function Homepage() {
             </p>
           </header>
 
-          <article className="figma-testimonial-carousel" aria-live="polite">
+          <article className="figma-testimonial-carousel reveal" aria-live="polite">
             <figure className="figma-testimonial-photo">
               <img src={activeStory.image} alt="" />
               <figcaption>
@@ -666,7 +670,7 @@ export function Homepage() {
             </aside>
           </article>
 
-          <div className="figma-story-promises" aria-label="Traveller story inclusions">
+          <div className="figma-story-promises reveal" aria-label="Traveller story inclusions">
             {storyPromises.map((promise) => (
               <span key={promise}>{promise}</span>
             ))}
@@ -675,7 +679,7 @@ export function Homepage() {
       </section>
 
       <section className="figma-invitation" id="begin" data-node-id="103:12992">
-        <div className="figma-invitation-inner">
+        <div className="figma-invitation-inner reveal">
           <div className="figma-invitation-mark" aria-hidden="true">
             ✦
           </div>
@@ -699,7 +703,7 @@ export function Homepage() {
 
       <section className="figma-brochure" data-node-id="103:13062">
         <div className="figma-container figma-brochure-grid">
-          <div className="figma-brochure-copy">
+          <div className="figma-brochure-copy reveal">
             <p className="figma-copper-overline">Private Sri Lanka Briefing</p>
             <h2>Request the Private Brochure</h2>
             <span className="figma-copper-rule" />
@@ -722,7 +726,7 @@ export function Homepage() {
             </p>
             <BrochureRequestForm />
           </div>
-          <aside className="figma-brochure-card" aria-label="Private brochure preview">
+          <aside className="figma-brochure-card reveal" aria-label="Private brochure preview">
             <figure className="figma-brochure-preview" aria-hidden="true">
               <span className="figma-brochure-sheet">
                 <small>Private Briefing</small>

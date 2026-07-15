@@ -3,6 +3,7 @@ import { useEffect, useState, type MouseEvent, type ReactNode } from 'react'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from './images'
 import { ThemeMapExplorer } from './ThemeMapExplorer'
+import { ThreeDCarousel } from './ThreeDCarousel'
 import { useJourney } from '../../journey/useJourney'
 import { inferJourneyRegion } from '../../journey/journeyTaxonomy'
 import { normalizeRegionLabel } from '../../journey/savedJourneyDisplay'
@@ -254,16 +255,7 @@ export function ExpectationsPage() {
           </div>
 
           <div className="experiences-hero-image">
-            <div className="hero-image-frame">
-              <img src={experienceImages.sigiriyaMain} alt="Sigiriya rock fortress rising above the Sri Lankan landscape" />
-            </div>
-            <span className="hero-feature-label">Featured Private Access</span>
-            <span className="hero-choice">By Introduction Only</span>
-            <div className="hero-access-card" aria-label="Arrival protocol">
-              <p>Arrival Protocol</p>
-              <strong>Pre-dawn ascent, sealed route, curator in attendance.</strong>
-              <span>Sigiriya — Central Province</span>
-            </div>
+            <ThreeDCarousel />
             <div className="experiences-stat-strip">
               {stats.map((stat) => (
                 <div key={stat.label}>
