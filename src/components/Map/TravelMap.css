@@ -318,3 +318,53 @@
     opacity: 0;
   }
 }
+
+/* ---------- Ordered route stop markers (A, B, C…) ---------- */
+
+.route-stop-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  animation: destination-marker-enter 0.25s ease both;
+}
+
+.route-stop-marker__pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #d93025;
+  box-shadow: 0 2px 8px rgba(13, 31, 23, 0.35);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.route-stop-marker:hover .route-stop-marker__pin,
+.route-stop-marker:focus-visible .route-stop-marker__pin {
+  transform: scale(1.12);
+}
+
+.route-stop-marker__label {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 5px rgba(13, 31, 23, 0.22);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}

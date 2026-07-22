@@ -162,6 +162,7 @@ export const savedItemKindLabels: Record<JourneyItemKind, string> = {
   experience: 'Experiences',
   season: 'Season',
   interest: 'Interests',
+  package: 'Packages',
 }
 
 export const savedItemKindOrder: JourneyItemKind[] = [

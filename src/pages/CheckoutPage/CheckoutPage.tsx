@@ -28,6 +28,9 @@ export function CheckoutPage() {
   const placeGroups = groupJourneyPlaces(items)
   const primaryTheme = themes[0]
 
+  const packages = items.filter((item) => item.kind === 'package')
+  const packagesTotal = packages.reduce((total, item) => total + (item.pricePerPerson ?? 0), 0)
+
   function updateField<K extends keyof GuestDetails>(key: K, value: GuestDetails[K]) {
     setGuestDetails((current) => ({ ...current, [key]: value }))
   }
@@ -146,14 +149,35 @@ export function CheckoutPage() {
             </div>
           ) : null}
 
+          {packages.length > 0 ? (
+            <div className="checkout-packages">
+              {packages.map((pkg) => (
+                <div className="checkout-total" key={pkg.id}>
+                  <span>{pkg.label}</span>
+                  <strong>
+                    {RESERVATION_FEE.currency} ${(pkg.pricePerPerson ?? 0).toLocaleString('en-US')}
+                  </strong>
+                </div>
+              ))}
+              <div className="checkout-total">
+                <span>Indicative Total (per person)</span>
+                <strong>
+                  {RESERVATION_FEE.currency} ${packagesTotal.toLocaleString('en-US')}
+                </strong>
+              </div>
+            </div>
+          ) : null}
+
           <div className="checkout-total">
-            <span>Reservation Fee</span>
+            <span>Reservation Fee Due Now</span>
             <strong>
               {RESERVATION_FEE.currency} ${RESERVATION_FEE.amount}
             </strong>
           </div>
           <p className="checkout-summary-note">
-            A provisional fee, confirmed with you before any charge is made.
+            {packages.length > 0
+              ? 'Package pricing is indicative and confirmed by your concierge. Only the reservation fee is taken now, and never before we confirm it with you.'
+              : 'A provisional fee, confirmed with you before any charge is made.'}
           </p>
         </div>
 

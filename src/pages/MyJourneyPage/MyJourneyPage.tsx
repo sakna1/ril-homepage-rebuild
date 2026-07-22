@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useState } from 'react'
 import { JourneyConstellationLayer } from '../../components/Map/JourneyConstellationLayer'
 import { JourneyRegionLayer } from '../../components/Map/JourneyRegionLayer'
-import { RegionDestinationMarker } from '../../components/Map/RegionDestinationMarker'
+import { RouteStopMarker } from '../../components/Map/RouteStopMarker'
 import { TravelMap } from '../../components/Map/TravelMap'
 import type { IllustrativeItinerary } from '../../data/journey/types'
 import { ILLUSTRATIVE_DISCLAIMER } from '../../data/journey/mockJourneyTypes'
@@ -11,6 +11,8 @@ import type { JourneyItem } from '../../journey/JourneyContext'
 import { checkJourneyDistances } from '../../journey/journeyDistanceCheck'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
+import { useJourneyRoute } from '../../journey/useJourneyRoute'
+import { formatDrivingDuration } from '../../services/mapboxDirections'
 import { buildJourneyGlanceSummary } from '../../journey/savedJourneyDisplay'
 import { orderDestinationIdsEditorially } from '../../journey/savedPlaceResolution'
 import {
@@ -25,6 +27,7 @@ import {
 } from '../../journey/travelPreferences'
 import {
   adaptSavedItemsToRepositoryInput,
+  findCatalogDestinationById,
   journeyRepository,
 } from '../../services/journeyRepository'
 import { DistanceAdvisoryBanner } from './DistanceAdvisoryBanner'
@@ -70,6 +73,16 @@ function isPackageTheme(item: JourneyItem) {
   return item.kind === 'theme' || item.kind === 'discovery-world'
 }
 
+const usdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+})
+
+function formatUsd(amount: number) {
+  return usdFormatter.format(amount)
+}
+
 function isPackagePlace(item: JourneyItem) {
   return (
     item.kind === 'destination' ||
@@ -103,6 +116,11 @@ export function MyJourneyPage() {
   const experiences = useMemo(() => items.filter((item) => item.kind === 'experience'), [items])
   const accommodations = useMemo(() => items.filter((item) => item.kind === 'accommodation'), [items])
   const regions = useMemo(() => items.filter((item) => item.kind === 'region'), [items])
+  const packages = useMemo(() => items.filter((item) => item.kind === 'package'), [items])
+  const packagesTotal = useMemo(
+    () => packages.reduce((total, item) => total + (item.pricePerPerson ?? 0), 0),
+    [packages],
+  )
   const placeGroups = useMemo(() => groupJourneyPlaces(items), [items])
   /** Cart shows package composition only — not auto-saved regions/moods/seasons. */
   const cartItems = useMemo(
@@ -115,7 +133,10 @@ export function MyJourneyPage() {
   )
   const placeCount = placeGroups.length
   const otherItems = useMemo(
-    () => items.filter((item) => !isPackageTheme(item) && !isPackagePlace(item)),
+    () =>
+      items.filter(
+        (item) => !isPackageTheme(item) && !isPackagePlace(item) && item.kind !== 'package',
+      ),
     [items],
   )
 
@@ -129,15 +150,16 @@ export function MyJourneyPage() {
     [items],
   )
 
+  // Ordered along the journey (not catalogue order) so the map pins read A, B, C…
   const destinationMarkers = useMemo(
     () =>
-      journeyRegions.flatMap((region) =>
-        region.destinations
-          .filter((destination) => savedDestinationIds.includes(destination.id))
-          .map((destination) => ({ region, destination })),
-      ),
+      savedDestinationIds
+        .map((id) => findCatalogDestinationById(id))
+        .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry)),
     [savedDestinationIds],
   )
+
+  const { route: drivingRoute } = useJourneyRoute(savedDestinationIds)
 
   const constellationDestinationIds =
     savedDestinationIds.length >= 2 ? savedDestinationIds : []
@@ -344,6 +366,44 @@ export function MyJourneyPage() {
               </ul>
             ) : null}
 
+            {packages.length > 0 ? (
+              <div className="myj-packages">
+                <div className="myj-places-head">
+                  <h3>Selected Package{packages.length > 1 ? 's' : ''}</h3>
+                  <a href="/itineraries">Browse Itineraries</a>
+                </div>
+                <ul className="myj-package-list">
+                  {packages.map((pkg) => (
+                    <li key={pkg.id}>
+                      <div className="myj-package-main">
+                        <p className="myj-package-name">{pkg.label}</p>
+                        {pkg.detail ? <p className="myj-package-detail">{pkg.detail}</p> : null}
+                      </div>
+                      <div className="myj-package-side">
+                        {typeof pkg.pricePerPerson === 'number' ? (
+                          <span className="myj-package-price">
+                            {formatUsd(pkg.pricePerPerson)}
+                            <small>per person</small>
+                          </span>
+                        ) : null}
+                        <button type="button" onClick={() => confirmRemoveItem(pkg.id)}>
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p className="myj-package-total">
+                  <span>Indicative total</span>
+                  <strong>{formatUsd(packagesTotal)} per person</strong>
+                </p>
+                <p className="myj-package-note">
+                  Indicative pricing — your concierge confirms the final figure before anything is
+                  booked.
+                </p>
+              </div>
+            ) : null}
+
             <div className="myj-places">
               <div className="myj-places-head">
                 <h3>Places In This Journey</h3>
@@ -475,18 +535,19 @@ export function MyJourneyPage() {
                         regions={journeyRegions.filter((region) => savedRegionIds.includes(region.id))}
                         onRegionSelect={() => undefined}
                       />
-                      {destinationMarkers.map(({ region, destination }) => (
-                        <RegionDestinationMarker
+                      {destinationMarkers.map(({ region, destination }, index) => (
+                        <RouteStopMarker
                           key={`${region.id}-${destination.id}`}
                           destination={destination}
                           map={map}
-                          onSelect={() => undefined}
+                          index={index}
                         />
                       ))}
                       {constellationDestinationIds.length >= 2 ? (
                         <JourneyConstellationLayer
                           map={map}
                           destinationIds={constellationDestinationIds}
+                          routeCoordinates={drivingRoute?.coordinates}
                         />
                       ) : null}
                     </>
@@ -516,6 +577,18 @@ export function MyJourneyPage() {
                       <dt>Activities</dt>
                       <dd>{experiences.length}</dd>
                     </div>
+                    {drivingRoute ? (
+                      <>
+                        <div>
+                          <dt>Driving Distance</dt>
+                          <dd>{drivingRoute.distanceKm} km</dd>
+                        </div>
+                        <div>
+                          <dt>Est. Driving Time</dt>
+                          <dd>{formatDrivingDuration(drivingRoute.durationMinutes)}</dd>
+                        </div>
+                      </>
+                    ) : null}
                     <div>
                       <dt>Travelling With</dt>
                       <dd>{companionOptions.find((option) => option.id === companion)?.label ?? 'Not set'}</dd>
@@ -528,6 +601,12 @@ export function MyJourneyPage() {
                       <dt>Health Insurance</dt>
                       <dd>Included ✓</dd>
                     </div>
+                    {packages.length > 0 ? (
+                      <div>
+                        <dt>Indicative Total</dt>
+                        <dd>{formatUsd(packagesTotal)} pp</dd>
+                      </div>
+                    ) : null}
                   </dl>
                   <p>{ILLUSTRATIVE_DISCLAIMER}</p>
                 </>

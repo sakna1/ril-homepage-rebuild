@@ -1,11 +1,21 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import './ItinerariesPage.css'
 import { experienceImages } from '../ExperiencesPage/images'
+import { toJourneyId } from '../../journey/journeyItemHelpers'
+import { useJourney } from '../../journey/useJourney'
+
+// ---------------------------------------------------------------------------
+// PLACEHOLDER PRICING — replace `priceFrom` on each itinerary below with the
+// real figures before this page goes live. Values are indicative, per person,
+// in USD, and are labelled as such in the UI.
+// ---------------------------------------------------------------------------
 
 type Itinerary = {
   numeral: string
   name: string
   duration: string
+  /** Indicative "from" price per person, in USD. */
+  priceFrom: number
   character: string
   route: readonly string[]
   inclusions: readonly string[]
@@ -16,11 +26,18 @@ type Itinerary = {
   imageAlt: string
 }
 
+const priceFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+})
+
 const itineraries: readonly Itinerary[] = [
   {
     numeral: 'I',
     name: 'Discovery',
     duration: '10 Days',
+    priceFrom: 4850,
     character:
       'Brisk and spirited. The island’s defining sights gathered without a wasted morning — for travellers whose diary is short but whose appetite is not.',
     route: [
@@ -49,6 +66,7 @@ const itineraries: readonly Itinerary[] = [
     numeral: 'II',
     name: 'Deep Dive',
     duration: '16 Days',
+    priceFrom: 7900,
     character:
       'Immersive and unhurried. The celebrated landmarks are all here, but so is the time to sit with them — cultural depth balanced against long, unclaimed afternoons.',
     route: [
@@ -80,6 +98,7 @@ const itineraries: readonly Itinerary[] = [
     numeral: 'III',
     name: 'Dynasty',
     duration: '21 Days',
+    priceFrom: 12400,
     character:
       'The grand overland passage. The entire island read from north to south, at the pace such a journey deserves — including the quarters most itineraries never reach.',
     route: [
@@ -119,6 +138,26 @@ const comparisonRows = [
 
 export function ItinerariesPage() {
   const prefersReducedMotion = useReducedMotion()
+  const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
+
+  function togglePackage(itinerary: Itinerary) {
+    const journeyId = toJourneyId('package', itinerary.name)
+
+    if (isIncluded(journeyId)) {
+      confirmRemoveItem(journeyId)
+      return
+    }
+
+    includeItem({
+      id: journeyId,
+      kind: 'package',
+      label: `${itinerary.name} — ${itinerary.duration}`,
+      detail: itinerary.character,
+      source: 'Itineraries',
+      duration: itinerary.duration,
+      pricePerPerson: itinerary.priceFrom,
+    })
+  }
 
   return (
     <main className="itineraries-page">
@@ -212,12 +251,29 @@ export function ItinerariesPage() {
                   </ul>
                 </div>
 
+                <div className="itin-package__price">
+                  <span className="itin-package__price-label">From</span>
+                  <strong>{priceFormatter.format(itinerary.priceFrom)}</strong>
+                  <span className="itin-package__price-unit">per person</span>
+                  <small>Indicative — final price confirmed by your concierge.</small>
+                </div>
+
                 <div className="itin-package__actions">
-                  <a className="itin-button" href="/contact">
-                    Enquire About This Journey
-                  </a>
-                  <a className="itin-button itin-button--ghost" href="/expectations">
-                    Shape Your Own
+                  {(() => {
+                    const added = isIncluded(toJourneyId('package', itinerary.name))
+                    return (
+                      <button
+                        type="button"
+                        className={`itin-button${added ? ' itin-button--added' : ''}`}
+                        aria-pressed={added}
+                        onClick={() => togglePackage(itinerary)}
+                      >
+                        {added ? 'Added to Journey ✓' : 'Add to Journey'}
+                      </button>
+                    )
+                  })()}
+                  <a className="itin-button itin-button--ghost" href="/my-journey">
+                    View My Journey
                   </a>
                 </div>
               </div>

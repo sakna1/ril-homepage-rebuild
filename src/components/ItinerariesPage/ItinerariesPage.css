@@ -448,11 +448,64 @@
   background: var(--color-accent);
 }
 
+.itin-package__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.itin-package__price-label {
+  color: var(--color-text-subtle);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.6px;
+  text-transform: uppercase;
+}
+
+.itin-package__price strong {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.6vw, 34px);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.itin-package__price-unit {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.itin-package__price small {
+  flex-basis: 100%;
+  margin-top: 6px;
+  color: var(--color-text-faint);
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
 .itin-package__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 32px;
+  margin-top: 26px;
+}
+
+.itin-button--added {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.itin-button--added:hover,
+.itin-button--added:focus-visible {
+  background: transparent;
+  color: var(--color-primary);
 }
 
 /* ---------- Comparison ---------- */
