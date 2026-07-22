@@ -3,6 +3,7 @@ import './SiteHeader.css'
 
 const primaryNavLinks = [
   { href: '/discover-sri-lanka', label: 'Discover' },
+  { href: '/itineraries', label: 'Itineraries' },
   { href: '/expectations', label: 'Expectations' },
   { href: '/my-journey', label: 'My Journey' },
   { href: '/about', label: 'About' },
@@ -18,6 +19,7 @@ const loginLink = { href: '/login', label: 'Login' } as const
 
 const navAliases: Record<string, string[]> = {
   '/expectations': ['/experiences'],
+  '/itineraries': ['/packages'],
 }
 
 function LoginIcon() {

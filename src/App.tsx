@@ -7,6 +7,7 @@ import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
 import { ExperienceDetailPage } from './components/ExperienceDetailPage/ExperienceDetailPage'
 import { ExpectationsPage } from './components/ExperiencesPage/ExperiencesPage'
 import { Homepage } from './components/Homepage/Homepage'
+import { ItinerariesPage } from './components/ItinerariesPage/ItinerariesPage'
 import { JournalArticlePage } from './components/JournalArticlePage/JournalArticlePage'
 import { JournalLandingPage } from './components/JournalLandingPage/JournalLandingPage'
 import { AdminLoginPage } from './components/LoginPage/AdminLoginPage'
@@ -41,6 +42,10 @@ function AppContent() {
 
   if (path === '/expectations/the-sigiriya-dawn-ascent' || path === '/experiences/the-sigiriya-dawn-ascent') {
     return renderPage(<ExperienceDetailPage />)
+  }
+
+  if (path === '/itineraries' || path === '/packages') {
+    return renderPage(<ItinerariesPage />)
   }
 
   if (path === '/journal') {
