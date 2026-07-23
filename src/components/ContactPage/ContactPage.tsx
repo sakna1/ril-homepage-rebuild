@@ -22,7 +22,7 @@ const pathways = [
     label: 'Discover the island',
     title: 'Explore Sri Lanka',
     action: 'Discover more',
-    href: '/discover-sri-lanka',
+    href: '/expectations',
   },
   {
     number: '03',

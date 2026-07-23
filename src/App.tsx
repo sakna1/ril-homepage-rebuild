@@ -3,7 +3,8 @@ import { AboutPage } from './components/AboutPage/AboutPage'
 import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage'
 import { ContactPage } from './components/ContactPage/ContactPage'
 import { ConciergeDesk } from './components/ConciergeDesk/ConciergeDesk'
-import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
+// Discover temporarily hidden — restore this import with the route below.
+// import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
 import { ExperienceDetailPage } from './components/ExperienceDetailPage/ExperienceDetailPage'
 import { ExpectationsPage } from './components/ExperiencesPage/ExperiencesPage'
 import { Homepage } from './components/Homepage/Homepage'
@@ -32,8 +33,14 @@ function AppContent() {
     return <ConciergeDesk />
   }
 
+  // Discover temporarily hidden. Redirect any lingering links to the homepage.
+  // To bring it back, restore the DiscoveryGuide render below.
   if (path === '/discover-sri-lanka') {
-    return renderPage(<DiscoveryGuide />)
+    if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+      window.location.replace('/')
+      return null
+    }
+    return renderPage(<Homepage />)
   }
 
   if (path === '/expectations' || path === '/experiences') {

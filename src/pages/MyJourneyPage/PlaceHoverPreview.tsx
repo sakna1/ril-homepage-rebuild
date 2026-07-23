@@ -75,7 +75,7 @@ export function PlaceHoverPreview({ placeName, children }: { placeName: string; 
               </div>
             ) : null}
 
-            <a className="place-hover__cta" href="/discover-sri-lanka">
+            <a className="place-hover__cta" href="/expectations">
               Learn More
             </a>
           </div>

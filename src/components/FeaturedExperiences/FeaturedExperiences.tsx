@@ -130,7 +130,7 @@ export function FeaturedExperiences() {
         <div className="footer-lines">
           <span className="footer-line"></span>
           <div className="footer-center">
-            <a href="/discover-sri-lanka" className="footer-continue-link">
+            <a href="/expectations" className="footer-continue-link">
               <span className="footer-link-text">Continue Exploring</span>
               <span className="footer-link-underline"></span>
             </a>

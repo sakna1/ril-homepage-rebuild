@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import './SiteHeader.css'
 
 const primaryNavLinks = [
-  { href: '/discover-sri-lanka', label: 'Discover' },
+  // Discover temporarily hidden — restore this entry to bring it back.
+  // { href: '/discover-sri-lanka', label: 'Discover' },
   { href: '/itineraries', label: 'Itineraries' },
   { href: '/expectations', label: 'Expectations' },
   { href: '/my-journey', label: 'My Journey' },

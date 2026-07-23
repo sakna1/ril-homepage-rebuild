@@ -2,7 +2,7 @@ import './SiteFooter.css'
 
 const footerNav = {
   explore: [
-    { href: '/discover-sri-lanka', label: 'Discover Sri Lanka' },
+    // Discover temporarily hidden — restore this entry to bring it back.
     { href: '/expectations', label: 'Expectations' },
     { href: '/travel-preparation', label: 'On Arrival' },
     { href: '/my-journey', label: 'My Journey' },
@@ -11,7 +11,7 @@ const footerNav = {
   ] as const,
   connect: [
     { href: '/#begin', label: 'Begin a Conversation' },
-    { href: '/discover-sri-lanka', label: 'Discovery Guide' },
+    // Discovery Guide temporarily hidden — restore this entry to bring it back.
     { href: '/contact', label: 'Contact' },
   ] as const,
   legal: [

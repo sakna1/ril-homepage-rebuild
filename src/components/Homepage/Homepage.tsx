@@ -695,7 +695,7 @@ export function Homepage() {
             would make Sri Lanka feel personally meaningful. We will respond with considered next
             steps, not a catalogue.
           </p>
-          <a className="figma-invitation-cta" href="/discover-sri-lanka">
+          <a className="figma-invitation-cta" href="/expectations">
             Begin With Discovery
           </a>
           <small>Explore the island privately, with no obligation.</small>

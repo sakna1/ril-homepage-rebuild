@@ -86,7 +86,7 @@ export function QuickInquiryForm({ onFieldsChange }: QuickInquiryFormProps) {
           Your message is saved in this browser only. When the enquiry desk is connected, this will become the
           beginning of a more personal conversation.
         </p>
-        <a className="contact-text-link" href="/discover-sri-lanka">
+        <a className="contact-text-link" href="/expectations">
           Continue exploring the island
           <ArrowIcon />
         </a>

@@ -350,7 +350,7 @@ export function AboutPage() {
             We accept a limited number of enquiries each season so each journey can be shaped with
             care, discretion, and the right custodians around it.
           </p>
-          <a className="about-invitation-button" href="/discover-sri-lanka">
+          <a className="about-invitation-button" href="/expectations">
             Begin With Discovery
           </a>
         </div>

@@ -249,7 +249,7 @@ export function TravelPreparationPage() {
             enter the journey.
           </p>
           <div className="prep-cta-actions">
-            <a href="/discover-sri-lanka">Begin With Discovery</a>
+            <a href="/expectations">Begin With Discovery</a>
           </div>
           <small>Personally welcomed. Thoughtfully prepared. Held from the moment you arrive.</small>
         </div>
