@@ -364,7 +364,12 @@ export function Homepage() {
             <span>held privately.</span>
           </h1>
           <div className="figma-hero-actions">
-            <a href="#begin">Begin a Private Conversation</a>
+            <a className="figma-hero-action-ghost" href="/itineraries">
+              Browse Our Itineraries
+            </a>
+            <a className="figma-hero-action-ghost" href="/expectations">
+              Shape Your Expectations
+            </a>
           </div>
         </div>
          {/*<p className="figma-hero-caption">Bespoke journeys for private families, principals, and those who travel rarely, and only well.</p>*/}
