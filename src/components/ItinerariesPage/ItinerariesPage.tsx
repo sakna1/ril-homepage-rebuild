@@ -26,12 +26,6 @@ type Itinerary = {
   imageAlt: string
 }
 
-const priceFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
-})
-
 const itineraries: readonly Itinerary[] = [
   {
     numeral: 'I',
@@ -249,13 +243,6 @@ export function ItinerariesPage() {
                       <li key={inclusion}>{inclusion}</li>
                     ))}
                   </ul>
-                </div>
-
-                <div className="itin-package__price">
-                  <span className="itin-package__price-label">From</span>
-                  <strong>{priceFormatter.format(itinerary.priceFrom)}</strong>
-                  <span className="itin-package__price-unit">per person</span>
-                  <small>Indicative — final price confirmed by your concierge.</small>
                 </div>
 
                 <div className="itin-package__actions">
