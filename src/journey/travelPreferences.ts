@@ -89,6 +89,39 @@ export const transportOptions: TransportOption[] = [
 
 const COMPANION_STORAGE_KEY = 'royale-isles-travel-companion'
 const TRANSPORT_STORAGE_KEY = 'royale-isles-transport-preference'
+const DATES_STORAGE_KEY = 'royale-isles-travel-dates'
+
+export type TravelDates = {
+  /** Preferred start date, ISO 'YYYY-MM-DD', or '' if unset. */
+  startDate: string
+  /** Number of travellers (>= 1). */
+  travellers: number
+}
+
+const DEFAULT_TRAVEL_DATES: TravelDates = { startDate: '', travellers: 2 }
+
+export function readStoredDates(): TravelDates {
+  if (typeof window === 'undefined') return { ...DEFAULT_TRAVEL_DATES }
+  try {
+    const raw = window.localStorage.getItem(DATES_STORAGE_KEY)
+    if (!raw) return { ...DEFAULT_TRAVEL_DATES }
+    const parsed = JSON.parse(raw) as Partial<TravelDates>
+    return {
+      startDate: typeof parsed.startDate === 'string' ? parsed.startDate : '',
+      travellers:
+        typeof parsed.travellers === 'number' && parsed.travellers >= 1
+          ? Math.floor(parsed.travellers)
+          : DEFAULT_TRAVEL_DATES.travellers,
+    }
+  } catch {
+    return { ...DEFAULT_TRAVEL_DATES }
+  }
+}
+
+export function writeStoredDates(dates: TravelDates) {
+  if (typeof window === 'undefined') return
+  window.localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(dates))
+}
 
 export function readStoredCompanion(): CompanionId | null {
   if (typeof window === 'undefined') return null

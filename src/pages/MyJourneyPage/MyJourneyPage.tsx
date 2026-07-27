@@ -18,11 +18,14 @@ import { orderDestinationIdsEditorially } from '../../journey/savedPlaceResoluti
 import {
   companionOptions,
   readStoredCompanion,
+  readStoredDates,
   readStoredTransport,
   transportOptions,
   writeStoredCompanion,
+  writeStoredDates,
   writeStoredTransport,
   type CompanionId,
+  type TravelDates,
   type TransportId,
 } from '../../journey/travelPreferences'
 import {
@@ -83,6 +86,12 @@ function formatUsd(amount: number) {
   return usdFormatter.format(amount)
 }
 
+function formatUsdDate(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 function isPackagePlace(item: JourneyItem) {
   return (
     item.kind === 'destination' ||
@@ -100,6 +109,7 @@ export function MyJourneyPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [companion, setCompanion] = useState<CompanionId | null>(readStoredCompanion)
   const [transport, setTransport] = useState<TransportId | null>(readStoredTransport)
+  const [travelDates, setTravelDates] = useState<TravelDates>(readStoredDates)
   const [dismissedDistancePair, setDismissedDistancePair] = useState<string | null>(null)
   const stepsId = useId()
 
@@ -110,6 +120,10 @@ export function MyJourneyPage() {
   useEffect(() => {
     writeStoredTransport(transport)
   }, [transport])
+
+  useEffect(() => {
+    writeStoredDates(travelDates)
+  }, [travelDates])
 
   const themes = useMemo(() => items.filter(isPackageTheme), [items])
   const destinations = useMemo(() => items.filter((item) => item.kind === 'destination'), [items])
@@ -478,6 +492,41 @@ export function MyJourneyPage() {
 
             <TravelCompanionsSection selected={companion} onSelect={setCompanion} />
             <RoadTransportSection selected={transport} onSelect={setTransport} />
+
+            <section className="myj-preference-section myj-dates" aria-labelledby="myj-dates-head">
+              <div className="myj-preference-head">
+                <h3 id="myj-dates-head">When Will You Travel?</h3>
+                <p>Tell us your preferred start and party size so your concierge can hold the right dates.</p>
+              </div>
+              <div className="myj-dates-fields">
+                <label>
+                  <span>Preferred start date</span>
+                  <input
+                    type="date"
+                    value={travelDates.startDate}
+                    onChange={(event) =>
+                      setTravelDates((current) => ({ ...current, startDate: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Travellers</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={40}
+                    value={travelDates.travellers}
+                    onChange={(event) =>
+                      setTravelDates((current) => ({
+                        ...current,
+                        travellers: Math.max(1, Math.floor(Number(event.target.value) || 1)),
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+            </section>
+
             <HealthInsuranceCard />
 
             <div className="journey-workspace__next">
@@ -576,6 +625,14 @@ export function MyJourneyPage() {
                     <div>
                       <dt>Activities</dt>
                       <dd>{experiences.length}</dd>
+                    </div>
+                    <div>
+                      <dt>Start Date</dt>
+                      <dd>{travelDates.startDate ? formatUsdDate(travelDates.startDate) : 'Not set'}</dd>
+                    </div>
+                    <div>
+                      <dt>Travellers</dt>
+                      <dd>{travelDates.travellers}</dd>
                     </div>
                     {drivingRoute ? (
                       <>

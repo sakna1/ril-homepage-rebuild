@@ -1,12 +1,15 @@
 import { useId, useState, type FormEvent } from 'react'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
+import { readStoredDates } from '../../journey/travelPreferences'
+import { getTravellerToken } from '../../traveller/travellerAuthApi'
 import './CheckoutPage.css'
 
-const RESERVATION_FEE = {
-  amount: 500,
+const usd = new Intl.NumberFormat('en-US', {
+  style: 'currency',
   currency: 'USD',
-}
+  maximumFractionDigits: 0,
+})
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -29,7 +32,12 @@ export function CheckoutPage() {
   const primaryTheme = themes[0]
 
   const packages = items.filter((item) => item.kind === 'package')
-  const packagesTotal = packages.reduce((total, item) => total + (item.pricePerPerson ?? 0), 0)
+  const perPersonTotal = packages.reduce((total, item) => total + (item.pricePerPerson ?? 0), 0)
+  const { travellers } = readStoredDates()
+  // The full amount for the party: per-person package total × travellers.
+  const fullAmount = perPersonTotal * Math.max(1, travellers)
+  const hasPricing = perPersonTotal > 0
+  const alreadySignedIn = Boolean(getTravellerToken())
 
   function updateField<K extends keyof GuestDetails>(key: K, value: GuestDetails[K]) {
     setGuestDetails((current) => ({ ...current, [key]: value }))
@@ -80,16 +88,26 @@ export function CheckoutPage() {
           <span className="checkout-success-mark" aria-hidden="true">
             ✦
           </span>
-          <p className="checkout-eyebrow">Reservation Requested</p>
+          <p className="checkout-eyebrow">Journey Requested</p>
           <h1>Thank you, {guestDetails.name.trim().split(' ')[0]}.</h1>
           <p>
-            Your reservation request has been received. Secure payment processing is being connected —
-            our concierge team will reach out to {guestDetails.email} to confirm the details and complete
+            Your journey request has been received. Secure payment processing is being connected —
+            our concierge team will reach out to {guestDetails.email} to confirm the details and take
             payment personally. No charge has been made.
           </p>
-          <a className="checkout-cta" href="/my-journey">
-            Back To My Journey
-          </a>
+          <p className="checkout-profile-note">
+            {alreadySignedIn
+              ? 'Your journey is saved to your traveller profile — stay signed in to track it anytime.'
+              : 'Save this journey to a traveller profile so you can sign back in and track it — you’ll stay logged in on this device.'}
+          </p>
+          <div className="checkout-success-actions">
+            <a className="checkout-cta" href={alreadySignedIn ? '/traveller' : '/login/traveller'}>
+              {alreadySignedIn ? 'Go To Your Profile' : 'Create Your Profile'}
+            </a>
+            <a className="checkout-cta checkout-cta--ghost" href="/my-journey">
+              Back To My Journey
+            </a>
+          </div>
         </div>
       </main>
     )
@@ -103,8 +121,8 @@ export function CheckoutPage() {
           Begin <em>{primaryTheme ? primaryTheme.label : 'your private journey'}</em>.
         </h1>
         <p className="checkout-hero-lede">
-          A reservation fee secures your concierge&apos;s time to begin planning. Final routing, timing,
-          and the full package cost are confirmed personally before anything further is arranged.
+          Review your journey and confirm. Your concierge personally verifies the routing, timing, and
+          final amount, then takes payment securely — nothing is charged automatically.
         </p>
       </header>
 
@@ -155,30 +173,47 @@ export function CheckoutPage() {
                 <div className="checkout-total" key={pkg.id}>
                   <span>{pkg.label}</span>
                   <strong>
-                    {RESERVATION_FEE.currency} ${(pkg.pricePerPerson ?? 0).toLocaleString('en-US')}
+                    {typeof pkg.pricePerPerson === 'number'
+                      ? `${usd.format(pkg.pricePerPerson)} pp`
+                      : 'Priced on request'}
                   </strong>
                 </div>
               ))}
-              <div className="checkout-total">
-                <span>Indicative Total (per person)</span>
-                <strong>
-                  {RESERVATION_FEE.currency} ${packagesTotal.toLocaleString('en-US')}
-                </strong>
-              </div>
             </div>
           ) : null}
 
-          <div className="checkout-total">
-            <span>Reservation Fee Due Now</span>
-            <strong>
-              {RESERVATION_FEE.currency} ${RESERVATION_FEE.amount}
-            </strong>
-          </div>
-          <p className="checkout-summary-note">
-            {packages.length > 0
-              ? 'Package pricing is indicative and confirmed by your concierge. Only the reservation fee is taken now, and never before we confirm it with you.'
-              : 'A provisional fee, confirmed with you before any charge is made.'}
-          </p>
+          {hasPricing ? (
+            <>
+              <div className="checkout-total checkout-total--sub">
+                <span>Per person</span>
+                <strong>{usd.format(perPersonTotal)}</strong>
+              </div>
+              <div className="checkout-total checkout-total--sub">
+                <span>Travellers</span>
+                <strong>× {Math.max(1, travellers)}</strong>
+              </div>
+              <div className="checkout-total checkout-total--grand">
+                <span>Total Due</span>
+                <strong>{usd.format(fullAmount)}</strong>
+              </div>
+              <p className="checkout-summary-note">
+                This is the full journey amount for your party. Payment processing is being
+                connected — your concierge confirms and takes payment personally; nothing is charged
+                automatically.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="checkout-total checkout-total--grand">
+                <span>Total Due</span>
+                <strong>Confirmed by concierge</strong>
+              </div>
+              <p className="checkout-summary-note">
+                Your journey is custom-built, so the final amount is confirmed personally by your
+                concierge before any charge is made.
+              </p>
+            </>
+          )}
         </div>
 
         <form className="checkout-form" onSubmit={handleSubmit} noValidate>
@@ -262,7 +297,7 @@ export function CheckoutPage() {
           </div>
 
           <button type="submit" className="checkout-submit">
-            Confirm Reservation · {RESERVATION_FEE.currency} ${RESERVATION_FEE.amount}
+            {hasPricing ? `Confirm Journey · ${usd.format(fullAmount)}` : 'Confirm Journey'}
           </button>
         </form>
       </div>

@@ -14,10 +14,15 @@ import { JournalLandingPage } from './components/JournalLandingPage/JournalLandi
 import { AdminLoginPage } from './components/LoginPage/AdminLoginPage'
 import { LoginChooserPage } from './components/LoginPage/LoginChooserPage'
 import { TravellerLoginPage } from './components/LoginPage/TravellerLoginPage'
+import { ResetPasswordPage } from './components/LoginPage/ResetPasswordPage'
 import { PageLayout } from './components/PageLayout/PageLayout'
 import { TravelPreparationPage } from './components/TravelPreparationPage/TravelPreparationPage'
 import { MyJourneyPage } from './pages/MyJourneyPage/MyJourneyPage'
+import { TravellerDashboardPage } from './pages/TravellerDashboardPage/TravellerDashboardPage'
+import { AdminDashboardPage } from './pages/AdminDashboardPage/AdminDashboardPage'
 import { JourneyProvider } from './journey/JourneyContext'
+import { TravellerAuthProvider } from './traveller/TravellerAuthContext'
+import { AdminAuthProvider } from './admin/AdminAuthContext'
 
 function AppContent() {
   const rawPath = window.location.pathname.replace(/\/$/, '')
@@ -75,6 +80,18 @@ function AppContent() {
     return renderPage(<AdminLoginPage />)
   }
 
+  if (path === '/reset-password') {
+    return renderPage(<ResetPasswordPage />)
+  }
+
+  if (path === '/traveller' || path === '/traveller-portal') {
+    return renderPage(<TravellerDashboardPage />)
+  }
+
+  if (path === '/admin') {
+    return renderPage(<AdminDashboardPage />)
+  }
+
   if (path === '/about') {
     return renderPage(<AboutPage />)
   }
@@ -100,9 +117,13 @@ function AppContent() {
 
 function App() {
   return (
-    <JourneyProvider>
-      <AppContent />
-    </JourneyProvider>
+    <AdminAuthProvider>
+      <TravellerAuthProvider>
+        <JourneyProvider>
+          <AppContent />
+        </JourneyProvider>
+      </TravellerAuthProvider>
+    </AdminAuthProvider>
   )
 }
 
