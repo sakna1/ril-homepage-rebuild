@@ -27,7 +27,7 @@ export const companionOptions: CompanionOption[] = [
   { id: 'luxury-escape', label: 'Luxury Escape', icon: 'crown' },
 ]
 
-export type TransportId = 'private-car' | 'suv' | 'luxury-van' | 'chauffeur' | 'coach'
+export type TransportId = 'private-car' | 'suv' | 'luxury-van' | 'chauffeur'
 
 export type TransportOption = {
   id: TransportId
@@ -75,15 +75,6 @@ export const transportOptions: TransportOption[] = [
     luggage: '3 – 4 bags',
     comfort: 'Personal',
     recommendedFor: 'Guests who want a dedicated private driver throughout',
-  },
-  {
-    id: 'coach',
-    label: 'Premium Coach (Groups)',
-    icon: 'coach',
-    capacity: 'Up to 20 guests',
-    luggage: 'Full group luggage',
-    comfort: 'Comfort-class',
-    recommendedFor: 'Corporate groups and larger parties',
   },
 ]
 

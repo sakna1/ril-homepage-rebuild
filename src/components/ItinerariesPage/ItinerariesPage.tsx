@@ -42,7 +42,7 @@ const fallbackItineraries: readonly Itinerary[] = [
     ],
     inclusions: [
       'The Sigiriya rock ascent',
-      'The Temple of the Tooth',
+      'The Temple of the Tooth (can arrange private access with special viewings)',
       'A scenic hill-country rail journey',
       'A private wildlife safari',
       'A walking tour of historic Galle Fort',

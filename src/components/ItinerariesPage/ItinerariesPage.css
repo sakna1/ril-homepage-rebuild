@@ -664,7 +664,7 @@
 .itin-gallery-card {
   position: relative;
   flex: 1 1 0;
-  min-width: 0;
+  min-width: 116px;
   height: 100%;
   padding: 0;
   border: 1px solid var(--color-border-subtle);
@@ -673,17 +673,18 @@
   background: var(--color-surface-secondary);
   cursor: pointer;
   text-align: left;
-  transition: flex-grow 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: flex-basis 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* The open card takes a generous fixed width; the rest share what remains. */
 .itin-gallery-card:hover,
-.itin-gallery-card:focus-visible {
-  flex-grow: 3.4;
+.itin-gallery-card:focus-visible,
+.itin-gallery-card.is-active {
+  flex: 0 0 clamp(300px, 32vw, 440px);
   outline: none;
 }
 
 .itin-gallery-card.is-active {
-  flex-grow: 3.4;
   border-color: var(--color-accent-muted);
   box-shadow: 0 26px 64px var(--shadow-card);
 }
@@ -729,12 +730,19 @@
 
 .itin-gallery-card__name {
   font-family: var(--font-display);
-  font-size: clamp(20px, 2.2vw, 28px);
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: font-size 0.4s ease;
+}
+
+/* The open card gets the full display size. */
+.itin-gallery-card:hover .itin-gallery-card__name,
+.itin-gallery-card.is-active .itin-gallery-card__name {
+  font-size: clamp(22px, 2.2vw, 30px);
 }
 
 .itin-gallery-card__desc {

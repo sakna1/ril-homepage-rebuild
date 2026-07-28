@@ -136,36 +136,6 @@ const sriLankaStats = [
   ['1,340km', 'Of coastline for villas, yachts, wellness retreats, and family celebrations.'],
 ]
 
-const journalItems = [
-  {
-    image: localImages.sripadayaSky,
-    imageAlt: 'Mountain horizon at dawn above the Sri Lankan highlands',
-    type: 'Field Notes',
-    date: 'Timing & Pace',
-    title: 'The Art of Protecting Unscheduled Time',
-    excerpt: 'Why the most memorable journeys at this level often depend on what we deliberately leave unplanned.',
-    path: '/journal/protecting-unscheduled-time',
-  },
-  {
-    image: localImages.kelaniTempleDetail,
-    imageAlt: 'Sacred mural detail inside Kelani temple in Sri Lanka',
-    type: 'Private Interview',
-    date: 'Sacred Access',
-    title: 'The Temple Keeper Who Knows When Not to Speak',
-    excerpt: 'A conversation on timing, restraint, and giving sacred places the privacy they deserve.',
-    path: '/journal/the-temple-keeper',
-  },
-  {
-    image: experienceImages.hillCountry,
-    imageAlt: 'Misty Sri Lankan tea estate at golden hour',
-    type: 'Seasonal Briefing',
-    date: 'Highland Residences',
-    title: 'When Tea Country Feels Entirely Yours',
-    excerpt: "A curator's note on private residences, cloud forest mornings, and highland routes away from spectacle.",
-    path: '/journal/private-tea-country',
-  },
-]
-
 const travellerStories = [
   {
     image: localImages.travelTwo,
@@ -535,81 +505,6 @@ export function Homepage() {
               </div>
             ))}
           </dl>
-        </div>
-      </section>
-
-      <section className="figma-journal" id="journal" data-node-id="103:12936">
-        <div className="figma-container">
-          <header className="figma-section-header figma-journal-header reveal">
-            <div>
-              <p className="figma-kicker-line">The Private Journal</p>
-              <h2>
-                Intelligence for journeys that must feel <em>effortless.</em>
-              </h2>
-              <p>
-                Essays, field letters, and curator briefings for travellers who value privacy,
-                discretion, and access that is meaningful precisely because it is never obvious.
-              </p>
-            </div>
-            <aside className="figma-journal-brief">
-              <span>For principals and private families</span>
-              <p>
-                Notes on timing, hosting, residences, wellness, family movement, and the quiet
-                details that separate a good trip from a fully held journey.
-              </p>
-              <a href="/journal">
-                Enter The Journal <ArrowIcon />
-              </a>
-            </aside>
-          </header>
-          <div className="figma-journal-grid reveal">
-            <article className="figma-feature-story">
-              <div className="figma-feature-story-copy">
-                <p>
-                  Private Field Letter <span>Protected Access</span>
-                </p>
-                <h3>&quot;The best moment was the one nobody else knew had been arranged.&quot;</h3>
-                <span>
-                  A guest reflects on private access, protected time, and the quiet intelligence of a
-                  journey that never announced itself as luxury.
-                </span>
-                <ul className="figma-feature-story-points" aria-label="Featured journal themes">
-                  <li>Protected dawn access</li>
-                  <li>Discreet family-office pacing</li>
-                  <li>Resident scholar accompaniment</li>
-                </ul>
-                <a href="/journal/the-sigiriya-dawn-ascent">
-                  Read The Field Letter <ArrowIcon />
-                </a>
-              </div>
-              <figure className="figma-feature-story-stamp">
-                <img src={experienceImages.sigiriyaMain} alt="Sigiriya rock fortress rising above the Sri Lankan landscape" />
-                <figcaption>
-                  <span>Private Access</span>
-                  <small>Sigiriya before the first public ascent</small>
-                </figcaption>
-              </figure>
-            </article>
-            <div className="figma-journal-list">
-              {journalItems.map((item) => (
-                <article key={item.title}>
-                  <figure className="figma-journal-thumb">
-                    <img src={item.image} alt={item.imageAlt} />
-                  </figure>
-                  <div>
-                    <p>
-                      {item.type} <span>{item.date}</span>
-                    </p>
-                    <h4>{item.title}</h4>
-                    <span>{item.excerpt}</span>
-                    <a href={item.path}>
-                      Read note <ArrowIcon />
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 

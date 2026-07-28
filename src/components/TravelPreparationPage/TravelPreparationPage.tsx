@@ -46,7 +46,7 @@ const arrangedDetails = [
   },
   {
     label: 'Connectivity',
-    title: 'Staying reachable is one less consideration.',
+    title: 'Stay connected is one less consideration.',
     copy:
       'If local connectivity is helpful for your journey, SIM or eSIM support is considered in advance so communication never becomes a task.',
   },
@@ -55,6 +55,12 @@ const arrangedDetails = [
     title: 'Your hosts are ready before you arrive.',
     copy:
       'Room readiness, hotel arrival timing, welcome preferences, dietary notes, and first-evening pacing are confirmed privately with each property.',
+  },
+  {
+    label: 'Currency',
+    title: 'Local rupees, ready in your hand.',
+    copy:
+      'Rather than queuing at exchange counters on arrival, a sensible amount of Sri Lankan rupees is arranged in advance and handed to you on landing — so tips, small purchases, and incidentals are never a concern.',
   },
   {
     label: 'Preferences',
