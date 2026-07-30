@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 import './ItinerariesPage.css'
 import { experienceImages } from '../ExperiencesPage/images'
 import { toJourneyId } from '../../journey/journeyItemHelpers'
@@ -21,6 +20,9 @@ type Itinerary = {
   image: string
   imageAlt: string
 }
+
+// The three signature structures shown on this page, in order.
+const KEEP_NAMES = ['Discovery', 'Deep Dive', 'Dynasty'] as const
 
 // Curated fallback, used until (or if) the backend content API is unavailable.
 const fallbackItineraries: readonly Itinerary[] = [
@@ -118,97 +120,6 @@ const fallbackItineraries: readonly Itinerary[] = [
     image: experienceImages.perahera,
     imageAlt: 'Ceremonial procession with traditional performers in Sri Lanka',
   },
-  {
-    numeral: 'IV',
-    name: 'Coastal Serenity',
-    duration: '8 Days',
-    priceFrom: 4200,
-    character:
-      'Slow mornings by the sea, cinnamon gardens, and quiet fortified towns — the southern coast read at the pace of the tide.',
-    route: ['Colombo', 'Bentota', 'Galle', 'Weligama', 'Mirissa', 'Tangalle', 'Airport'],
-    inclusions: [
-      'A private villa on the southern coast',
-      'Galle Fort at golden hour',
-      'A dawn whale-watching charter',
-      'A cinnamon estate visit',
-      'Sunset suppers by the sea',
-    ],
-    pace: 'Gentle',
-    bestFor: 'Coastal escapes and honeymoons',
-    reach: 'Western & Southern coast',
-    image: experienceImages.poolVilla,
-    imageAlt: 'Private coastal villa pool in southern Sri Lanka',
-  },
-  {
-    numeral: 'V',
-    name: 'Highland Retreat',
-    duration: '7 Days',
-    priceFrom: 3900,
-    character:
-      'Misted tea country, cool verandas, and the slow work of restoration — hill stations and gardens reached by scenic mountain rail.',
-    route: ['Colombo', 'Kandy', 'Nuwara Eliya', 'Ella', 'Haputale', 'Airport'],
-    inclusions: [
-      'A tea-estate bungalow stay',
-      'The scenic highland rail journey',
-      'Private tea tastings',
-      'Ayurvedic wellness mornings',
-      'Nine Arches Bridge at first light',
-    ],
-    pace: 'Restorative',
-    bestFor: 'Wellness and cool-climate travel',
-    reach: 'Central Highlands & Uva',
-    image: experienceImages.teaEstate,
-    imageAlt: 'Rows of tea bushes on a misted hill-country estate',
-  },
-  {
-    numeral: 'VI',
-    name: 'Wild Encounters',
-    duration: '9 Days',
-    priceFrom: 5600,
-    character:
-      'Leopard country, elephant gatherings, and dawn safaris with naturalists who know when not to speak — wilderness held with patience.',
-    route: ['Colombo', 'Wilpattu National Park', 'Sigiriya', 'Minneriya', 'Kandy', 'Udawalawe', 'Yala', 'Airport'],
-    inclusions: [
-      'Private leopard safaris in Yala',
-      'The Minneriya elephant gathering',
-      'A naturalist-led field morning',
-      'Wilpattu wilderness drives',
-      'A tented wild-coast retreat',
-    ],
-    pace: 'Adventurous',
-    bestFor: 'Wildlife and photography',
-    reach: 'North-West, Centre & Deep South',
-    image: experienceImages.leopardFeature,
-    imageAlt: 'Sri Lankan leopard resting on a rock at dusk',
-  },
-  {
-    numeral: 'VII',
-    name: 'Sacred Circuit',
-    duration: '11 Days',
-    priceFrom: 6100,
-    character:
-      "Ancient capitals, cave temples, and living ritual — the island's spiritual heart entered slowly, with scholarship and protected timing.",
-    route: ['Colombo', 'Anuradhapura', 'Mihintale', 'Polonnaruwa', 'Sigiriya', 'Dambulla', 'Kandy', 'Airport'],
-    inclusions: [
-      'Private dawn access at Sigiriya',
-      'The Dambulla cave temples',
-      'The Temple of the Tooth',
-      'Resident-scholar accompaniment',
-      'A Kandyan dance and ritual evening',
-    ],
-    pace: 'Contemplative',
-    bestFor: 'Heritage and scholarship',
-    reach: 'Cultural Triangle & Central',
-    image: experienceImages.monks,
-    imageAlt: 'Buddhist monks at a Sri Lankan temple',
-  },
-] as const
-
-const comparisonRows = [
-  { label: 'Duration', key: 'duration' },
-  { label: 'Pace', key: 'pace' },
-  { label: 'Best for', key: 'bestFor' },
-  { label: 'Island reach', key: 'reach' },
 ] as const
 
 // Map a DB package to the display shape, borrowing an image from the curated
@@ -229,16 +140,21 @@ function nightsLabel(duration: string): string {
 // A short one-line description for the gallery card.
 function shortDescription(character: string): string {
   const firstSentence = character.split(/(?<=[.!?])\s/)[0] ?? character
-  return firstSentence.length > 120 ? `${firstSentence.slice(0, 117).trimEnd()}…` : firstSentence
+  return firstSentence.length > 130 ? `${firstSentence.slice(0, 127).trimEnd()}…` : firstSentence
 }
 
 export function ItinerariesPage() {
-  const prefersReducedMotion = useReducedMotion()
   const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
 
   // Content comes from the admin-managed DB; fall back to the curated list.
   const [items, setItems] = useState<readonly Itinerary[]>(fallbackItineraries)
   const [selectedIndex, setSelectedIndex] = useState(0)
+
+  const trackRef = useRef<HTMLDivElement>(null)
+  const detailRef = useRef<HTMLDivElement>(null)
+  const [current, setCurrent] = useState(0)
+  const [canPrev, setCanPrev] = useState(false)
+  const [canNext, setCanNext] = useState(true)
 
   useEffect(() => {
     let cancelled = false
@@ -269,8 +185,53 @@ export function ItinerariesPage() {
     }
   }, [])
 
-  const activeIndex = items.length > 0 ? Math.min(selectedIndex, items.length - 1) : 0
-  const selected = items[activeIndex] ?? null
+  // Only the three signature structures. If the DB has renamed them, fall back
+  // to the first three so the page is never empty.
+  const named = items.filter((entry) => (KEEP_NAMES as readonly string[]).includes(entry.name))
+  const visible = named.length > 0 ? named : items.slice(0, 3)
+
+  const activeIndex = visible.length > 0 ? Math.min(selectedIndex, visible.length - 1) : 0
+  const selected = visible[activeIndex] ?? null
+
+  const updateNav = () => {
+    const el = trackRef.current
+    if (!el) return
+    const { scrollLeft, scrollWidth, clientWidth } = el
+    setCanPrev(scrollLeft > 4)
+    setCanNext(scrollLeft < scrollWidth - clientWidth - 4)
+    const cards = Array.from(el.querySelectorAll<HTMLElement>('.itin-card4'))
+    let idx = 0
+    let min = Infinity
+    cards.forEach((card, i) => {
+      const distance = Math.abs(card.offsetLeft - el.scrollLeft - el.offsetLeft)
+      if (distance < min) {
+        min = distance
+        idx = i
+      }
+    })
+    setCurrent(idx)
+  }
+
+  useEffect(() => {
+    updateNav()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible.length])
+
+  const scrollToIndex = (index: number) => {
+    const el = trackRef.current
+    if (!el) return
+    const card = el.querySelectorAll<HTMLElement>('.itin-card4')[index]
+    if (!card) return
+    const delta = card.getBoundingClientRect().left - el.getBoundingClientRect().left
+    el.scrollBy({ left: delta, behavior: 'smooth' })
+  }
+
+  const selectCard = (index: number) => {
+    setSelectedIndex(index)
+    requestAnimationFrame(() => {
+      detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
 
   function togglePackage(itinerary: Itinerary) {
     const journeyId = toJourneyId('package', itinerary.name)
@@ -300,12 +261,7 @@ export function ItinerariesPage() {
           <span className="itin-hero__grain" />
         </div>
 
-        <motion.div
-          className="itin-hero__copy"
-          initial={prefersReducedMotion ? undefined : { opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
+        <div className="itin-hero__copy">
           <span className="itin-eyebrow itin-eyebrow--light">Signature Itineraries</span>
           <h1>
             Three Ways to
@@ -319,59 +275,91 @@ export function ItinerariesPage() {
             View the Collection
             <span aria-hidden="true">→</span>
           </a>
-        </motion.div>
+        </div>
       </section>
 
       <section className="itin-collection" id="itin-collection" aria-label="Signature itineraries">
-        <header className="itin-section-heading">
-          <span className="itin-eyebrow">The Collection</span>
-          <h2>Chosen rhythms, not fixed schedules.</h2>
-          <p>
-            Ten days, sixteen, or twenty-one. The difference is not how much is seen, but how much
-            time each place is given.
-          </p>
-        </header>
+        <div className="itin-gallery4">
+          <header className="itin-gallery4__head">
+            <div className="itin-gallery4__intro">
+              <span className="itin-eyebrow">The Collection</span>
+              <h2>Chosen rhythms, not fixed schedules.</h2>
+              <p>
+                Ten days, sixteen, or twenty-one. The difference is not how much is seen, but how
+                much time each place is given.
+              </p>
+            </div>
+            <div className="itin-gallery4__nav">
+              <button
+                type="button"
+                aria-label="Previous itinerary"
+                onClick={() => scrollToIndex(Math.max(0, current - 1))}
+                disabled={!canPrev}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                aria-label="Next itinerary"
+                onClick={() => scrollToIndex(Math.min(visible.length - 1, current + 1))}
+                disabled={!canNext}
+              >
+                →
+              </button>
+            </div>
+          </header>
 
-        {/* Expanding gallery — hover to preview, click a package to open its details below. */}
-        <div className="itin-gallery" role="tablist" aria-label="Package selection">
-          {items.map((itinerary, index) => {
-            const isActive = index === activeIndex
-            return (
+          <div className="itin-gallery4__track" ref={trackRef} onScroll={updateNav}>
+            {visible.map((itinerary, index) => (
+              <article
+                key={itinerary.name}
+                className={`itin-card4${index === activeIndex ? ' is-active' : ''}`}
+              >
+                <button
+                  type="button"
+                  className="itin-card4__inner"
+                  onClick={() => selectCard(index)}
+                >
+                  <span className="itin-card4__figure">
+                    <img
+                      className="itin-card4__img"
+                      src={itinerary.image}
+                      alt={itinerary.imageAlt}
+                      loading="lazy"
+                    />
+                    <span className="itin-card4__overlay" aria-hidden="true" />
+                    <span className="itin-card4__body">
+                      <span className="itin-card4__nights">{nightsLabel(itinerary.duration)}</span>
+                      <span className="itin-card4__title">{itinerary.name}</span>
+                      <span className="itin-card4__desc">
+                        {shortDescription(itinerary.character)}
+                      </span>
+                      <span className="itin-card4__more">
+                        Read more <span aria-hidden="true">→</span>
+                      </span>
+                    </span>
+                  </span>
+                </button>
+              </article>
+            ))}
+          </div>
+
+          <div className="itin-gallery4__dots">
+            {visible.map((itinerary, index) => (
               <button
                 key={itinerary.name}
                 type="button"
-                role="tab"
-                aria-selected={isActive}
-                className={`itin-gallery-card${isActive ? ' is-active' : ''}`}
-                onClick={() => setSelectedIndex(index)}
-              >
-                <img
-                  className="itin-gallery-card__img"
-                  src={itinerary.image}
-                  alt={itinerary.imageAlt}
-                  loading="lazy"
-                />
-                <span className="itin-gallery-card__veil" aria-hidden="true" />
-                <span className="itin-gallery-card__content">
-                  <span className="itin-gallery-card__nights">{nightsLabel(itinerary.duration)}</span>
-                  <span className="itin-gallery-card__name">{itinerary.name}</span>
-                  <span className="itin-gallery-card__desc">{shortDescription(itinerary.character)}</span>
-                </span>
-              </button>
-            )
-          })}
+                className={`${current === index ? 'is-active' : ''}`}
+                aria-label={`Go to ${itinerary.name}`}
+                onClick={() => scrollToIndex(index)}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Dynamic details for the selected package. */}
+        {/* Details for the selected package. */}
         {selected ? (
-          <motion.article
-            key={selected.name}
-            className="itin-detail"
-            aria-live="polite"
-            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <article className="itin-detail" ref={detailRef} aria-live="polite">
             <div className="itin-detail__head">
               <span className="itin-detail__numeral" aria-hidden="true">
                 {selected.numeral}
@@ -430,45 +418,8 @@ export function ItinerariesPage() {
                 View My Journey
               </a>
             </div>
-          </motion.article>
+          </article>
         ) : null}
-      </section>
-
-      <section className="itin-compare" aria-labelledby="itin-compare-heading">
-        <header className="itin-section-heading itin-section-heading--centred">
-          <span className="itin-eyebrow">At a Glance</span>
-          <h2 id="itin-compare-heading">Which rhythm suits you?</h2>
-        </header>
-
-        <div className="itin-compare__scroll">
-          <table className="itin-compare__table">
-            <caption className="itin-visually-hidden">
-              Comparison of the Discovery, Deep Dive, and Dynasty itineraries
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">
-                  <span className="itin-visually-hidden">Detail</span>
-                </th>
-                {items.map((itinerary) => (
-                  <th key={itinerary.name} scope="col">
-                    {itinerary.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {comparisonRows.map((row) => (
-                <tr key={row.key}>
-                  <th scope="row">{row.label}</th>
-                  {items.map((itinerary) => (
-                    <td key={itinerary.name}>{itinerary[row.key]}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </section>
 
       <section className="itin-closing">

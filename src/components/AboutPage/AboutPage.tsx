@@ -4,31 +4,6 @@ import { aboutImages } from './images'
 import { experienceImages } from '../ExperiencesPage/images'
 import breathSeaImage from '../../assets/images/breath-sea.jpg'
 
-const storyPillars = [
-  {
-    title: 'Conversation first',
-    copy: 'Every journey begins with your pace, privacy, and intent.',
-  },
-  {
-    title: 'Trusted access',
-    copy: 'Introductions to hosts, artisans, and places through long-held relationships.',
-  },
-  {
-    title: 'Invisible care',
-    copy: 'Timing, transfers, and etiquette arranged before you arrive.',
-  },
-  {
-    title: 'Coastal assurance',
-    copy: 'Private, secured shore experiences for VVIP guests.',
-  },
-] as const
-
-const stats = [
-  { value: 'Private', label: 'Discovery by conversation' },
-  { value: 'Vetted', label: 'Access shaped through trust' },
-  { value: 'Human', label: 'Journeys held by people' },
-] as const
-
 const custodians = [
   {
     name: 'Dr. Suren Raghavan',
@@ -102,99 +77,6 @@ export function AboutPage() {
 
   return (
     <main className="about-page">
-      {/* Hero */}
-      <section className="about-section about-hero">
-        <div className="about-container about-hero-inner">
-          <div className="about-hero-content">
-            <p className="about-eyebrow about-eyebrow--gold">ABOUT ROYALE ISLES LANKA</p>
-            <h1 className="about-hero-heading">
-              The island,
-              <br />
-              <em>quietly opened</em>
-              <br />
-              for those who know what access means.
-            </h1>
-            <p className="about-hero-body">
-              Private Sri Lankan journeys shaped through conversation, discretion, and deep local
-              knowledge.
-            </p>
-            <div className="about-stats">
-              {stats.map((stat) => (
-                <div key={stat.label} className="about-stat">
-                  <span className="about-stat-value">{stat.value}</span>
-                  <span className="about-stat-label">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <figure className="about-hero-image-wrap">
-            <img
-              className="about-hero-image"
-              src={experienceImages.sigiriyaDawn}
-              alt="Sigiriya rock fortress rising above the Sri Lankan landscape"
-            />
-            <figcaption>
-              <span>Private Access</span>
-              <span>Ancient Kingdoms — Sri Lanka</span>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section className="about-section about-summary" aria-label="What we offer">
-        <div className="about-container about-summary-inner">
-          <div className="about-summary-intro">
-            <p className="about-eyebrow about-eyebrow--green">WHAT WE OFFER</p>
-            <h2 className="about-summary-heading">
-              Sri Lanka, opened through trust.
-            </h2>
-            <p className="about-summary-lead">
-              We curate private journeys for travellers who value cultural depth, discretion, and
-              human connection—from first conversation to final farewell.
-            </p>
-          </div>
-          <figure className="about-summary-media">
-            <img
-              className="about-summary-image"
-              src={experienceImages.heroSigiriya}
-              alt="Sigiriya rock fortress surrounded by Sri Lankan landscape"
-            />
-            <figcaption>
-              <span>Curated Access</span>
-              <span>Heritage &amp; landscape — Sri Lanka</span>
-            </figcaption>
-          </figure>
-          <ul className="about-summary-pillars">
-            {storyPillars.map((pillar) => (
-              <li key={pillar.title}>
-                <h3>{pillar.title}</h3>
-                <p>{pillar.copy}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Stillness image */}
-      <section className="about-section about-full-image">
-        <div className="about-container">
-          <figure className="about-full-image-frame">
-            <img
-              className="about-full-image-img"
-              src={experienceImages.ayurveda}
-              alt="Ayurvedic treatment pavilion set within a tropical rainforest retreat"
-            />
-            <figcaption>
-              <span>Restoration At The Heart Of The Journey</span>
-              <p>
-                The best journeys understand when to move, when to pause, and when to let the island
-                simply return you to yourself.
-              </p>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
       {/* Custodians */}
       <section className="about-section about-custodians">
         <div className="about-container about-custodians-inner">

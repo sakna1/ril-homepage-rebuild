@@ -141,48 +141,40 @@ export function Homepage() {
           <p className="figma-hero-choose">           
           </p>
           <div className="figma-hero-actions">
-            <a className="figma-hero-action-primary" href="/itineraries">
-              Designed Packages
+            <a className="figma-hero-action-ghost" href="/itineraries">
+              Designed Trips
             </a>
             <a className="figma-hero-action-ghost" href="/expectations">
-              Design Your Own Package
+              Design Your Own Trip
             </a>
           </div>
         </div>
       </section>
 
       <section className="figma-experiences" id="experiences" data-node-id="103:12794">
+        <div className="figma-experiences-turtles" aria-hidden="true">
+          <img className="figma-turtle figma-turtle--one" src={royaleIslesLogoImage} alt="" />
+          <img className="figma-turtle figma-turtle--two" src={royaleIslesLogoImage} alt="" />
+          <img className="figma-turtle figma-turtle--three" src={royaleIslesLogoImage} alt="" />
+          <img className="figma-turtle figma-turtle--four" src={royaleIslesLogoImage} alt="" />
+          <img className="figma-turtle figma-turtle--five" src={royaleIslesLogoImage} alt="" />
+          <img className="figma-turtle figma-turtle--six" src={royaleIslesLogoImage} alt="" />
+        </div>
         <div className="figma-container">
-          <header className="figma-section-header figma-experiences-header reveal">
-            <div>
-              <p className="figma-overline">Inspiration Before Curation</p>
-              <h2>
-                Ways Into The{' '}
-                <span className="figma-experiences-brand">
-                  <img
-                    className="figma-experiences-mark"
-                    src={royaleIslesLogoImage}
-                    alt=""
-                    aria-hidden="true"
-                  />
-                  Royale Isles
-                </span>
-              </h2>
-              <p>
-                These Discovery Worlds are not decisions. They are editorial lenses for understanding
-                Sri Lanka before any journey is saved, scored, or shaped around you.
-              </p>
-            </div>
-            <aside className="figma-experience-brief">
-              <span>First Curation Step</span>
-              <p>
-                When one world feels like yours, continue to Expectations. That is where your
-                preferences begin shaping My Journey.
-              </p>
-              <a href="/expectations">Continue To Expectations</a>
-            </aside>
+          <header className="figma-experiences-header figma-experiences-header--center reveal">
+            <p className="figma-overline">Inspiration Before Curation</p>
+            <h2>
+              Ways Into The{' '}
+              <span className="figma-experiences-brand">Royale Isles</span>
+            </h2>
+            <p className="figma-experiences-lead">We are Royale Isles.</p>
+            <p className="figma-experiences-bring">
+              Custodians of a quieter, more private Sri Lanka where the island is not toured
+              but confided. Unhurried mornings, doors opened by trust alone, and days composed
+              entirely around you. Come and know the island as few ever will intimately,
+              exquisitely and wholly your own.
+            </p>
           </header>
-
         </div>
       </section>
 
@@ -199,7 +191,7 @@ export function Homepage() {
             steps, not a catalogue.
           </p>
           <a className="figma-invitation-cta" href="/expectations">
-            Begin With Expectaions
+            Begin With Expectations
           </a>
           <small>Explore the island privately, with no obligation.</small>
           <p className="figma-invitation-aside">

@@ -733,50 +733,155 @@
 }
 
 .figma-experiences-header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
-  align-items: stretch;
-  gap: clamp(40px, 6vw, 88px);
+  position: relative;
+  display: block;
+  max-width: 760px;
+}
+
+/* Centred variant — heading and copy stacked and centred in the section. */
+.figma-experiences-header--center {
+  max-width: 1120px;
+  margin-inline: auto;
+  text-align: center;
 }
 
 .figma-experiences-header h2 {
+  margin-top: 10px;
   color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(42px, 5.4vw, 76px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
 }
 
 .figma-experiences-brand {
-  position: relative;
   display: inline-block;
-  isolation: isolate;
   white-space: nowrap;
 }
 
-.figma-homepage .figma-experiences-brand .figma-experiences-mark {
-  position: absolute;
-  z-index: -1;
-  top: 50%;
-  left: 50%;
-  width: clamp(180px, 24vw, 300px);
-  height: auto;
-  margin: 0;
-  pointer-events: none;
-  opacity: 0.18;
-  transform: translate(-50%, -50%);
-  object-fit: contain;
-  animation: figma-mark-float 6s ease-in-out infinite;
+.figma-experiences-lead {
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.2;
 }
 
-@keyframes figma-mark-float {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) translateY(0);
+/* Body spans the full centred width — two wide lines, not a narrow column. */
+.figma-experiences-header--center .figma-experiences-bring {
+  margin-inline: auto;
+  max-width: 100%;
+}
+
+.figma-experiences-bring {
+  margin-top: 18px;
+  max-width: 66ch;
+  color: var(--color-text-muted);
+  font-size: clamp(16px, 1.35vw, 19px);
+  font-weight: 300;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* ---------- Swimming turtle motif (decorative) ---------- */
+.figma-experiences-turtles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.figma-homepage .figma-turtle {
+  position: absolute;
+  width: clamp(120px, 14vw, 200px);
+  height: auto;
+  margin: 0;
+  object-fit: contain;
+  opacity: 0.12;
+  will-change: transform;
+}
+
+.figma-homepage .figma-turtle--one {
+  top: 10%;
+  left: -4%;
+  width: clamp(140px, 16vw, 220px);
+  opacity: 0.14;
+  animation: figma-turtle-one 30s ease-in-out infinite alternate;
+}
+
+.figma-homepage .figma-turtle--two {
+  top: 44%;
+  left: 82%;
+  width: clamp(90px, 11vw, 150px);
+  opacity: 0.1;
+  animation: figma-turtle-two 38s ease-in-out infinite alternate;
+}
+
+.figma-homepage .figma-turtle--three {
+  top: 66%;
+  left: 26%;
+  width: clamp(100px, 12vw, 170px);
+  opacity: 0.09;
+  animation: figma-turtle-three 34s ease-in-out infinite alternate;
+}
+
+.figma-homepage .figma-turtle--four {
+  top: 58%;
+  left: 6%;
+  width: clamp(90px, 10vw, 150px);
+  opacity: 0.1;
+  animation: figma-turtle-two 42s ease-in-out infinite alternate;
+}
+
+.figma-homepage .figma-turtle--five {
+  top: 8%;
+  left: 66%;
+  width: clamp(110px, 13vw, 180px);
+  opacity: 0.11;
+  animation: figma-turtle-three 46s ease-in-out infinite alternate;
+}
+
+.figma-homepage .figma-turtle--six {
+  top: 70%;
+  left: 90%;
+  width: clamp(120px, 14vw, 200px);
+  opacity: 0.09;
+  animation: figma-turtle-one 40s ease-in-out infinite alternate;
+}
+
+@keyframes figma-turtle-one {
+  from {
+    transform: translate(0, 0) rotate(-8deg);
   }
-  50% {
-    transform: translate(-50%, -50%) translateY(-14px);
+  to {
+    transform: translate(140px, 70px) rotate(10deg);
+  }
+}
+
+@keyframes figma-turtle-two {
+  from {
+    transform: translate(0, 0) rotate(12deg);
+  }
+  to {
+    transform: translate(-180px, -50px) rotate(-10deg);
+  }
+}
+
+@keyframes figma-turtle-three {
+  from {
+    transform: translate(0, 0) rotate(6deg);
+  }
+  to {
+    transform: translate(110px, -80px) rotate(-12deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .figma-homepage .figma-experiences-brand .figma-experiences-mark {
+  .figma-homepage .figma-turtle {
     animation: none;
   }
 }
@@ -3318,8 +3423,16 @@
     border-left: 0;
   }
 
-  .figma-experiences-header {
-    grid-template-columns: 1fr;
+  .figma-homepage .figma-turtle--one {
+    width: 120px;
+  }
+
+  .figma-homepage .figma-turtle--two,
+  .figma-homepage .figma-turtle--three,
+  .figma-homepage .figma-turtle--four,
+  .figma-homepage .figma-turtle--five,
+  .figma-homepage .figma-turtle--six {
+    display: none;
   }
 
   .figma-experience-list {

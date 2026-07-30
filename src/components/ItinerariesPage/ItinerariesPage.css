@@ -650,119 +650,236 @@
   }
 }
 
-/* ---------- Expanding package gallery ---------- */
+/* ---------- Package carousel (gallery) ---------- */
 
-.itin-gallery {
-  display: flex;
-  gap: 10px;
-  height: 420px;
-  max-width: 1320px;
+.itin-gallery4 {
+  max-width: 1400px;
   margin: 0 auto;
   padding-inline: clamp(24px, 5vw, 80px);
 }
 
-.itin-gallery-card {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 116px;
-  height: 100%;
-  padding: 0;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 20px;
-  overflow: hidden;
-  background: var(--color-surface-secondary);
+.itin-gallery4__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(28px, 4vw, 52px);
+}
+
+.itin-gallery4__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 560px;
+}
+
+.itin-gallery4__intro h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 400;
+  line-height: 1.08;
+}
+
+.itin-gallery4__intro p {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.itin-gallery4__nav {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.itin-gallery4__nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--color-accent-muted);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 18px;
   cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.itin-gallery4__nav button:hover:not(:disabled) {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.itin-gallery4__nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.itin-gallery4__track {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.itin-gallery4__track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile-first: one card with a peek of the next; swipe to scroll. */
+.itin-card4 {
+  flex: 0 0 auto;
+  width: 84%;
+  scroll-snap-align: start;
+}
+
+/* Tablet: two cards fit; the third scrolls into view. */
+@media (min-width: 640px) {
+  .itin-card4 {
+    width: calc((100% - 20px) / 2);
+  }
+}
+
+/* Desktop: all three fit the row exactly — no crop, no scroll needed. */
+@media (min-width: 1024px) {
+  .itin-card4 {
+    width: calc((100% - 40px) / 3);
+  }
+}
+
+.itin-card4__inner {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
   text-align: left;
-  transition: flex-basis 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
 }
 
-/* The open card takes a generous fixed width; the rest share what remains. */
-.itin-gallery-card:hover,
-.itin-gallery-card:focus-visible,
-.itin-gallery-card.is-active {
-  flex: 0 0 clamp(300px, 32vw, 440px);
-  outline: none;
+.itin-card4__figure {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-.itin-gallery-card.is-active {
-  border-color: var(--color-accent-muted);
-  box-shadow: 0 26px 64px var(--shadow-card);
-}
-
-.itin-gallery-card__img {
+.itin-card4__img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.6s ease;
+  transition: transform 0.5s ease;
 }
 
-.itin-gallery-card:hover .itin-gallery-card__img,
-.itin-gallery-card.is-active .itin-gallery-card__img {
-  transform: scale(1.04);
+.itin-card4__inner:hover .itin-card4__img {
+  transform: scale(1.05);
 }
 
-.itin-gallery-card__veil {
+.itin-card4__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(13, 31, 23, 0.82) 4%, rgba(13, 31, 23, 0.28) 42%, transparent 70%);
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 31, 23, 0) 0%,
+    rgba(13, 31, 23, 0.45) 55%,
+    rgba(13, 31, 23, 0.92) 100%
+  );
 }
 
-.itin-gallery-card__content {
+.itin-card4__body {
   position: absolute;
   inset: auto 0 0 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 22px;
+  gap: 8px;
+  padding: clamp(20px, 3vw, 28px);
   color: var(--color-surface);
 }
 
-.itin-gallery-card__nights {
+.itin-card4__nights {
   color: var(--color-accent);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
-.itin-gallery-card__name {
+.itin-card4__title {
   font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.1;
-  white-space: nowrap;
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.itin-card4__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  transition: font-size 0.4s ease;
-}
-
-/* The open card gets the full display size. */
-.itin-gallery-card:hover .itin-gallery-card__name,
-.itin-gallery-card.is-active .itin-gallery-card__name {
-  font-size: clamp(22px, 2.2vw, 30px);
-}
-
-.itin-gallery-card__desc {
-  max-width: 42ch;
   color: rgba(251, 249, 245, 0.82);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 300;
   line-height: 1.55;
-  /* Hidden until the card is expanded, so collapsed cards stay clean. */
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease, opacity 0.4s ease, margin-top 0.4s ease;
 }
 
-.itin-gallery-card:hover .itin-gallery-card__desc,
-.itin-gallery-card.is-active .itin-gallery-card__desc {
-  max-height: 96px;
-  opacity: 1;
-  margin-top: 2px;
+.itin-card4__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.itin-card4__more span {
+  transition: transform 0.2s ease;
+}
+
+.itin-card4__inner:hover .itin-card4__more span {
+  transform: translateX(4px);
+}
+
+.itin-card4.is-active .itin-card4__figure {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.itin-gallery4__dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: clamp(24px, 3vw, 36px);
+}
+
+.itin-gallery4__dots button {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-accent-muted);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.itin-gallery4__dots button.is-active {
+  background: var(--color-primary);
+  transform: scale(1.3);
 }
 
 /* ---------- Selected package detail ---------- */
@@ -797,7 +914,8 @@
   color: var(--color-primary);
   font-family: var(--font-display);
   font-size: clamp(26px, 3vw, 36px);
-  font-weight: 400;
+  font-weight: 300;
+  letter-spacing: -0.025em;
   line-height: 1.1;
 }
 
@@ -825,23 +943,22 @@
   margin-top: 30px;
 }
 
-@media (max-width: 860px) {
-  .itin-gallery {
-    height: auto;
+/* Desktop: three cards fill the row, so the scroll controls are redundant. */
+@media (min-width: 1024px) {
+  .itin-gallery4__nav,
+  .itin-gallery4__dots {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .itin-gallery4__head {
     flex-direction: column;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 20px;
   }
 
-  .itin-gallery-card,
-  .itin-gallery-card:hover,
-  .itin-gallery-card.is-active {
-    flex: none;
-    height: 200px;
-  }
-
-  .itin-gallery-card__desc {
-    max-height: 96px;
-    opacity: 1;
-    margin-top: 2px;
+  .itin-gallery4__nav {
+    display: none;
   }
 }
