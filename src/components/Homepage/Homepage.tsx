@@ -191,7 +191,7 @@ export function Homepage() {
             steps, not a catalogue.
           </p>
           <a className="figma-invitation-cta" href="/expectations">
-            Begin With Expectations
+            Explore Sri Lanka Privately
           </a>
           <small>Explore the island privately, with no obligation.</small>
           <p className="figma-invitation-aside">

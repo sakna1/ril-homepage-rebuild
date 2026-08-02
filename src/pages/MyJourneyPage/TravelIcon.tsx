@@ -12,6 +12,7 @@ export type TravelIconId =
   | 'van'
   | 'driver'
   | 'coach'
+  | 'helicopter'
   | 'shield'
 
 const paths: Record<TravelIconId, string> = {
@@ -38,6 +39,8 @@ const paths: Record<TravelIconId, string> = {
     'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9v-1c0-2.8 3.1-4.8 7-4.8s7 2 7 4.8v1H5Zm10.5-9.3 3 1.7-1 1.7-3-1.7 1-1.7Z',
   coach:
     'M3 17V8c0-1.7 1.3-3 3-3h12c1.7 0 3 1.3 3 3v9h-2a2 2 0 1 1-4 0H8a2 2 0 1 1-4 0H3Zm3-8v3h12V9H6Zm0 5v1h4v-1H6Zm6 0v1h4v-1h-4Z',
+  helicopter:
+    'M3 3h18v1.6H12.9v1.7h2.6c2.2 0 4 1.8 4 4v3.1h-1.7c0 1.4-1.1 2.5-2.5 2.5H8.3c-1.9 0-3.4-1.5-3.4-3.4v-2.5h5.4V6.3H8.7V4.6H3V3Zm3.6 8.6v.8c0 .9.8 1.7 1.7 1.7h1.7v-2.5H6.6Zm5.1 0v2.5h3.4v-2.5h-3.4ZM8 19.4h9.3V21H8v-1.6Z',
   shield:
     'M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5l-8-3Zm-1.2 12.4L7.5 11l1.4-1.4 1.9 1.9 4.3-4.3 1.4 1.4-5.7 5.8Z',
 }

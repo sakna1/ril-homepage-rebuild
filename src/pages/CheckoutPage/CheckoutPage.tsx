@@ -1,7 +1,12 @@
 import { useId, useState, type FormEvent } from 'react'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
-import { readStoredDates } from '../../journey/travelPreferences'
+import {
+  nightsBetween,
+  readStoredDates,
+  readStoredSecurity,
+  SECURITY_DETAIL_USD_PER_DAY,
+} from '../../journey/travelPreferences'
 import { getTravellerToken } from '../../traveller/travellerAuthApi'
 import './CheckoutPage.css'
 
@@ -33,10 +38,15 @@ export function CheckoutPage() {
 
   const packages = items.filter((item) => item.kind === 'package')
   const perPersonTotal = packages.reduce((total, item) => total + (item.pricePerPerson ?? 0), 0)
-  const { travellers } = readStoredDates()
+  const { travellers, startDate, endDate } = readStoredDates()
   // The full amount for the party: per-person package total × travellers.
-  const fullAmount = perPersonTotal * Math.max(1, travellers)
-  const hasPricing = perPersonTotal > 0
+  const packagesAmount = perPersonTotal * Math.max(1, travellers)
+  // Optional security detail is charged per day, on top of the party total.
+  const wantsSecurity = readStoredSecurity()
+  const securityDays = Math.max(1, nightsBetween(startDate, endDate))
+  const securityCost = wantsSecurity ? securityDays * SECURITY_DETAIL_USD_PER_DAY : 0
+  const fullAmount = packagesAmount + securityCost
+  const hasPricing = perPersonTotal > 0 || securityCost > 0
   const alreadySignedIn = Boolean(getTravellerToken())
 
   function updateField<K extends keyof GuestDetails>(key: K, value: GuestDetails[K]) {
@@ -192,6 +202,14 @@ export function CheckoutPage() {
                 <span>Travellers</span>
                 <strong>× {Math.max(1, travellers)}</strong>
               </div>
+              {securityCost > 0 ? (
+                <div className="checkout-total checkout-total--sub">
+                  <span>
+                    Security detail · {securityDays} {securityDays === 1 ? 'day' : 'days'}
+                  </span>
+                  <strong>{usd.format(securityCost)}</strong>
+                </div>
+              ) : null}
               <div className="checkout-total checkout-total--grand">
                 <span>Total Due</span>
                 <strong>{usd.format(fullAmount)}</strong>

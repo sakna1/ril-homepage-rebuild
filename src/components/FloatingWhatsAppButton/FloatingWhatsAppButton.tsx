@@ -1,15 +1,23 @@
+import { useState } from 'react'
 import './FloatingWhatsAppButton.css'
 import { getDefaultWhatsAppHref } from '../../consultation/whatsApp'
+import { ConciergeChat } from '../ConciergeChat/ConciergeChat'
 
 export function FloatingWhatsAppButton() {
+  const [isConciergeOpen, setIsConciergeOpen] = useState(false)
+
   return (
     <div className="floating-action-group" aria-label="Quick contact actions">
-      <a
-        className="floating-action-button floating-action-button--concierge"
-        href="/concierge"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Open AI Concierge in a new tab"
+      <ConciergeChat open={isConciergeOpen} onClose={() => setIsConciergeOpen(false)} />
+
+      <button
+        type="button"
+        className={`floating-action-button floating-action-button--concierge${
+          isConciergeOpen ? ' is-active' : ''
+        }`}
+        aria-label={isConciergeOpen ? 'Close AI Concierge' : 'Open AI Concierge'}
+        aria-expanded={isConciergeOpen}
+        onClick={() => setIsConciergeOpen((current) => !current)}
       >
         <span className="floating-action-button__icon" aria-hidden="true">
           <svg viewBox="0 0 32 32" focusable="false">
@@ -17,7 +25,7 @@ export function FloatingWhatsAppButton() {
           </svg>
         </span>
         <span className="floating-action-button__text">AI Concierge</span>
-      </a>
+      </button>
 
       <a
         className="floating-action-button floating-action-button--whatsapp"

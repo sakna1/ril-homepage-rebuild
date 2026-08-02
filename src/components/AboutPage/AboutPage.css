@@ -1439,3 +1439,274 @@
     transform: none;
   }
 }
+
+/* ---------- Branches ---------- */
+
+.about-branches {
+  padding: clamp(72px, 8vw, 112px) 0;
+  background: var(--color-surface);
+}
+
+.about-branches-header {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: clamp(40px, 5vw, 72px);
+  align-items: end;
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+
+/* These label styles are authored for the dark custodians band; on this
+   light section they need the ink colours instead. */
+.about-branches .about-section-sub-label {
+  color: var(--color-text-subtle);
+}
+
+.about-branches-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 4.4vw, 50px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: var(--line-height-display);
+  color: var(--color-primary);
+}
+
+.about-branches-heading em {
+  font-style: normal;
+  color: var(--color-accent);
+}
+
+.about-branches-description {
+  max-width: 640px;
+  margin-top: 22px;
+  padding-left: 24px;
+  border-left: 1px solid var(--color-accent-soft);
+  color: var(--color-text-muted);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: var(--line-height-journal);
+}
+
+.about-branch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(18px, 2.4vw, 28px);
+}
+
+.about-branch-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(24px, 2.6vw, 32px);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface-paper);
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.about-branch-card:hover {
+  border-color: var(--color-accent-muted);
+  transform: translateY(-3px);
+}
+
+.about-branch-card h3 {
+  color: var(--color-primary);
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.about-branch-role {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.about-branch-card address {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+  color: var(--color-text-muted);
+  font-size: 14.5px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.about-branch-region {
+  color: var(--color-text-subtle);
+  font-size: 13px;
+}
+
+.about-branch-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.about-branch-meta dt {
+  color: var(--color-text-subtle);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.about-branch-meta dd {
+  margin-top: 3px;
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.about-branch-meta a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.about-branch-meta a:hover {
+  color: var(--color-accent);
+}
+
+/* ---------- Banking partners ---------- */
+
+.about-banking {
+  padding: clamp(72px, 8vw, 112px) 0;
+  background: var(--color-surface-secondary-soft);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.about-banking-header {
+  max-width: 760px;
+}
+
+.about-banking-header h2 {
+  margin-top: 12px;
+  color: var(--color-primary);
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 3.6vw, 42px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.about-banking-header > p {
+  max-width: 62ch;
+  margin-top: 18px;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: var(--line-height-journal);
+}
+
+.about-banking-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+  margin-top: clamp(36px, 4vw, 52px);
+  padding: 0;
+  list-style: none;
+}
+
+.about-banking-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 26px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.about-banking-item:hover {
+  border-color: var(--color-accent-muted);
+  transform: translateY(-3px);
+}
+
+/* Logo plate — holds real artwork when supplied, a lettermark until then. */
+.about-banking-logo {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border: 1px solid var(--color-accent-subtle);
+  border-radius: 50%;
+  background: var(--color-surface-secondary-soft);
+}
+
+.about-banking-logo img {
+  max-width: 62%;
+  max-height: 62%;
+  object-fit: contain;
+}
+
+.about-banking-monogram {
+  color: var(--color-primary);
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.about-banking-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.about-banking-name {
+  color: var(--color-primary);
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.about-banking-relationship {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+/* Shared caveat line for data that is still provisional. */
+.about-placeholder-note {
+  margin-top: 24px;
+  color: var(--color-text-subtle);
+  font-size: 12.5px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+  .about-branches-header {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .about-custodians-labels {
+    flex-direction: row;
+    gap: 14px;
+  }
+}

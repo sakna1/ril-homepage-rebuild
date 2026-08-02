@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { AboutPage } from './components/AboutPage/AboutPage'
 import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage'
 import { ContactPage } from './components/ContactPage/ContactPage'
-import { ConciergeDesk } from './components/ConciergeDesk/ConciergeDesk'
 // Discover temporarily hidden — restore this import with the route below.
 // import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
 import { ExperienceDetailPage } from './components/ExperienceDetailPage/ExperienceDetailPage'
@@ -34,8 +33,13 @@ function AppContent() {
     return renderPage(<Homepage />)
   }
 
+  // The concierge is now an in-page popup (see ConciergeChat), so the old
+  // standalone desk route redirects home.
   if (path === '/concierge') {
-    return <ConciergeDesk />
+    if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+      window.location.replace('/')
+    }
+    return renderPage(<Homepage />)
   }
 
   // Discover temporarily hidden. Redirect any lingering links to the homepage.
