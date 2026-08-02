@@ -7,7 +7,7 @@ import type { IllustrativeItinerary } from '../../data/journey/types'
 import { ILLUSTRATIVE_DISCLAIMER } from '../../data/journey/mockJourneyTypes'
 import { journeyRegions } from '../../data/journeyRegions'
 import { getSavedDestinationIds, getSavedRegionIds } from '../../journey/contextualRecommendations'
-import type { JourneyItem } from '../../journey/JourneyContext'
+import type { DesignedTripSelection, JourneyItem } from '../../journey/JourneyContext'
 import { checkJourneyDistances } from '../../journey/journeyDistanceCheck'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
@@ -94,6 +94,55 @@ function formatUsdDate(value: string) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+/** Breaks a Designed Trips selection down into theme, sub-package and what it locks in. */
+function DesignedTripSummary({ trip }: { trip: DesignedTripSelection }) {
+  return (
+    <div className="myj-designed-trip">
+      <ul className="myj-designed-trip__chain">
+        <li>
+          <span>Package</span>
+          <strong>
+            {trip.packageName} · {trip.packageDuration}
+          </strong>
+        </li>
+        <li>
+          <span>Theme</span>
+          <strong>{trip.themeTitle}</strong>
+        </li>
+        <li>
+          <span>Sub-package</span>
+          <strong>
+            {trip.subPackageName} · {trip.subPackageDays} Days ({trip.subPackageCoverage})
+          </strong>
+        </li>
+      </ul>
+
+      <p className="myj-designed-trip__locked">
+        Inclusions locked <span aria-hidden="true">🔒</span>
+      </p>
+
+      {trip.hotel ? (
+        <p className="myj-designed-trip__hotel">
+          <span>Hotel</span> {trip.hotel}
+        </p>
+      ) : null}
+
+      {trip.activities.length > 0 ? (
+        <ul className="myj-designed-trip__list">
+          {trip.activities.map((activity) => (
+            <li key={activity}>{activity}</li>
+          ))}
+        </ul>
+      ) : null}
+
+      <p className="myj-designed-trip__breakdown">
+        {formatUsd(trip.packagePrice)} package + {formatUsd(trip.subPackagePriceAdd)}{' '}
+        {trip.subPackageName}
+      </p>
+    </div>
+  )
 }
 
 function isPackagePlace(item: JourneyItem) {
@@ -406,6 +455,9 @@ export function MyJourneyPage() {
                       <div className="myj-package-main">
                         <p className="myj-package-name">{pkg.label}</p>
                         {pkg.detail ? <p className="myj-package-detail">{pkg.detail}</p> : null}
+                        {pkg.designedTrip ? (
+                          <DesignedTripSummary trip={pkg.designedTrip} />
+                        ) : null}
                       </div>
                       <div className="myj-package-side">
                         {typeof pkg.pricePerPerson === 'number' ? (
