@@ -400,7 +400,7 @@ export function AboutPage() {
             care, discretion, and the right custodians around it.
           </p>
           <a className="about-invitation-button" href="/expectations">
-            Begin With Discovery
+            Explore Sri Lanka Privately
           </a>
         </div>
       </section>

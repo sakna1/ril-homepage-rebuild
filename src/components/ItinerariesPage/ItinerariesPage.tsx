@@ -6,6 +6,7 @@ import { useJourney } from '../../journey/useJourney'
 import { fetchPublicPackages, fetchPublicThemes } from '../../services/publicContent'
 import {
   fallbackThemes,
+  galleryForTheme,
   imageForTheme,
   type ItineraryTheme,
   type ThemeSubPackage,
@@ -157,6 +158,12 @@ function nightsLabel(duration: string): string {
   const days = parseInt(duration, 10)
   if (Number.isNaN(days)) return duration
   return `${Math.max(0, days - 1)} Nights`
+}
+
+/** The day count from a package duration string ("10 Days" -> 10); 0 if unparseable. */
+function daysFromDuration(duration: string): number {
+  const days = parseInt(duration, 10)
+  return Number.isNaN(days) ? 0 : days
 }
 
 // A short one-line description for the gallery card.
@@ -539,50 +546,6 @@ export function ItinerariesPage() {
           </div>
         </div>
 
-        {/* The chosen package, kept visible as the traveller works down the page. */}
-        {selected && reachedStep('theme') ? (
-          <article className="itin-detail" aria-live="polite">
-            <div className="itin-detail__head">
-              <span className="itin-detail__numeral" aria-hidden="true">
-                {selected.numeral}
-              </span>
-              <div>
-                <h3>{selected.name}</h3>
-                <p className="itin-detail__meta">
-                  {selected.duration} · {nightsLabel(selected.duration)} · {selected.reach}
-                </p>
-              </div>
-            </div>
-
-            <div className="itin-detail__grid">
-              <div className="itin-block">
-                <h4>The Character</h4>
-                <p>{selected.character}</p>
-              </div>
-
-              <div className="itin-block">
-                <h4>The Route</h4>
-                <ol className="itin-route">
-                  {selected.route.map((stop) => (
-                    <li key={stop}>
-                      <span className="itin-route__dot" aria-hidden="true" />
-                      <span className="itin-route__label">{stop}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div className="itin-block">
-                <h4>Signature Inclusions</h4>
-                <ul className="itin-inclusions">
-                  {selected.inclusions.map((inclusion) => (
-                    <li key={inclusion}>{inclusion}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </article>
-        ) : null}
       </section>
 
       {/* Step 2 — choose a theme. */}
@@ -663,7 +626,7 @@ export function ItinerariesPage() {
                   </span>
                   <span className="itin-subpackage__foot">
                     <span className="itin-subpackage__price">
-                      +{formatUsd(subPackage.priceAdd)}
+                      {formatUsd(subPackage.priceAdd)}
                       <small>per person</small>
                     </span>
                     <span className="itin-subpackage__mark">
@@ -709,35 +672,105 @@ export function ItinerariesPage() {
               </li>
             </ol>
 
+            {(() => {
+              // The sub-package fixes only part of the package. The balance
+              // stays open, which is the point of the flow — so say so plainly.
+              const totalDays = daysFromDuration(selected.duration)
+              const setDays = selectedSubPackage.days
+              const openDays = Math.max(0, totalDays - setDays)
+              if (totalDays === 0) return null
+
+              return (
+                <div className="itin-review__days">
+                  <div
+                    className="itin-review__days-bar"
+                    role="img"
+                    aria-label={`${setDays} of ${totalDays} days set, ${openDays} still open`}
+                  >
+                    <span
+                      className="itin-review__days-set"
+                      style={{ width: `${(setDays / totalDays) * 100}%` }}
+                    />
+                  </div>
+                  <p className="itin-review__days-copy">
+                    <strong>
+                      {setDays} of {totalDays} days set.
+                    </strong>{' '}
+                    {openDays > 0 ? (
+                      <>
+                        The remaining {openDays} {openDays === 1 ? 'day stays' : 'days stay'} open —
+                        shape them in My Journey, or leave them to your concierge.
+                      </>
+                    ) : (
+                      <>Every day of this package is accounted for.</>
+                    )}
+                  </p>
+                </div>
+              )
+            })()}
+
             <div className="itin-review__locked">
               <span className="itin-review__lock-label">
                 Inclusions locked <span aria-hidden="true">🔒</span>
               </span>
 
-              <div className="itin-review__grid">
-                <div className="itin-block">
-                  <h4>The Hotel</h4>
-                  <p>{selectedSubPackage.hotel}</p>
-                </div>
+              {(() => {
+                const gallery = galleryForTheme(selectedTheme.title)
 
-                <div className="itin-block">
-                  <h4>What You Will Do</h4>
-                  <ul className="itin-inclusions">
-                    {selectedSubPackage.activities.map((activity) => (
-                      <li key={activity}>{activity}</li>
-                    ))}
-                  </ul>
-                </div>
+                return (
+                  <div className="itin-review__grid">
+                    <div className="itin-block">
+                      <h4>The Hotel</h4>
+                      <p>{selectedSubPackage.hotel}</p>
+                      <figure className="itin-review__shot">
+                        <img src={gallery.hotel.src} alt={gallery.hotel.alt} loading="lazy" />
+                      </figure>
+                    </div>
 
-                <div className="itin-block">
-                  <h4>What Is Included</h4>
-                  <ul className="itin-inclusions">
-                    {selectedSubPackage.inclusions.map((inclusion) => (
-                      <li key={inclusion}>{inclusion}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                    <div className="itin-block">
+                      <h4>What You Will Do</h4>
+                      <ul className="itin-inclusions">
+                        {selectedSubPackage.activities.map((activity) => (
+                          <li key={activity}>{activity}</li>
+                        ))}
+                      </ul>
+                      <div className="itin-review__shots">
+                        {gallery.doing.map((shot, index) => (
+                          <figure
+                            key={`${shot.alt}-${index}`}
+                            className="itin-review__shot itin-review__shot--small"
+                          >
+                            <img src={shot.src} alt={shot.alt} loading="lazy" />
+                          </figure>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="itin-block">
+                      <h4>What Is Included</h4>
+                      <ul className="itin-inclusions">
+                        {selectedSubPackage.inclusions.map((inclusion) => (
+                          <li key={inclusion}>{inclusion}</li>
+                        ))}
+                      </ul>
+                      <div className="itin-review__shots">
+                        {gallery.included.map((shot, index) => (
+                          <figure
+                            key={`${shot.alt}-${index}`}
+                            className="itin-review__shot itin-review__shot--small"
+                          >
+                            <img src={shot.src} alt={shot.alt} loading="lazy" />
+                          </figure>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })()}
+
+              <p className="itin-review__shot-note">
+                Photographs are indicative of the theme, not of the specific property.
+              </p>
             </div>
 
             <div className="itin-review__pricing">
