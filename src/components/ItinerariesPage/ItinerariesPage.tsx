@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import './ItinerariesPage.css'
 import { experienceImages } from '../ExperiencesPage/images'
 import { toJourneyId } from '../../journey/journeyItemHelpers'
+import { designedTripTotal } from '../../journey/journeyContextStore'
 import { useJourney } from '../../journey/useJourney'
 import { fetchPublicPackages, fetchPublicThemes } from '../../services/publicContent'
 import {
   fallbackThemes,
   galleryForTheme,
   imageForTheme,
+  reviewsForTheme,
   type ItineraryTheme,
   type ThemeSubPackage,
 } from './themeCatalog'
@@ -183,7 +185,7 @@ function formatUsd(amount: number): string {
 }
 
 export function ItinerariesPage() {
-  const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
+  const { confirmRemoveItem, getItem, includeItem } = useJourney()
 
   // Content comes from the admin-managed DB; fall back to the curated lists.
   const [items, setItems] = useState<readonly Itinerary[]>(fallbackItineraries)
@@ -361,35 +363,74 @@ export function ItinerariesPage() {
     advanceTo('review', reviewRef)
   }
 
-  const journeyId =
-    selected && selectedTheme && selectedSubPackage
-      ? toJourneyId(
-          'package',
-          `${selected.name}-${selectedTheme.title}-${selectedSubPackage.name}`,
-        )
-      : null
-  const added = journeyId ? isIncluded(journeyId) : false
+  // Keyed on the package alone: a second theme extends this trip rather than
+  // creating a duplicate package line (which would bill the base price twice).
+  const journeyId = selected ? toJourneyId('package', selected.name) : null
+  const existingTrip = journeyId ? getItem(journeyId)?.designedTrip : undefined
+  const existingSegments = existingTrip?.segments ?? []
+
+  /** Segments already committed, excluding the theme currently on screen. */
+  const otherSegments = existingSegments.filter(
+    (segment) => segment.themeTitle !== selectedTheme?.title,
+  )
+  const committedDays = otherSegments.reduce(
+    (total, segment) => total + segment.subPackageDays,
+    0,
+  )
+
+  // This exact theme + sub-package is already in the journey.
+  const added = existingSegments.some(
+    (segment) =>
+      segment.themeTitle === selectedTheme?.title &&
+      segment.subPackageName === selectedSubPackage?.name,
+  )
+
+  // Day budget for the chosen package. Adding a sub-package that would push
+  // the total past the package length is blocked outright.
+  const packageDays = selected ? daysFromDuration(selected.duration) : 0
+  const selectedDays = selectedSubPackage?.days ?? 0
+  const daysAfterAdding = committedDays + selectedDays
+  const openDaysBefore = Math.max(0, packageDays - committedDays)
+  const exceedsPackage = packageDays > 0 && daysAfterAdding > packageDays
+  // Already added trips can always be removed, so only block *adding*.
+  const addBlocked = !added && exceedsPackage
 
   function toggleDesignedTrip() {
     if (!selected || !selectedTheme || !selectedSubPackage || !journeyId) return
+    // Guard the handler too, not just the disabled attribute.
+    if (addBlocked) return
 
     if (added) {
-      confirmRemoveItem(journeyId)
-      return
-    }
+      // Drop just this theme; the package survives if other themes remain.
+      if (otherSegments.length === 0) {
+        confirmRemoveItem(journeyId)
+        return
+      }
 
-    includeItem({
-      id: journeyId,
-      kind: 'package',
-      label: `${selected.name} — ${selectedTheme.title}`,
-      detail: selectedSubPackage.summary,
-      source: 'Itineraries',
-      duration: selected.duration,
-      pricePerPerson: totalPrice,
-      designedTrip: {
+      const trimmed = {
         packageName: selected.name,
         packageDuration: selected.duration,
         packagePrice,
+        segments: otherSegments,
+      }
+
+      includeItem({
+        id: journeyId,
+        kind: 'package',
+        label: `${selected.name} — ${otherSegments.map((s) => s.themeTitle).join(' + ')}`,
+        detail: selected.character,
+        source: 'Itineraries',
+        duration: selected.duration,
+        pricePerPerson: designedTripTotal(trimmed),
+        designedTrip: trimmed,
+      })
+      return
+    }
+
+    // Replace any previous sub-package for this theme, then append.
+    const segments = [
+      ...otherSegments,
+      {
         themeTitle: selectedTheme.title,
         subPackageName: selectedSubPackage.name,
         subPackageDays: selectedSubPackage.days,
@@ -399,6 +440,24 @@ export function ItinerariesPage() {
         activities: [...selectedSubPackage.activities],
         inclusions: [...selectedSubPackage.inclusions],
       },
+    ]
+
+    const trip = {
+      packageName: selected.name,
+      packageDuration: selected.duration,
+      packagePrice,
+      segments,
+    }
+
+    includeItem({
+      id: journeyId,
+      kind: 'package',
+      label: `${selected.name} — ${segments.map((s) => s.themeTitle).join(' + ')}`,
+      detail: selectedSubPackage.summary,
+      source: 'Itineraries',
+      duration: selected.duration,
+      pricePerPerson: designedTripTotal(trip),
+      designedTrip: trip,
     })
   }
 
@@ -675,13 +734,16 @@ export function ItinerariesPage() {
             {(() => {
               // The sub-package fixes only part of the package. The balance
               // stays open, which is the point of the flow — so say so plainly.
-              const totalDays = daysFromDuration(selected.duration)
-              const setDays = selectedSubPackage.days
+              // Same figures the Add button is gated on, so the panel and the
+              // button can never disagree.
+              const totalDays = packageDays
+              const setDays = daysAfterAdding
               const openDays = Math.max(0, totalDays - setDays)
+              const overBooked = exceedsPackage
               if (totalDays === 0) return null
 
               return (
-                <div className="itin-review__days">
+                <div className={`itin-review__days${overBooked ? ' is-over' : ''}`}>
                   <div
                     className="itin-review__days-bar"
                     role="img"
@@ -689,14 +751,19 @@ export function ItinerariesPage() {
                   >
                     <span
                       className="itin-review__days-set"
-                      style={{ width: `${(setDays / totalDays) * 100}%` }}
+                      style={{ width: `${Math.min(100, (setDays / totalDays) * 100)}%` }}
                     />
                   </div>
                   <p className="itin-review__days-copy">
                     <strong>
                       {setDays} of {totalDays} days set.
                     </strong>{' '}
-                    {openDays > 0 ? (
+                    {overBooked ? (
+                      <>
+                        That is {setDays - totalDays} more than this package holds — choose a shorter
+                        sub-package, or move to a longer package.
+                      </>
+                    ) : openDays > 0 ? (
                       <>
                         The remaining {openDays} {openDays === 1 ? 'day stays' : 'days stay'} open —
                         shape them in My Journey, or leave them to your concierge.
@@ -705,6 +772,14 @@ export function ItinerariesPage() {
                       <>Every day of this package is accounted for.</>
                     )}
                   </p>
+                  {otherSegments.length > 0 ? (
+                    <p className="itin-review__days-committed">
+                      Already in this package:{' '}
+                      {otherSegments
+                        .map((s) => `${s.themeTitle} · ${s.subPackageDays} days`)
+                        .join(', ')}
+                    </p>
+                  ) : null}
                 </div>
               )
             })()}
@@ -773,7 +848,8 @@ export function ItinerariesPage() {
               </p>
             </div>
 
-            <div className="itin-review__pricing">
+            <div className="itin-review__close">
+              <div className="itin-review__pricing">
               <dl>
                 <div>
                   <dt>{selected.name}</dt>
@@ -797,16 +873,69 @@ export function ItinerariesPage() {
                 Indicative pricing — your concierge confirms the final figure before anything is
                 booked.
               </p>
+              </div>
+
+              {(() => {
+                const reviews = reviewsForTheme(selectedTheme.title)
+                if (reviews.length === 0) return null
+
+                return (
+                  <aside className="itin-reviews" aria-label={`Reviews for ${selectedTheme.title}`}>
+                    <p className="itin-reviews__label">Guest Reflections</p>
+
+                    {reviews.map((review) => (
+                      <figure key={review.name} className="itin-review-card">
+                        <div
+                          className="itin-review-card__stars"
+                          role="img"
+                          aria-label={`${review.rating} out of 5`}
+                        >
+                          {'★'.repeat(review.rating)}
+                          <span>{'★'.repeat(5 - review.rating)}</span>
+                        </div>
+                        <blockquote>{review.quote}</blockquote>
+                        <figcaption>
+                          {review.name} · <span>{review.origin}</span>
+                        </figcaption>
+                      </figure>
+                    ))}
+
+                    <p className="itin-reviews__note">
+                      Sample reflections shown while verified guest reviews are being collected.
+                    </p>
+                  </aside>
+                )
+              })()}
             </div>
+
+            {addBlocked ? (
+              <p className="itin-review__blocked" role="alert">
+                {openDaysBefore === 0 ? (
+                  <>
+                    You have already set all {packageDays} days of {selected.name}. Remove a theme
+                    before adding another, or choose a longer package.
+                  </>
+                ) : (
+                  <>
+                    You have already set {committedDays} of {packageDays} days. This sub-package
+                    needs {selectedDays} more and only {openDaysBefore}{' '}
+                    {openDaysBefore === 1 ? 'day is' : 'days are'} left — choose a shorter one, or a
+                    longer package.
+                  </>
+                )}
+              </p>
+            ) : null}
 
             <div className="itin-package__actions">
               <button
                 type="button"
                 className={`itin-button${added ? ' itin-button--added' : ''}`}
                 aria-pressed={added}
+                disabled={addBlocked}
+                title={addBlocked ? `All ${packageDays} days are already set` : undefined}
                 onClick={toggleDesignedTrip}
               >
-                {added ? 'Added to Cart ✓' : 'Add to Cart'}
+                {added ? 'Added to Cart ✓' : addBlocked ? 'No Days Remaining' : 'Add to Cart'}
               </button>
               <a className="itin-button itin-button--ghost" href="/my-journey">
                 View My Journey

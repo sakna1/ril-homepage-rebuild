@@ -1628,3 +1628,121 @@
     transition: none;
   }
 }
+
+/* Over-booked: the chosen sub-packages exceed the package length. */
+.itin-review__days.is-over {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.itin-review__days-committed {
+  margin-top: 8px;
+  color: var(--color-text-subtle);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Shown when the chosen sub-package will not fit the package's remaining days. */
+.itin-review__blocked {
+  margin-top: 20px;
+  padding: 14px 18px;
+  border: 1px solid var(--color-accent);
+  border-left-width: 3px;
+  border-radius: 10px;
+  background: var(--color-accent-faint);
+  color: var(--color-primary);
+  font-size: 13.5px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.itin-package__actions .itin-button:disabled {
+  border-color: var(--color-border);
+  background: var(--color-disabled-background);
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Closing row: pricing left, reflections right ---------- */
+
+.itin-review__close {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .itin-review__close {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+.itin-reviews {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.itin-reviews__label {
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.6px;
+  text-transform: uppercase;
+}
+
+.itin-review-card {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--color-surface);
+}
+
+.itin-review-card__stars {
+  color: var(--color-accent);
+  font-size: 12px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+/* Unearned stars keep the shape but drop back visually. */
+.itin-review-card__stars span {
+  opacity: 0.28;
+}
+
+.itin-review-card blockquote {
+  margin: 10px 0 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.itin-review-card figcaption {
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.itin-review-card figcaption span {
+  color: var(--color-text-faint);
+  font-weight: 400;
+}
+
+.itin-reviews__note {
+  margin-top: 14px;
+  color: var(--color-text-faint);
+  font-size: 11.5px;
+  font-style: italic;
+  line-height: 1.5;
+}

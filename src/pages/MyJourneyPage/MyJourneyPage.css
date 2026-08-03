@@ -2608,32 +2608,40 @@
 }
 
 .myj-designed-trip__list {
-  margin: 8px 0 0;
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
   padding: 0;
   list-style: none;
-  display: grid;
-  gap: 4px;
 }
 
+/*
+ * Each activity is a quiet row with its marker aligned to the first line of
+ * text — flex rather than an absolutely-positioned dot, so the marker cannot
+ * drift out of the row when the text wraps.
+ */
 .myj-designed-trip__list li {
-  position: relative;
-  padding-left: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--color-surface-secondary-soft);
   color: var(--color-text-muted);
   font-size: 12.5px;
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 .myj-designed-trip__list li::before {
   content: '';
-  position: absolute;
-  top: 8px;
-  left: 0;
+  flex: 0 0 auto;
+  /* Nudged to sit on the text baseline of the first line. */
+  margin-top: 7px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--color-accent, currentColor);
-  opacity: 0.5;
+  background: var(--color-accent);
 }
 
 .myj-designed-trip__breakdown {
@@ -2851,4 +2859,220 @@
   font-weight: 300;
   font-style: italic;
   line-height: 1.6;
+}
+
+/* One block per theme committed inside a Designed Trip package. */
+.myj-designed-trip__segment {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.myj-designed-trip__segment-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.myj-designed-trip__segment-head strong {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.myj-designed-trip__segment-head span {
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---------- Places already covered by a Designed Trip ---------- */
+
+.myj-places-covered {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border: 1px solid var(--color-accent-subtle);
+  border-radius: 14px;
+  background: var(--color-accent-faint);
+}
+
+.myj-places-covered__lead {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.myj-places-covered__list {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.myj-places-covered__list li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--color-surface);
+}
+
+.myj-places-covered__list strong {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.myj-places-covered__list span {
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.myj-places-covered__note {
+  margin-top: 12px;
+  color: var(--color-text-subtle);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* ---------- Journey summary ---------- */
+
+.myj-sum-hero {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.myj-sum-hero__label {
+  color: var(--color-accent);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.myj-sum-hero__name {
+  margin-top: 6px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.myj-sum-hero__total {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.myj-sum-hero__total small {
+  color: var(--color-text-faint);
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.myj-sum-group {
+  margin-top: 20px;
+}
+
+.myj-sum-group__title {
+  color: var(--color-text-subtle);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.myj-sum-list {
+  display: grid;
+  gap: 0;
+  margin: 10px 0 0;
+}
+
+.myj-sum-list > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border-faint);
+}
+
+.myj-sum-list > div:last-child {
+  border-bottom: 0;
+}
+
+.myj-sum-list dt {
+  flex: 0 0 auto;
+  color: var(--color-text-subtle);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.myj-sum-list dd {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 400;
+  text-align: right;
+}
+
+.myj-sum-list dd.is-included {
+  color: var(--color-primary);
+}
+
+.myj-sum-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-accent-subtle);
+}
+
+.myj-sum-total span {
+  color: var(--color-text-subtle);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.myj-sum-total strong {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.myj-sum-note {
+  margin-top: 14px;
+  color: var(--color-text-faint);
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.55;
 }

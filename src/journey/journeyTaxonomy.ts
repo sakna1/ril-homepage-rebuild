@@ -157,7 +157,50 @@ export function getDestinationDiscoveryWorlds(destination: string) {
   return destinationDiscoveryWorlds[destination]
 }
 
-export function normalizeJourneyItem(item: JourneyItem): JourneyItem {
+/**
+ * Designed Trips originally stored a single theme flat on the item. They now
+ * hold a `segments` list so one package can carry several themes. Carts saved
+ * before that change are upgraded here on load, so an older saved journey
+ * cannot reach the UI without its segments.
+ */
+function migrateDesignedTrip(item: JourneyItem): JourneyItem {
+  const trip = item.designedTrip
+  if (!trip) return item
+  if (Array.isArray(trip.segments)) return item
+
+  // The pre-segments shape, read loosely since it is no longer a known type.
+  const legacy = trip as unknown as Record<string, unknown>
+  const themeTitle = typeof legacy.themeTitle === 'string' ? legacy.themeTitle : ''
+
+  return {
+    ...item,
+    designedTrip: {
+      packageName: trip.packageName ?? '',
+      packageDuration: trip.packageDuration ?? '',
+      packagePrice: typeof trip.packagePrice === 'number' ? trip.packagePrice : 0,
+      segments: themeTitle
+        ? [
+            {
+              themeTitle,
+              subPackageName: typeof legacy.subPackageName === 'string' ? legacy.subPackageName : '',
+              subPackageDays: typeof legacy.subPackageDays === 'number' ? legacy.subPackageDays : 0,
+              subPackageCoverage:
+                typeof legacy.subPackageCoverage === 'string' ? legacy.subPackageCoverage : '',
+              subPackagePriceAdd:
+                typeof legacy.subPackagePriceAdd === 'number' ? legacy.subPackagePriceAdd : 0,
+              hotel: typeof legacy.hotel === 'string' ? legacy.hotel : '',
+              activities: Array.isArray(legacy.activities) ? (legacy.activities as string[]) : [],
+              inclusions: Array.isArray(legacy.inclusions) ? (legacy.inclusions as string[]) : [],
+            },
+          ]
+        : [],
+    },
+  }
+}
+
+export function normalizeJourneyItem(rawItem: JourneyItem): JourneyItem {
+  const item = migrateDesignedTrip(rawItem)
+
   if (item.kind === 'experience') {
     return {
       ...item,

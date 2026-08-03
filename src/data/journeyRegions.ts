@@ -7,8 +7,12 @@ import mirissaBoats from '../assets/experiences/mirissa-boats.jpg'
 import monks from '../assets/experiences/monks.jpg'
 import oilLamps from '../assets/experiences/oil-lamps.jpg'
 import poolVilla from '../assets/experiences/pool-villa.jpg'
-import sigiriyaMain from '../assets/images/Sigiriya Main.jpg'
 import hillCountryNuwaraEliya from '../assets/images/Hill Country Nuwaraeliya.jpg'
+import sigiriyaRock from '../assets/photos/img-0911.jpg'
+import sigiriyaSunrise from '../assets/photos/img-5565.jpg'
+import culturalTriangleTank from '../assets/photos/img-6696.jpg'
+import galleDutchChurch from '../assets/photos/img-8974.jpg'
+import southernFishingBoats from '../assets/photos/img-8956.jpg'
 import sriPada from '../assets/images/Sripadaya .jpeg'
 import sriPadaSky from '../assets/images/sripadaya sky.jpeg'
 import gregoryLake from '../assets/images/geogary lake nuwra eliya .jpg'
@@ -158,7 +162,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'mirissa',
         title: 'Mirissa',
         coordinates: [80.4716, 5.9485],
-        coverImage: mirissaBoats,
+        coverImage: southernFishingBoats,
         description: 'A soft southern bay for ocean mornings, sailing moods and warm coastal evenings.',
         bestTimeToVisit: 'December - April',
         journeyMood: ['Oceanic', 'Romantic', 'Easygoing'],
@@ -262,7 +266,7 @@ export const journeyRegions: JourneyRegion[] = [
     id: 'cultural-triangle',
     title: 'Cultural Triangle',
     description: 'Ancient capitals, rock citadels and sacred landscapes held in jungle quiet.',
-    heroImage: sigiriyaMain,
+    heroImage: sigiriyaSunrise,
     center: [80.62, 8.02],
     zoom: 8.55,
     polygon: [
@@ -284,7 +288,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'sigiriya',
         title: 'Sigiriya',
         coordinates: [80.7603, 7.957],
-        coverImage: sigiriyaMain,
+        coverImage: sigiriyaRock,
         description: 'A rock citadel rising from jungle and morning gold, best approached before the day gathers.',
         bestTimeToVisit: 'January - September',
         journeyMood: ['Wonder', 'Iconic', 'Dawn'],
@@ -306,7 +310,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'polonnaruwa',
         title: 'Polonnaruwa',
         coordinates: [81.0003, 7.9403],
-        coverImage: monks,
+        coverImage: culturalTriangleTank,
         description: 'A compact ancient capital of stone Buddhas, reservoirs and elegant ruins.',
         bestTimeToVisit: 'January - September',
         journeyMood: ['Historic', 'Quiet', 'Architectural'],
@@ -539,7 +543,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'galle-fort',
         title: 'Galle Fort',
         coordinates: [80.2168, 6.0269],
-        coverImage: galleFort,
+        coverImage: galleDutchChurch,
         description:
           'Colonial ramparts, sea air and golden-hour walks through one of the island’s most atmospheric coastal towns.',
         bestTimeToVisit: 'December - April',

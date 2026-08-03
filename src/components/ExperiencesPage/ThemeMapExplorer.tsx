@@ -5,6 +5,7 @@ import { getHotelsForDestination, type HotelListing } from '../../data/hotels'
 import type { RegionDestination } from '../../data/journeyRegions'
 import { toJourneyId } from '../../journey/journeyItemHelpers'
 import { useJourney } from '../../journey/useJourney'
+import { galleryForTheme, reviewsForTheme } from '../ItinerariesPage/themeCatalog'
 import { getPackagePlacesForTheme, type PackagePlace, type PackageThemeTitle } from './packageMapCatalog'
 import './ThemeMapExplorer.css'
 
@@ -254,6 +255,29 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
             <p>{selectedPlace.destination.description}</p>
           </div>
 
+          {(() => {
+            // The place's own photograph leads; the rest illustrate the theme.
+            const themeShots = galleryForTheme(selectedTheme).doing
+            const placeShot = selectedPlace.destination.heroImage
+            const shots = [
+              ...(placeShot
+                ? [{ src: placeShot, alt: `${selectedPlace.destination.title}, Sri Lanka` }]
+                : []),
+              ...themeShots.slice(0, placeShot ? 2 : 3),
+            ]
+            if (shots.length === 0) return null
+
+            return (
+              <div className="theme-map-shots">
+                {shots.map((shot, index) => (
+                  <figure key={`${shot.alt}-${index}`} className="theme-map-shot">
+                    <img src={shot.src} alt={shot.alt} loading="lazy" />
+                  </figure>
+                ))}
+              </div>
+            )
+          })()}
+
           <div className="theme-map-detail-columns">
             <div className="theme-map-detail-column">
               <h4>Where To Stay</h4>
@@ -311,6 +335,40 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
               )}
             </div>
           </div>
+
+          {(() => {
+            const reviews = reviewsForTheme(selectedTheme)
+            if (reviews.length === 0) return null
+
+            return (
+              <aside className="theme-map-reviews" aria-label={`Reviews for ${selectedTheme}`}>
+                <p className="theme-map-reviews-label">Guest Reflections</p>
+
+                <div className="theme-map-reviews-grid">
+                  {reviews.map((review) => (
+                    <figure key={review.name} className="theme-map-review">
+                      <div
+                        className="theme-map-review-stars"
+                        role="img"
+                        aria-label={`${review.rating} out of 5`}
+                      >
+                        {'★'.repeat(review.rating)}
+                        <span>{'★'.repeat(5 - review.rating)}</span>
+                      </div>
+                      <blockquote>{review.quote}</blockquote>
+                      <figcaption>
+                        {review.name} · <span>{review.origin}</span>
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+
+                <p className="theme-map-reviews-note">
+                  Sample reflections shown while verified guest reviews are being collected.
+                </p>
+              </aside>
+            )
+          })()}
         </div>
       ) : null}
 

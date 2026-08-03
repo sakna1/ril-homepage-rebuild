@@ -45,8 +45,8 @@ const themeImages: Record<string, { image: string; imageAlt: string }> = {
     imageAlt: 'Fishing boats at Mirissa harbour at sunset',
   },
   'Heritage & Memory': {
-    image: experienceImages.sigiriyaMain,
-    imageAlt: 'Sigiriya rock fortress in Sri Lanka',
+    image: experienceImages.sigiriyaRock,
+    imageAlt: 'Sigiriya rock fortress rising above the forest',
   },
   'Wellness & Restoration': {
     image: experienceImages.ayurveda,
@@ -57,12 +57,12 @@ const themeImages: Record<string, { image: string; imageAlt: string }> = {
     imageAlt: 'Nuwara Eliya hill country landscape',
   },
   'Culture & Human Connection': {
-    image: experienceImages.perahera,
-    imageAlt: 'Kandy Perahera cultural procession in Sri Lanka',
+    image: experienceImages.artisanMasks,
+    imageAlt: 'Hand-carved Sri Lankan masks in an artisan workshop',
   },
   'Shared Heritage': {
-    image: experienceImages.queenVictoriaStatue,
-    imageAlt: 'Marble statue of Queen Victoria, a British monument in Sri Lanka',
+    image: experienceImages.galleDutchChurch,
+    imageAlt: 'The Dutch Reformed Church inside Galle Fort',
   },
 }
 
@@ -110,7 +110,7 @@ const themeGalleries: Record<string, ThemeGallery> = {
   'Heritage & Memory': {
     hotel: { src: experienceImages.poolVilla, alt: 'A garden residence near the ancient cities' },
     doing: [
-      { src: experienceImages.sigiriyaMain, alt: 'Sigiriya rock fortress at first light' },
+      { src: experienceImages.sigiriyaSunrise, alt: 'Sunrise over the Cultural Triangle' },
       { src: experienceImages.monks, alt: 'Monks at a Sri Lankan temple' },
       { src: experienceImages.oilLamps, alt: 'Oil lamps at an evening ritual' },
     ],
@@ -151,7 +151,7 @@ const themeGalleries: Record<string, ThemeGallery> = {
     doing: [
       { src: experienceImages.kandyanDancer, alt: 'A Kandyan dancer mid-performance' },
       { src: experienceImages.perahera, alt: 'A ceremonial procession at night' },
-      { src: experienceImages.brassLamp, alt: "An artisan's workshop and tools" },
+      { src: experienceImages.artisanMasks, alt: "Carved masks in an artisan's workshop" },
     ],
     included: [
       { src: experienceImages.poolVilla, alt: 'The courtyard residence suite' },
@@ -164,7 +164,7 @@ const themeGalleries: Record<string, ThemeGallery> = {
     doing: [
       { src: experienceImages.hillCountry, alt: 'Highland tea country and railway' },
       { src: experienceImages.queenVictoriaStatue, alt: 'A colonial-era statue in Colombo' },
-      { src: experienceImages.galleFort, alt: 'A walking tour of the fort ramparts' },
+      { src: experienceImages.galleDutchChurch, alt: 'The Dutch Reformed Church, Galle Fort' },
     ],
     included: [
       { src: experienceImages.teaEstate, alt: 'An estate bungalow stay' },
@@ -172,6 +172,129 @@ const themeGalleries: Record<string, ThemeGallery> = {
       { src: experienceImages.spices, alt: 'Dining at a heritage hotel' },
     ],
   },
+}
+
+export type ThemeReview = {
+  name: string
+  origin: string
+  rating: number
+  quote: string
+}
+
+/**
+ * PLACEHOLDER DATA — these are written samples, not collected guest feedback.
+ * They are labelled as samples in the UI for that reason; replace them with
+ * real, attributable reviews before the site goes live.
+ */
+const themeReviews: Record<string, readonly ThemeReview[]> = {
+  'Wildlife & Wilderness': [
+    {
+      name: 'H. Tanaka',
+      origin: 'Tokyo',
+      rating: 5,
+      quote:
+        'Our tracker read the forest like a page. Two leopards in three mornings, and not another vehicle in sight.',
+    },
+    {
+      name: 'M. Okonjo',
+      origin: 'London',
+      rating: 5,
+      quote: 'The camp was quiet in the way only a well-run camp is. Nothing needed asking for.',
+    },
+  ],
+  'Ocean & Discovery': [
+    {
+      name: 'C. Lindqvist',
+      origin: 'Stockholm',
+      rating: 5,
+      quote:
+        'A blue whale surfaced beside us on the second morning. The marine biologist aboard made the difference.',
+    },
+    {
+      name: 'R. Marchetti',
+      origin: 'Milan',
+      rating: 4,
+      quote: 'Long, unhurried days at sea. The villa afterwards felt like the right full stop.',
+    },
+  ],
+  'Heritage & Memory': [
+    {
+      name: 'A. Fernández',
+      origin: 'Madrid',
+      rating: 5,
+      quote:
+        'We had Sigiriya almost to ourselves at first light. The scholar who joined us changed how we saw it.',
+    },
+    {
+      name: 'J. Whitmore',
+      origin: 'Melbourne',
+      rating: 5,
+      quote: 'Ancient cities explained with care rather than recited. Rare, and worth it.',
+    },
+  ],
+  'Wellness & Restoration': [
+    {
+      name: 'S. Bergström',
+      origin: 'Oslo',
+      rating: 5,
+      quote: 'Treatments prescribed rather than chosen from a menu. I left genuinely rested.',
+    },
+    {
+      name: 'P. Nair',
+      origin: 'Singapore',
+      rating: 4,
+      quote: 'The forest pavilion at dawn is the part I still think about.',
+    },
+  ],
+  'Rail & Landscape': [
+    {
+      name: 'E. Dubois',
+      origin: 'Paris',
+      rating: 5,
+      quote:
+        'The observation carriage was reserved and waiting. Tea country passed by for three hours and I never opened my book.',
+    },
+    {
+      name: 'D. Hartley',
+      origin: 'Edinburgh',
+      rating: 5,
+      quote: 'The estate bungalow felt like staying with friends who happen to grow tea.',
+    },
+  ],
+  'Culture & Human Connection': [
+    {
+      name: 'L. Moreau',
+      origin: 'Geneva',
+      rating: 5,
+      quote:
+        'A dance rehearsal rather than a performance, then a family kitchen. We were guests, not an audience.',
+    },
+    {
+      name: 'T. Abioye',
+      origin: 'Lagos',
+      rating: 5,
+      quote: 'The evening puja was handled with real respect. That mattered to us.',
+    },
+  ],
+  'Shared Heritage': [
+    {
+      name: 'G. Chandra',
+      origin: 'Toronto',
+      rating: 5,
+      quote:
+        'History presented honestly, neither romanticised nor flattened. The Galle walk was the highlight.',
+    },
+    {
+      name: 'N. Halvorsen',
+      origin: 'Copenhagen',
+      rating: 4,
+      quote: 'Thoughtful context at every stop. We came away understanding more than we expected.',
+    },
+  ],
+}
+
+export function reviewsForTheme(title: string): readonly ThemeReview[] {
+  return themeReviews[title] ?? []
 }
 
 /** Falls back to the theme's own photograph when a theme has no set. */

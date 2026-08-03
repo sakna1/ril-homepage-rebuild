@@ -374,3 +374,118 @@
     flex: 0 1 calc((100% - 14px) / 2);
   }
 }
+
+/* ---------- Place photographs ---------- */
+
+.theme-map-shots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.theme-map-shot {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 4 / 3;
+  background: var(--color-surface-secondary-soft);
+}
+
+.theme-map-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.theme-map-shot:hover img {
+  transform: scale(1.04);
+}
+
+/* ---------- Guest reflections ---------- */
+
+.theme-map-reviews {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.theme-map-reviews-label {
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.6px;
+  text-transform: uppercase;
+}
+
+.theme-map-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.theme-map-review {
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--color-surface);
+}
+
+.theme-map-review-stars {
+  color: var(--color-accent);
+  font-size: 12px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.theme-map-review-stars span {
+  opacity: 0.28;
+}
+
+.theme-map-review blockquote {
+  margin: 10px 0 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.theme-map-review figcaption {
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.theme-map-review figcaption span {
+  color: var(--color-text-faint);
+  font-weight: 400;
+}
+
+.theme-map-reviews-note {
+  margin-top: 14px;
+  color: var(--color-text-faint);
+  font-size: 11.5px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .theme-map-shots {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .theme-map-shots .theme-map-shot:first-child {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 10;
+  }
+}
