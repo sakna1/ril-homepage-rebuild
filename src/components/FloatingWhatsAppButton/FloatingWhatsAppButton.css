@@ -50,6 +50,19 @@
   color: var(--color-accent);
 }
 
+/* The concierge trigger is a <button>, so it needs the UA styles reset to
+   match the anchor-based actions beside it. */
+button.floating-action-button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  appearance: none;
+}
+
+.floating-action-button--concierge.is-active {
+  background: var(--color-primary);
+  color: var(--color-accent);
+}
+
 .floating-action-button:hover,
 .floating-action-button:focus-visible {
   width: auto;

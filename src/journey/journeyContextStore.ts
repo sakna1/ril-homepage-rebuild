@@ -24,6 +24,28 @@ export type JourneyItem = {
   pricePerPerson?: number
   /** Duration label for package items, e.g. "10 Days". */
   duration?: string
+  /** The Designed Trips selection, set on `package` items built by the Itineraries flow. */
+  designedTrip?: DesignedTripSelection
+}
+
+/**
+ * What the traveller chose on the Itineraries page: a package, a theme, and one
+ * of that theme's two sub-packages, whose hotel and activities are then locked.
+ */
+export type DesignedTripSelection = {
+  packageName: string
+  packageDuration: string
+  /** The package's own "from" price per person, before the sub-package is added. */
+  packagePrice: number
+  themeTitle: string
+  subPackageName: string
+  subPackageDays: number
+  subPackageCoverage: string
+  /** USD per person added by the sub-package. */
+  subPackagePriceAdd: number
+  hotel: string
+  activities: string[]
+  inclusions: string[]
 }
 
 export type JourneyContextValue = {

@@ -4,31 +4,6 @@ import { aboutImages } from './images'
 import { experienceImages } from '../ExperiencesPage/images'
 import breathSeaImage from '../../assets/images/breath-sea.jpg'
 
-const storyPillars = [
-  {
-    title: 'Conversation first',
-    copy: 'Every journey begins with your pace, privacy, and intent.',
-  },
-  {
-    title: 'Trusted access',
-    copy: 'Introductions to hosts, artisans, and places through long-held relationships.',
-  },
-  {
-    title: 'Invisible care',
-    copy: 'Timing, transfers, and etiquette arranged before you arrive.',
-  },
-  {
-    title: 'Coastal assurance',
-    copy: 'Private, secured shore experiences for VVIP guests.',
-  },
-] as const
-
-const stats = [
-  { value: 'Private', label: 'Discovery by conversation' },
-  { value: 'Vetted', label: 'Access shaped through trust' },
-  { value: 'Human', label: 'Journeys held by people' },
-] as const
-
 const custodians = [
   {
     name: 'Dr. Suren Raghavan',
@@ -68,6 +43,80 @@ const custodians = [
   },
 ] as const
 
+/**
+ * PLACEHOLDER DATA — replace with the real office addresses when supplied.
+ * Kept in one place so it can be swapped without touching the markup.
+ */
+const branches = [
+  {
+    city: 'Colombo',
+    role: 'Head Office',
+    address: 'Level 12, Access Towers, Union Place, Colombo 02',
+    region: 'Western Province',
+    phone: '+94 76 396 2161',
+    hours: 'Mon – Fri, 09:00 – 18:00',
+  },
+  {
+    city: 'Kandy',
+    role: 'Hill Country Desk',
+    address: '18 Rajapihilla Mawatha, Kandy',
+    region: 'Central Province',
+    phone: '+94 76 396 2162',
+    hours: 'Mon – Sat, 09:00 – 17:30',
+  },
+  {
+    city: 'Galle',
+    role: 'Southern Coast Desk',
+    address: '42 Lighthouse Street, Galle Fort, Galle',
+    region: 'Southern Province',
+    phone: '+94 76 396 2163',
+    hours: 'Mon – Sat, 09:00 – 17:30',
+  },
+  {
+    city: 'Jaffna',
+    role: 'Northern Desk',
+    address: '7 Temple Road, Nallur, Jaffna',
+    region: 'Northern Province',
+    phone: '+94 76 396 2164',
+    hours: 'Mon – Fri, 09:00 – 17:00',
+  },
+] as const
+
+/**
+ * PLACEHOLDER DATA — replace with the confirmed banking relationships.
+ *
+ * `initials` renders a typographic lettermark. When the real artwork is
+ * supplied, import the file and set `logoSrc` on the entry; the monogram is
+ * used only as the fallback, so no markup needs to change.
+ */
+const bankingPartners: readonly {
+  name: string
+  relationship: string
+  initials: string
+  logoSrc?: string
+}[] = [
+  {
+    name: 'Commercial Bank of Ceylon',
+    relationship: 'Primary operating and settlement account',
+    initials: 'CB',
+  },
+  {
+    name: 'Hatton National Bank',
+    relationship: 'Foreign currency and inbound guest remittances',
+    initials: 'HNB',
+  },
+  {
+    name: 'Sampath Bank',
+    relationship: 'Merchant services and card acquiring',
+    initials: 'SB',
+  },
+  {
+    name: 'Bank of Ceylon',
+    relationship: 'Government and licensing settlements',
+    initials: 'BOC',
+  },
+]
+
 const digitalStudio = {
   name: 'Eunoia Solutions Pvt Ltd',
   founder: 'Sakna Perera',
@@ -102,99 +151,6 @@ export function AboutPage() {
 
   return (
     <main className="about-page">
-      {/* Hero */}
-      <section className="about-section about-hero">
-        <div className="about-container about-hero-inner">
-          <div className="about-hero-content">
-            <p className="about-eyebrow about-eyebrow--gold">ABOUT ROYALE ISLES LANKA</p>
-            <h1 className="about-hero-heading">
-              The island,
-              <br />
-              <em>quietly opened</em>
-              <br />
-              for those who know what access means.
-            </h1>
-            <p className="about-hero-body">
-              Private Sri Lankan journeys shaped through conversation, discretion, and deep local
-              knowledge.
-            </p>
-            <div className="about-stats">
-              {stats.map((stat) => (
-                <div key={stat.label} className="about-stat">
-                  <span className="about-stat-value">{stat.value}</span>
-                  <span className="about-stat-label">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <figure className="about-hero-image-wrap">
-            <img
-              className="about-hero-image"
-              src={experienceImages.sigiriyaDawn}
-              alt="Sigiriya rock fortress rising above the Sri Lankan landscape"
-            />
-            <figcaption>
-              <span>Private Access</span>
-              <span>Ancient Kingdoms — Sri Lanka</span>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section className="about-section about-summary" aria-label="What we offer">
-        <div className="about-container about-summary-inner">
-          <div className="about-summary-intro">
-            <p className="about-eyebrow about-eyebrow--green">WHAT WE OFFER</p>
-            <h2 className="about-summary-heading">
-              Sri Lanka, opened through trust.
-            </h2>
-            <p className="about-summary-lead">
-              We curate private journeys for travellers who value cultural depth, discretion, and
-              human connection—from first conversation to final farewell.
-            </p>
-          </div>
-          <figure className="about-summary-media">
-            <img
-              className="about-summary-image"
-              src={experienceImages.heroSigiriya}
-              alt="Sigiriya rock fortress surrounded by Sri Lankan landscape"
-            />
-            <figcaption>
-              <span>Curated Access</span>
-              <span>Heritage &amp; landscape — Sri Lanka</span>
-            </figcaption>
-          </figure>
-          <ul className="about-summary-pillars">
-            {storyPillars.map((pillar) => (
-              <li key={pillar.title}>
-                <h3>{pillar.title}</h3>
-                <p>{pillar.copy}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Stillness image */}
-      <section className="about-section about-full-image">
-        <div className="about-container">
-          <figure className="about-full-image-frame">
-            <img
-              className="about-full-image-img"
-              src={experienceImages.ayurveda}
-              alt="Ayurvedic treatment pavilion set within a tropical rainforest retreat"
-            />
-            <figcaption>
-              <span>Restoration At The Heart Of The Journey</span>
-              <p>
-                The best journeys understand when to move, when to pause, and when to let the island
-                simply return you to yourself.
-              </p>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
       {/* Custodians */}
       <section className="about-section about-custodians">
         <div className="about-container about-custodians-inner">
@@ -243,6 +199,99 @@ export function AboutPage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Branches */}
+      <section className="about-section about-branches" aria-labelledby="about-branches-head">
+        <div className="about-container about-branches-inner">
+          <header className="about-branches-header">
+            <div className="about-custodians-labels">
+              <span className="about-section-numeral">V</span>
+              <span className="about-section-sub-label">WHERE WE ARE</span>
+            </div>
+            <div>
+              <h2 id="about-branches-head" className="about-branches-heading">
+                Our Offices Across
+                <br />
+                The <em>Island.</em>
+              </h2>
+              <p className="about-branches-description">
+                Journeys are arranged from the region they belong to. Each desk is staffed by people
+                who know their province personally, so access, timing, and local judgement are never
+                second-hand.
+              </p>
+            </div>
+          </header>
+
+          <div className="about-branch-grid">
+            {branches.map((branch) => (
+              <article key={branch.city} className="about-branch-card">
+                <header>
+                  <h3>{branch.city}</h3>
+                  <span className="about-branch-role">{branch.role}</span>
+                </header>
+                <address>
+                  <span>{branch.address}</span>
+                  <span className="about-branch-region">{branch.region}</span>
+                </address>
+                <dl className="about-branch-meta">
+                  <div>
+                    <dt>Telephone</dt>
+                    <dd>
+                      <a href={`tel:${branch.phone.replace(/\s/g, '')}`}>{branch.phone}</a>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Hours</dt>
+                    <dd>{branch.hours}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+
+          <p className="about-placeholder-note">
+            Office addresses and direct lines are being confirmed and will be published shortly.
+          </p>
+        </div>
+      </section>
+
+      {/* Banking partners */}
+      <section className="about-section about-banking" aria-labelledby="about-banking-head">
+        <div className="about-container about-banking-inner">
+          <header className="about-banking-header">
+            <p className="about-eyebrow about-eyebrow--green">BANKING &amp; SETTLEMENT</p>
+            <h2 id="about-banking-head">The institutions behind the arrangements.</h2>
+            <p>
+              Payments, deposits, and currency handling are held with established Sri Lankan banks,
+              so every settlement is traceable, regulated, and quietly straightforward for guests
+              arriving from abroad.
+            </p>
+          </header>
+
+          <ul className="about-banking-list">
+            {bankingPartners.map((bank) => (
+              <li key={bank.name} className="about-banking-item">
+                <span className="about-banking-logo" aria-hidden="true">
+                  {bank.logoSrc ? (
+                    <img src={bank.logoSrc} alt="" />
+                  ) : (
+                    <span className="about-banking-monogram">{bank.initials}</span>
+                  )}
+                </span>
+                <span className="about-banking-copy">
+                  <span className="about-banking-name">{bank.name}</span>
+                  <span className="about-banking-relationship">{bank.relationship}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="about-placeholder-note">
+            Banking relationships shown are indicative and pending confirmation. Guests never send
+            funds before their concierge confirms the account details directly.
+          </p>
         </div>
       </section>
 
@@ -351,7 +400,7 @@ export function AboutPage() {
             care, discretion, and the right custodians around it.
           </p>
           <a className="about-invitation-button" href="/expectations">
-            Begin With Discovery
+            Explore Sri Lanka Privately
           </a>
         </div>
       </section>

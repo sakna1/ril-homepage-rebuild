@@ -27,7 +27,7 @@ export const companionOptions: CompanionOption[] = [
   { id: 'luxury-escape', label: 'Luxury Escape', icon: 'crown' },
 ]
 
-export type TransportId = 'private-car' | 'suv' | 'luxury-van' | 'chauffeur'
+export type TransportId = 'private-car' | 'luxury-van' | 'chauffeur' | 'helicopter'
 
 export type TransportOption = {
   id: TransportId
@@ -50,15 +50,6 @@ export const transportOptions: TransportOption[] = [
     recommendedFor: 'Couples and solo travellers',
   },
   {
-    id: 'suv',
-    label: 'SUV',
-    icon: 'suv',
-    capacity: '1 – 4 guests',
-    luggage: '4 – 5 bags',
-    comfort: 'Elevated',
-    recommendedFor: 'Small families and hill country routes',
-  },
-  {
     id: 'luxury-van',
     label: 'Luxury Van',
     icon: 'van',
@@ -76,6 +67,15 @@ export const transportOptions: TransportOption[] = [
     comfort: 'Personal',
     recommendedFor: 'Guests who want a dedicated private driver throughout',
   },
+  {
+    id: 'helicopter',
+    label: 'Helicopter',
+    icon: 'helicopter',
+    capacity: '1 – 5 guests',
+    luggage: '2 – 3 bags',
+    comfort: 'Exceptional',
+    recommendedFor: 'Guests crossing the island quickly, with scenic private transfers',
+  },
 ]
 
 const COMPANION_STORAGE_KEY = 'royale-isles-travel-companion'
@@ -85,11 +85,13 @@ const DATES_STORAGE_KEY = 'royale-isles-travel-dates'
 export type TravelDates = {
   /** Preferred start date, ISO 'YYYY-MM-DD', or '' if unset. */
   startDate: string
+  /** Preferred end date, ISO 'YYYY-MM-DD', or '' if unset. */
+  endDate: string
   /** Number of travellers (>= 1). */
   travellers: number
 }
 
-const DEFAULT_TRAVEL_DATES: TravelDates = { startDate: '', travellers: 2 }
+const DEFAULT_TRAVEL_DATES: TravelDates = { startDate: '', endDate: '', travellers: 2 }
 
 export function readStoredDates(): TravelDates {
   if (typeof window === 'undefined') return { ...DEFAULT_TRAVEL_DATES }
@@ -99,6 +101,7 @@ export function readStoredDates(): TravelDates {
     const parsed = JSON.parse(raw) as Partial<TravelDates>
     return {
       startDate: typeof parsed.startDate === 'string' ? parsed.startDate : '',
+      endDate: typeof parsed.endDate === 'string' ? parsed.endDate : '',
       travellers:
         typeof parsed.travellers === 'number' && parsed.travellers >= 1
           ? Math.floor(parsed.travellers)
@@ -107,6 +110,33 @@ export function readStoredDates(): TravelDates {
   } catch {
     return { ...DEFAULT_TRAVEL_DATES }
   }
+}
+
+/**
+ * Optional close-protection detail, charged in addition to the journey.
+ * Indicative placeholder pricing, in line with the rest of the site.
+ */
+export const SECURITY_DETAIL_USD_PER_DAY = 180
+
+const SECURITY_STORAGE_KEY = 'royale-isles-security-detail'
+
+export function readStoredSecurity(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.localStorage.getItem(SECURITY_STORAGE_KEY) === 'true'
+}
+
+export function writeStoredSecurity(enabled: boolean) {
+  if (typeof window === 'undefined') return
+  window.localStorage.setItem(SECURITY_STORAGE_KEY, enabled ? 'true' : 'false')
+}
+
+/** Nights between the two dates; 0 when either is unset or the range is invalid. */
+export function nightsBetween(startDate: string, endDate: string): number {
+  if (!startDate || !endDate) return 0
+  const start = Date.parse(startDate)
+  const end = Date.parse(endDate)
+  if (Number.isNaN(start) || Number.isNaN(end) || end <= start) return 0
+  return Math.round((end - start) / 86_400_000)
 }
 
 export function writeStoredDates(dates: TravelDates) {

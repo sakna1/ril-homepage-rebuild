@@ -1,0 +1,430 @@
+/* Dim layer — only active on small screens, where the panel covers the page. */
+.cchat-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: var(--color-scrim);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.cchat {
+  position: fixed;
+  z-index: 1201;
+  right: clamp(16px, 2vw, 28px);
+  bottom: 104px;
+  display: flex;
+  flex-direction: column;
+  width: min(400px, calc(100vw - 32px));
+  height: min(620px, calc(100vh - 160px));
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: 0 30px 80px rgba(13, 31, 23, 0.28);
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cchat.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ---------- Header ---------- */
+
+.cchat-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--color-surface-atmospheric), var(--color-primary));
+  color: var(--color-surface);
+}
+
+.cchat-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-accent-soft);
+  border-radius: 50%;
+  background: rgba(197, 160, 89, 0.16);
+}
+
+.cchat-mark svg {
+  width: 17px;
+  height: 17px;
+  fill: var(--color-accent);
+}
+
+.cchat-title {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cchat-title strong {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.cchat-title span {
+  color: var(--color-text-subtle-on-dark);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.cchat-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-surface);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cchat-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.cchat-close svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* ---------- Conversation ---------- */
+
+.cchat-scroll {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  overflow-y: auto;
+  background: var(--color-surface-secondary-soft);
+  scrollbar-width: thin;
+}
+
+.cchat-row {
+  display: flex;
+}
+
+.cchat-row--guest {
+  justify-content: flex-end;
+}
+
+.cchat-bubble {
+  max-width: 86%;
+  padding: 12px 15px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.cchat-row--concierge .cchat-bubble {
+  border: 1px solid var(--color-border-subtle);
+  border-bottom-left-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.cchat-row--guest .cchat-bubble {
+  border-bottom-right-radius: 4px;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.cchat-bubble.is-failed {
+  border-color: var(--color-accent-muted);
+  background: var(--color-accent-faint);
+}
+
+.cchat-bubble p + p {
+  margin-top: 9px;
+}
+
+/* Recommendation cards inside a reply. */
+.cchat-recs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.cchat-recs li {
+  display: flex;
+  gap: 11px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.cchat-recs img {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.cchat-recs li > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cchat-recs strong {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 400;
+}
+
+.cchat-recs em {
+  color: var(--color-accent);
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cchat-recs li > span > span {
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.cchat-note {
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid var(--color-border-subtle);
+  color: var(--color-text-subtle);
+  font-size: 11.5px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.cchat-followup {
+  margin-top: 11px;
+  padding: 7px 12px;
+  border: 1px solid var(--color-accent-subtle);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cchat-followup:hover {
+  background: var(--color-accent-faint);
+}
+
+/* Typing indicator. */
+.cchat-typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 15px;
+}
+
+.cchat-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: cchat-pulse 1.3s ease-in-out infinite;
+}
+
+.cchat-typing span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.cchat-typing span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+@keyframes cchat-pulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.28;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* ---------- Opening suggestions ---------- */
+
+.cchat-openers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 12px 18px 0;
+  background: var(--color-surface);
+}
+
+.cchat-openers button {
+  padding: 7px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cchat-openers button:hover {
+  border-color: var(--color-accent-muted);
+  color: var(--color-primary);
+}
+
+/* ---------- Composer ---------- */
+
+.cchat-compose {
+  display: flex;
+  gap: 9px;
+  padding: 14px 18px 8px;
+  background: var(--color-surface);
+}
+
+.cchat-compose input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 15px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 300;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.cchat-compose input:focus {
+  border-color: var(--color-accent-muted);
+}
+
+.cchat-compose input:disabled {
+  opacity: 0.6;
+}
+
+.cchat-compose button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.cchat-compose button:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.cchat-compose button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cchat-compose button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cchat-disclaimer {
+  padding: 0 18px 14px;
+  background: var(--color-surface);
+  color: var(--color-text-faint);
+  font-size: 10.5px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ---------- Small screens: full-height sheet ---------- */
+
+@media (max-width: 560px) {
+  .cchat-scrim.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cchat {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 88vh;
+    border-radius: 18px 18px 0 0;
+    transform: translateY(100%);
+  }
+
+  .cchat.is-open {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cchat,
+  .cchat-scrim {
+    transition: opacity 0.01s linear;
+  }
+
+  .cchat-typing span {
+    animation: none;
+  }
+}

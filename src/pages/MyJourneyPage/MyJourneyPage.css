@@ -2189,15 +2189,20 @@
 .myj-preference-section h3 {
   color: var(--color-primary);
   font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: clamp(1.35rem, 1.9vw, 1.75rem);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.14;
 }
 
-.myj-preference-section > p {
-  margin-top: 6px;
+.myj-preference-section > p,
+.myj-preference-section .myj-preference-head p {
+  margin-top: 10px;
+  max-width: 62ch;
   color: var(--color-text-muted);
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.68;
 }
 
 .myj-companion-grid {
@@ -2542,6 +2547,102 @@
   line-height: 1.6;
 }
 
+/* The package -> theme -> sub-package chain saved from the Itineraries flow. */
+.myj-designed-trip {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-subtle, rgba(0, 0, 0, 0.08));
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.myj-designed-trip__chain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.myj-designed-trip__chain li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.myj-designed-trip__chain span {
+  color: var(--color-text-faint);
+  font-size: 9.5px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.myj-designed-trip__chain strong {
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.myj-designed-trip__locked {
+  margin-top: 12px;
+  color: var(--color-text-faint);
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.myj-designed-trip__hotel {
+  margin-top: 8px;
+  color: var(--color-primary);
+  font-size: 12.5px;
+  font-weight: 300;
+}
+
+.myj-designed-trip__hotel span {
+  color: var(--color-text-faint);
+  font-size: 9.5px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.myj-designed-trip__list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.myj-designed-trip__list li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.myj-designed-trip__list li::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent, currentColor);
+  opacity: 0.5;
+}
+
+.myj-designed-trip__breakdown {
+  margin-top: 10px;
+  color: var(--color-text-faint);
+  font-size: 11.5px;
+  font-weight: 300;
+}
+
 .myj-package-side {
   display: flex;
   align-items: center;
@@ -2619,9 +2720,25 @@
 
 .myj-dates-fields {
   display: grid;
-  grid-template-columns: 1fr 140px;
+  grid-template-columns: 1fr 1fr 140px;
   gap: 16px;
   margin-top: 18px;
+}
+
+@media (max-width: 720px) {
+  .myj-dates-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.myj-dates-duration {
+  margin-top: 14px;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.01em;
 }
 
 .myj-dates-fields label {
@@ -2633,17 +2750,19 @@
   color: var(--color-text-subtle);
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
 .myj-dates-fields input {
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: var(--color-surface);
-  font: inherit;
+  font-family: var(--font-body);
   font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
   color: var(--color-text);
   outline: none;
   transition: border-color 0.2s ease;
@@ -2657,4 +2776,79 @@
   .myj-dates-fields {
     grid-template-columns: 1fr;
   }
+}
+
+/* ---------- Optional personal security detail ---------- */
+
+.myj-security-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.myj-security-option:hover {
+  border-color: var(--color-accent-muted);
+}
+
+.myj-security.is-selected .myj-security-option {
+  border-color: var(--color-accent);
+  background: var(--color-accent-faint);
+}
+
+.myj-security-option input[type='checkbox'] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.myj-security-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.myj-security-title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.myj-security-price {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.myj-security-total {
+  flex: 0 0 auto;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.2vw, 28px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.myj-security-note {
+  margin-top: 12px;
+  color: var(--color-text-subtle);
+  font-size: 12.5px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.6;
 }

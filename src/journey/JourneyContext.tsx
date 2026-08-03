@@ -7,7 +7,7 @@ import {
 import { inferJourneyRegion, inferJourneyTheme, normalizeJourneyItem } from './journeyTaxonomy'
 import { normalizeJourneyItemLabels } from './savedJourneyDisplay'
 
-export type { JourneyItem, JourneyItemKind } from './journeyContextStore'
+export type { DesignedTripSelection, JourneyItem, JourneyItemKind } from './journeyContextStore'
 
 const STORAGE_KEY = 'royale-isles-my-journey'
 const HELPER_STORAGE_KEY = 'royale-isles-my-journey-helper-seen'

@@ -29,6 +29,23 @@ export type PublicPlace = {
   sortOrder: number
 }
 
+/** A sub-package sold under a theme: "The Glimpse" (2 days) or "The Immersion" (4 days). */
+export type PublicThemePackage = {
+  id: number
+  themeId: number
+  tier: string
+  name: string
+  days: number
+  coverage: string
+  summary: string
+  hotel: string
+  activities: string[]
+  inclusions: string[]
+  /** USD per person, added on top of the chosen package's `priceFrom`. */
+  priceAdd: number
+  sortOrder: number
+}
+
 export type PublicTheme = {
   id: number
   title: string
@@ -38,6 +55,7 @@ export type PublicTheme = {
   imageUrl: string | null
   sortOrder: number
   places: PublicPlace[]
+  themePackages: PublicThemePackage[]
 }
 
 async function getJson<T>(path: string): Promise<T> {
@@ -55,4 +73,8 @@ export function fetchPublicPackages(): Promise<PublicPackage[]> {
 
 export function fetchPublicThemes(): Promise<PublicTheme[]> {
   return getJson<PublicTheme[]>('/api/content/themes')
+}
+
+export function fetchPublicThemePackages(): Promise<PublicThemePackage[]> {
+  return getJson<PublicThemePackage[]>('/api/content/theme-packages')
 }

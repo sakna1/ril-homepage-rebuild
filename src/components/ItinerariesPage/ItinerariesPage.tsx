@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import './ItinerariesPage.css'
 import { experienceImages } from '../ExperiencesPage/images'
 import { toJourneyId } from '../../journey/journeyItemHelpers'
 import { useJourney } from '../../journey/useJourney'
-import { fetchPublicPackages } from '../../services/publicContent'
+import { fetchPublicPackages, fetchPublicThemes } from '../../services/publicContent'
+import {
+  fallbackThemes,
+  galleryForTheme,
+  imageForTheme,
+  type ItineraryTheme,
+  type ThemeSubPackage,
+} from './themeCatalog'
 
 type Itinerary = {
   numeral: string
@@ -21,6 +27,25 @@ type Itinerary = {
   image: string
   imageAlt: string
 }
+
+/**
+ * The Designed Trips flow, in four steps:
+ *   1. Choose a package (Discovery / Deep Dive / Dynasty)
+ *   2. Choose one of the seven themes
+ *   3. Choose that theme's sub-package (The Glimpse / The Immersion)
+ *   4. Review the locked inclusions and add the whole thing to the journey
+ */
+const STEPS = [
+  { id: 'package', label: 'Package', hint: 'The shape of the journey' },
+  { id: 'theme', label: 'Theme', hint: 'What the journey is about' },
+  { id: 'sub-package', label: 'Sub-Package', hint: 'How deeply you go in' },
+  { id: 'review', label: 'Inclusions', hint: 'Locked and ready' },
+] as const
+
+type StepId = (typeof STEPS)[number]['id']
+
+// The three signature structures shown on this page, in order.
+const KEEP_NAMES = ['Discovery', 'Deep Dive', 'Dynasty'] as const
 
 // Curated fallback, used until (or if) the backend content API is unavailable.
 const fallbackItineraries: readonly Itinerary[] = [
@@ -118,97 +143,6 @@ const fallbackItineraries: readonly Itinerary[] = [
     image: experienceImages.perahera,
     imageAlt: 'Ceremonial procession with traditional performers in Sri Lanka',
   },
-  {
-    numeral: 'IV',
-    name: 'Coastal Serenity',
-    duration: '8 Days',
-    priceFrom: 4200,
-    character:
-      'Slow mornings by the sea, cinnamon gardens, and quiet fortified towns — the southern coast read at the pace of the tide.',
-    route: ['Colombo', 'Bentota', 'Galle', 'Weligama', 'Mirissa', 'Tangalle', 'Airport'],
-    inclusions: [
-      'A private villa on the southern coast',
-      'Galle Fort at golden hour',
-      'A dawn whale-watching charter',
-      'A cinnamon estate visit',
-      'Sunset suppers by the sea',
-    ],
-    pace: 'Gentle',
-    bestFor: 'Coastal escapes and honeymoons',
-    reach: 'Western & Southern coast',
-    image: experienceImages.poolVilla,
-    imageAlt: 'Private coastal villa pool in southern Sri Lanka',
-  },
-  {
-    numeral: 'V',
-    name: 'Highland Retreat',
-    duration: '7 Days',
-    priceFrom: 3900,
-    character:
-      'Misted tea country, cool verandas, and the slow work of restoration — hill stations and gardens reached by scenic mountain rail.',
-    route: ['Colombo', 'Kandy', 'Nuwara Eliya', 'Ella', 'Haputale', 'Airport'],
-    inclusions: [
-      'A tea-estate bungalow stay',
-      'The scenic highland rail journey',
-      'Private tea tastings',
-      'Ayurvedic wellness mornings',
-      'Nine Arches Bridge at first light',
-    ],
-    pace: 'Restorative',
-    bestFor: 'Wellness and cool-climate travel',
-    reach: 'Central Highlands & Uva',
-    image: experienceImages.teaEstate,
-    imageAlt: 'Rows of tea bushes on a misted hill-country estate',
-  },
-  {
-    numeral: 'VI',
-    name: 'Wild Encounters',
-    duration: '9 Days',
-    priceFrom: 5600,
-    character:
-      'Leopard country, elephant gatherings, and dawn safaris with naturalists who know when not to speak — wilderness held with patience.',
-    route: ['Colombo', 'Wilpattu National Park', 'Sigiriya', 'Minneriya', 'Kandy', 'Udawalawe', 'Yala', 'Airport'],
-    inclusions: [
-      'Private leopard safaris in Yala',
-      'The Minneriya elephant gathering',
-      'A naturalist-led field morning',
-      'Wilpattu wilderness drives',
-      'A tented wild-coast retreat',
-    ],
-    pace: 'Adventurous',
-    bestFor: 'Wildlife and photography',
-    reach: 'North-West, Centre & Deep South',
-    image: experienceImages.leopardFeature,
-    imageAlt: 'Sri Lankan leopard resting on a rock at dusk',
-  },
-  {
-    numeral: 'VII',
-    name: 'Sacred Circuit',
-    duration: '11 Days',
-    priceFrom: 6100,
-    character:
-      "Ancient capitals, cave temples, and living ritual — the island's spiritual heart entered slowly, with scholarship and protected timing.",
-    route: ['Colombo', 'Anuradhapura', 'Mihintale', 'Polonnaruwa', 'Sigiriya', 'Dambulla', 'Kandy', 'Airport'],
-    inclusions: [
-      'Private dawn access at Sigiriya',
-      'The Dambulla cave temples',
-      'The Temple of the Tooth',
-      'Resident-scholar accompaniment',
-      'A Kandyan dance and ritual evening',
-    ],
-    pace: 'Contemplative',
-    bestFor: 'Heritage and scholarship',
-    reach: 'Cultural Triangle & Central',
-    image: experienceImages.monks,
-    imageAlt: 'Buddhist monks at a Sri Lankan temple',
-  },
-] as const
-
-const comparisonRows = [
-  { label: 'Duration', key: 'duration' },
-  { label: 'Pace', key: 'pace' },
-  { label: 'Best for', key: 'bestFor' },
-  { label: 'Island reach', key: 'reach' },
 ] as const
 
 // Map a DB package to the display shape, borrowing an image from the curated
@@ -226,19 +160,47 @@ function nightsLabel(duration: string): string {
   return `${Math.max(0, days - 1)} Nights`
 }
 
+/** The day count from a package duration string ("10 Days" -> 10); 0 if unparseable. */
+function daysFromDuration(duration: string): number {
+  const days = parseInt(duration, 10)
+  return Number.isNaN(days) ? 0 : days
+}
+
 // A short one-line description for the gallery card.
 function shortDescription(character: string): string {
   const firstSentence = character.split(/(?<=[.!?])\s/)[0] ?? character
-  return firstSentence.length > 120 ? `${firstSentence.slice(0, 117).trimEnd()}…` : firstSentence
+  return firstSentence.length > 130 ? `${firstSentence.slice(0, 127).trimEnd()}…` : firstSentence
+}
+
+const usdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+})
+
+function formatUsd(amount: number): string {
+  return usdFormatter.format(amount)
 }
 
 export function ItinerariesPage() {
-  const prefersReducedMotion = useReducedMotion()
   const { confirmRemoveItem, includeItem, isIncluded } = useJourney()
 
-  // Content comes from the admin-managed DB; fall back to the curated list.
+  // Content comes from the admin-managed DB; fall back to the curated lists.
   const [items, setItems] = useState<readonly Itinerary[]>(fallbackItineraries)
+  const [themes, setThemes] = useState<readonly ItineraryTheme[]>(fallbackThemes)
+
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [selectedThemeId, setSelectedThemeId] = useState<string | null>(null)
+  const [selectedSubPackageId, setSelectedSubPackageId] = useState<string | null>(null)
+  const [furthestStep, setFurthestStep] = useState<StepId>('package')
+
+  const trackRef = useRef<HTMLDivElement>(null)
+  const themeRef = useRef<HTMLDivElement>(null)
+  const subPackageRef = useRef<HTMLDivElement>(null)
+  const reviewRef = useRef<HTMLDivElement>(null)
+  const [current, setCurrent] = useState(0)
+  const [canPrev, setCanPrev] = useState(false)
+  const [canNext, setCanNext] = useState(true)
 
   useEffect(() => {
     let cancelled = false
@@ -269,13 +231,149 @@ export function ItinerariesPage() {
     }
   }, [])
 
-  const activeIndex = items.length > 0 ? Math.min(selectedIndex, items.length - 1) : 0
-  const selected = items[activeIndex] ?? null
+  // Themes carry their two sub-packages nested, so one call covers steps 2 and 3.
+  useEffect(() => {
+    let cancelled = false
+    fetchPublicThemes()
+      .then((publicThemes) => {
+        const withSubPackages = publicThemes.filter(
+          (theme) => (theme.themePackages ?? []).length > 0,
+        )
+        if (cancelled || withSubPackages.length === 0) return
+        setThemes(
+          withSubPackages.map((theme) => ({
+            id: String(theme.id),
+            title: theme.title,
+            description: theme.description,
+            traveller: theme.traveller,
+            ...imageForTheme(theme.title),
+            subPackages: theme.themePackages.map((sub) => ({
+              id: String(sub.id),
+              tier: sub.tier === 'immersion' ? 'immersion' : 'glimpse',
+              name: sub.name,
+              days: sub.days,
+              coverage: sub.coverage === 'full' ? 'full' : 'half',
+              summary: sub.summary,
+              hotel: sub.hotel,
+              activities: sub.activities,
+              inclusions: sub.inclusions,
+              priceAdd: sub.priceAdd,
+            })),
+          })),
+        )
+      })
+      .catch(() => {
+        /* keep the curated fallback */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
-  function togglePackage(itinerary: Itinerary) {
-    const journeyId = toJourneyId('package', itinerary.name)
+  // Only the three signature structures. If the DB has renamed them, fall back
+  // to the first three so the page is never empty.
+  const named = items.filter((entry) => (KEEP_NAMES as readonly string[]).includes(entry.name))
+  const visible = named.length > 0 ? named : items.slice(0, 3)
 
-    if (isIncluded(journeyId)) {
+  const activeIndex = visible.length > 0 ? Math.min(selectedIndex, visible.length - 1) : 0
+  const selected = visible[activeIndex] ?? null
+
+  const selectedTheme = useMemo(
+    () => themes.find((theme) => theme.id === selectedThemeId) ?? null,
+    [selectedThemeId, themes],
+  )
+  const selectedSubPackage = useMemo(
+    () =>
+      selectedTheme?.subPackages.find((sub) => sub.id === selectedSubPackageId) ?? null,
+    [selectedSubPackageId, selectedTheme],
+  )
+
+  // Step 4 shows the package's "from" price plus the sub-package's addition.
+  const packagePrice = selected?.priceFrom ?? 0
+  const totalPrice = packagePrice + (selectedSubPackage?.priceAdd ?? 0)
+
+  const reachedStep = (step: StepId) => {
+    const order = STEPS.map((entry) => entry.id)
+    return order.indexOf(step) <= order.indexOf(furthestStep)
+  }
+
+  const advanceTo = (step: StepId, target: React.RefObject<HTMLDivElement | null>) => {
+    const order = STEPS.map((entry) => entry.id)
+    setFurthestStep((previous) =>
+      order.indexOf(step) > order.indexOf(previous) ? step : previous,
+    )
+    requestAnimationFrame(() => {
+      target.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
+  const updateNav = () => {
+    const el = trackRef.current
+    if (!el) return
+    const { scrollLeft, scrollWidth, clientWidth } = el
+    setCanPrev(scrollLeft > 4)
+    setCanNext(scrollLeft < scrollWidth - clientWidth - 4)
+    const cards = Array.from(el.querySelectorAll<HTMLElement>('.itin-card4'))
+    let idx = 0
+    let min = Infinity
+    cards.forEach((card, i) => {
+      const distance = Math.abs(card.offsetLeft - el.scrollLeft - el.offsetLeft)
+      if (distance < min) {
+        min = distance
+        idx = i
+      }
+    })
+    setCurrent(idx)
+  }
+
+  useEffect(() => {
+    updateNav()
+  }, [visible.length])
+
+  const scrollToIndex = (index: number) => {
+    const el = trackRef.current
+    if (!el) return
+    const card = el.querySelectorAll<HTMLElement>('.itin-card4')[index]
+    if (!card) return
+    const delta = card.getBoundingClientRect().left - el.getBoundingClientRect().left
+    el.scrollBy({ left: delta, behavior: 'smooth' })
+  }
+
+  // Step 1 -> 2. Changing the package keeps the theme but re-prices the trip.
+  const selectPackage = (index: number) => {
+    setSelectedIndex(index)
+    advanceTo('theme', themeRef)
+  }
+
+  // Step 2 -> 3. A new theme invalidates whichever sub-package was chosen.
+  const selectTheme = (theme: ItineraryTheme) => {
+    setSelectedThemeId(theme.id)
+    setSelectedSubPackageId(null)
+    setFurthestStep('sub-package')
+    requestAnimationFrame(() => {
+      subPackageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
+  // Step 3 -> 4. The inclusions below are now fixed.
+  const selectSubPackage = (subPackage: ThemeSubPackage) => {
+    setSelectedSubPackageId(subPackage.id)
+    advanceTo('review', reviewRef)
+  }
+
+  const journeyId =
+    selected && selectedTheme && selectedSubPackage
+      ? toJourneyId(
+          'package',
+          `${selected.name}-${selectedTheme.title}-${selectedSubPackage.name}`,
+        )
+      : null
+  const added = journeyId ? isIncluded(journeyId) : false
+
+  function toggleDesignedTrip() {
+    if (!selected || !selectedTheme || !selectedSubPackage || !journeyId) return
+
+    if (added) {
       confirmRemoveItem(journeyId)
       return
     }
@@ -283,13 +381,34 @@ export function ItinerariesPage() {
     includeItem({
       id: journeyId,
       kind: 'package',
-      label: `${itinerary.name} — ${itinerary.duration}`,
-      detail: itinerary.character,
+      label: `${selected.name} — ${selectedTheme.title}`,
+      detail: selectedSubPackage.summary,
       source: 'Itineraries',
-      duration: itinerary.duration,
-      pricePerPerson: itinerary.priceFrom ?? undefined,
+      duration: selected.duration,
+      pricePerPerson: totalPrice,
+      designedTrip: {
+        packageName: selected.name,
+        packageDuration: selected.duration,
+        packagePrice,
+        themeTitle: selectedTheme.title,
+        subPackageName: selectedSubPackage.name,
+        subPackageDays: selectedSubPackage.days,
+        subPackageCoverage: selectedSubPackage.coverage,
+        subPackagePriceAdd: selectedSubPackage.priceAdd,
+        hotel: selectedSubPackage.hotel,
+        activities: [...selectedSubPackage.activities],
+        inclusions: [...selectedSubPackage.inclusions],
+      },
     })
   }
+
+  const currentStep: StepId = selectedSubPackage
+    ? 'review'
+    : selectedTheme
+      ? 'sub-package'
+      : furthestStep === 'package'
+        ? 'package'
+        : 'theme'
 
   return (
     <main className="itineraries-page">
@@ -300,176 +419,402 @@ export function ItinerariesPage() {
           <span className="itin-hero__grain" />
         </div>
 
-        <motion.div
-          className="itin-hero__copy"
-          initial={prefersReducedMotion ? undefined : { opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <span className="itin-eyebrow itin-eyebrow--light">Signature Itineraries</span>
+        <div className="itin-hero__copy">
+          <span className="itin-eyebrow itin-eyebrow--light">Designed Trips</span>
           <h1>
-            Three Ways to
-            <em>Travel the Island.</em>
+            Four Choices, and
+            <em>the Journey Is Yours.</em>
           </h1>
           <p>
-            Each is a considered structure rather than a fixed schedule: a proven route, a sensible
-            pace, and the room to be rewritten entirely around you. Read them as a starting point.
+            Begin with a structure, give it a subject, then decide how deeply you go in. The hotel
+            and the days are set for you — so there is nothing left to arrange.
           </p>
           <a className="itin-hero__cta" href="#itin-collection">
-            View the Collection
+            Begin With a Package
             <span aria-hidden="true">→</span>
           </a>
-        </motion.div>
+        </div>
       </section>
 
-      <section className="itin-collection" id="itin-collection" aria-label="Signature itineraries">
-        <header className="itin-section-heading">
-          <span className="itin-eyebrow">The Collection</span>
-          <h2>Chosen rhythms, not fixed schedules.</h2>
-          <p>
-            Ten days, sixteen, or twenty-one. The difference is not how much is seen, but how much
-            time each place is given.
-          </p>
-        </header>
-
-        {/* Expanding gallery — hover to preview, click a package to open its details below. */}
-        <div className="itin-gallery" role="tablist" aria-label="Package selection">
-          {items.map((itinerary, index) => {
-            const isActive = index === activeIndex
+      {/* The four-step progress rail, shown throughout the flow. */}
+      <nav className="itin-steps" aria-label="Designed trip steps">
+        <ol>
+          {STEPS.map((step, index) => {
+            const isDone = STEPS.findIndex((entry) => entry.id === currentStep) > index
+            const isCurrent = step.id === currentStep
             return (
+              <li
+                key={step.id}
+                className={`itin-step${isCurrent ? ' is-current' : ''}${isDone ? ' is-done' : ''}`}
+                aria-current={isCurrent ? 'step' : undefined}
+              >
+                <span className="itin-step__index">{isDone ? '✓' : index + 1}</span>
+                <span className="itin-step__text">
+                  <strong>{step.label}</strong>
+                  <small>{step.hint}</small>
+                </span>
+              </li>
+            )
+          })}
+        </ol>
+      </nav>
+
+      {/* Step 1 — choose a package. */}
+      <section className="itin-collection" id="itin-collection" aria-label="Choose a package">
+        <div className="itin-gallery4">
+          <header className="itin-gallery4__head">
+            <div className="itin-gallery4__intro">
+              <span className="itin-eyebrow">Step One · The Package</span>
+              <h2>Chosen rhythms, not fixed schedules.</h2>
+              <p>
+                Ten days, sixteen, or twenty-one. The difference is not how much is seen, but how
+                much time each place is given.
+              </p>
+            </div>
+            <div className="itin-gallery4__nav">
+              <button
+                type="button"
+                aria-label="Previous package"
+                onClick={() => scrollToIndex(Math.max(0, current - 1))}
+                disabled={!canPrev}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                aria-label="Next package"
+                onClick={() => scrollToIndex(Math.min(visible.length - 1, current + 1))}
+                disabled={!canNext}
+              >
+                →
+              </button>
+            </div>
+          </header>
+
+          <div className="itin-gallery4__track" ref={trackRef} onScroll={updateNav}>
+            {visible.map((itinerary, index) => {
+              const isChosen = reachedStep('theme') && index === activeIndex
+              return (
+                <article
+                  key={itinerary.name}
+                  className={`itin-card4${isChosen ? ' is-active' : ''}`}
+                >
+                  <button
+                    type="button"
+                    className="itin-card4__inner"
+                    aria-pressed={isChosen}
+                    onClick={() => selectPackage(index)}
+                  >
+                    <span className="itin-card4__figure">
+                      <img
+                        className="itin-card4__img"
+                        src={itinerary.image}
+                        alt={itinerary.imageAlt}
+                        loading="lazy"
+                      />
+                      <span className="itin-card4__overlay" aria-hidden="true" />
+                      <span className="itin-card4__body">
+                        <span className="itin-card4__nights">
+                          {nightsLabel(itinerary.duration)}
+                        </span>
+                        <span className="itin-card4__title">{itinerary.name}</span>
+                        <span className="itin-card4__desc">
+                          {shortDescription(itinerary.character)}
+                        </span>
+                        <span className="itin-card4__more">
+                          {isChosen ? 'Selected ✓' : 'Choose this package'}{' '}
+                          <span aria-hidden="true">→</span>
+                        </span>
+                      </span>
+                    </span>
+                  </button>
+                </article>
+              )
+            })}
+          </div>
+
+          <div className="itin-gallery4__dots">
+            {visible.map((itinerary, index) => (
               <button
                 key={itinerary.name}
                 type="button"
-                role="tab"
-                aria-selected={isActive}
-                className={`itin-gallery-card${isActive ? ' is-active' : ''}`}
-                onClick={() => setSelectedIndex(index)}
-              >
-                <img
-                  className="itin-gallery-card__img"
-                  src={itinerary.image}
-                  alt={itinerary.imageAlt}
-                  loading="lazy"
-                />
-                <span className="itin-gallery-card__veil" aria-hidden="true" />
-                <span className="itin-gallery-card__content">
-                  <span className="itin-gallery-card__nights">{nightsLabel(itinerary.duration)}</span>
-                  <span className="itin-gallery-card__name">{itinerary.name}</span>
-                  <span className="itin-gallery-card__desc">{shortDescription(itinerary.character)}</span>
-                </span>
-              </button>
-            )
-          })}
+                className={`${current === index ? 'is-active' : ''}`}
+                aria-label={`Go to ${itinerary.name}`}
+                onClick={() => scrollToIndex(index)}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Dynamic details for the selected package. */}
-        {selected ? (
-          <motion.article
-            key={selected.name}
-            className="itin-detail"
-            aria-live="polite"
-            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="itin-detail__head">
-              <span className="itin-detail__numeral" aria-hidden="true">
-                {selected.numeral}
+      </section>
+
+      {/* Step 2 — choose a theme. */}
+      {reachedStep('theme') ? (
+        <section className="itin-themes" ref={themeRef} aria-label="Choose a theme">
+          <header className="itin-section-head">
+            <span className="itin-eyebrow">Step Two · The Theme</span>
+            <h2>What is this journey actually about?</h2>
+            <p>
+              Seven subjects, each with its own specialists, properties and hours of the day. Choose
+              one — it decides everything that follows.
+            </p>
+          </header>
+
+          <div className="itin-theme-grid">
+            {themes.map((theme) => {
+              const isChosen = theme.id === selectedThemeId
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  className={`itin-theme-card${isChosen ? ' is-chosen' : ''}`}
+                  aria-pressed={isChosen}
+                  onClick={() => selectTheme(theme)}
+                >
+                  <span className="itin-theme-card__figure">
+                    <img src={theme.image} alt={theme.imageAlt} loading="lazy" />
+                    <span className="itin-theme-card__overlay" aria-hidden="true" />
+                  </span>
+                  <span className="itin-theme-card__body">
+                    <span className="itin-theme-card__traveller">{theme.traveller}</span>
+                    <span className="itin-theme-card__title">{theme.title}</span>
+                    <span className="itin-theme-card__desc">{theme.description}</span>
+                    <span className="itin-theme-card__mark">
+                      {isChosen ? 'Chosen ✓' : 'Choose this theme'}
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Step 3 — choose the theme's sub-package. */}
+      {selectedTheme ? (
+        <section className="itin-subpackages" ref={subPackageRef} aria-label="Choose a sub-package">
+          <header className="itin-section-head">
+            <span className="itin-eyebrow">Step Three · The Sub-Package</span>
+            <h2>How deeply into {selectedTheme.title.toLowerCase()}?</h2>
+            <p>
+              Two days at the edge of it, or four days properly inside it. Each comes with its own
+              property and its own set hours.
+            </p>
+          </header>
+
+          <div className="itin-subpackage-grid">
+            {selectedTheme.subPackages.map((subPackage) => {
+              const isChosen = subPackage.id === selectedSubPackageId
+              return (
+                <button
+                  key={subPackage.id}
+                  type="button"
+                  className={`itin-subpackage${isChosen ? ' is-chosen' : ''}`}
+                  aria-pressed={isChosen}
+                  onClick={() => selectSubPackage(subPackage)}
+                >
+                  <span className="itin-subpackage__head">
+                    <span className="itin-subpackage__name">{subPackage.name}</span>
+                    <span className="itin-subpackage__meta">
+                      {subPackage.days} Days · {subPackage.coverage === 'full' ? 'Full' : 'Half'}
+                    </span>
+                  </span>
+                  <span className="itin-subpackage__summary">{subPackage.summary}</span>
+                  <span className="itin-subpackage__hotel">
+                    <small>Hotel</small>
+                    {subPackage.hotel}
+                  </span>
+                  <span className="itin-subpackage__foot">
+                    <span className="itin-subpackage__price">
+                      {formatUsd(subPackage.priceAdd)}
+                      <small>per person</small>
+                    </span>
+                    <span className="itin-subpackage__mark">
+                      {isChosen ? 'Chosen ✓' : 'Choose'}
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Step 4 — the locked inclusions and the add to cart. */}
+      {selected && selectedTheme && selectedSubPackage ? (
+        <section className="itin-review" ref={reviewRef} aria-label="Locked inclusions">
+          <header className="itin-section-head">
+            <span className="itin-eyebrow">Step Four · Inclusions</span>
+            <h2>Set, and not for editing.</h2>
+            <p>
+              The hotel and the activities below come with this sub-package. Everything else about
+              the journey stays open to conversation.
+            </p>
+          </header>
+
+          <article className="itin-review__card">
+            <ol className="itin-review__chain">
+              <li>
+                <span>Package</span>
+                <strong>
+                  {selected.name} · {selected.duration}
+                </strong>
+              </li>
+              <li>
+                <span>Theme</span>
+                <strong>{selectedTheme.title}</strong>
+              </li>
+              <li>
+                <span>Sub-Package</span>
+                <strong>
+                  {selectedSubPackage.name} · {selectedSubPackage.days} Days
+                </strong>
+              </li>
+            </ol>
+
+            {(() => {
+              // The sub-package fixes only part of the package. The balance
+              // stays open, which is the point of the flow — so say so plainly.
+              const totalDays = daysFromDuration(selected.duration)
+              const setDays = selectedSubPackage.days
+              const openDays = Math.max(0, totalDays - setDays)
+              if (totalDays === 0) return null
+
+              return (
+                <div className="itin-review__days">
+                  <div
+                    className="itin-review__days-bar"
+                    role="img"
+                    aria-label={`${setDays} of ${totalDays} days set, ${openDays} still open`}
+                  >
+                    <span
+                      className="itin-review__days-set"
+                      style={{ width: `${(setDays / totalDays) * 100}%` }}
+                    />
+                  </div>
+                  <p className="itin-review__days-copy">
+                    <strong>
+                      {setDays} of {totalDays} days set.
+                    </strong>{' '}
+                    {openDays > 0 ? (
+                      <>
+                        The remaining {openDays} {openDays === 1 ? 'day stays' : 'days stay'} open —
+                        shape them in My Journey, or leave them to your concierge.
+                      </>
+                    ) : (
+                      <>Every day of this package is accounted for.</>
+                    )}
+                  </p>
+                </div>
+              )
+            })()}
+
+            <div className="itin-review__locked">
+              <span className="itin-review__lock-label">
+                Inclusions locked <span aria-hidden="true">🔒</span>
               </span>
-              <div>
-                <h3>{selected.name}</h3>
-                <p className="itin-detail__meta">
-                  {selected.duration} · {nightsLabel(selected.duration)} · {selected.reach}
-                </p>
-              </div>
+
+              {(() => {
+                const gallery = galleryForTheme(selectedTheme.title)
+
+                return (
+                  <div className="itin-review__grid">
+                    <div className="itin-block">
+                      <h4>The Hotel</h4>
+                      <p>{selectedSubPackage.hotel}</p>
+                      <figure className="itin-review__shot">
+                        <img src={gallery.hotel.src} alt={gallery.hotel.alt} loading="lazy" />
+                      </figure>
+                    </div>
+
+                    <div className="itin-block">
+                      <h4>What You Will Do</h4>
+                      <ul className="itin-inclusions">
+                        {selectedSubPackage.activities.map((activity) => (
+                          <li key={activity}>{activity}</li>
+                        ))}
+                      </ul>
+                      <div className="itin-review__shots">
+                        {gallery.doing.map((shot, index) => (
+                          <figure
+                            key={`${shot.alt}-${index}`}
+                            className="itin-review__shot itin-review__shot--small"
+                          >
+                            <img src={shot.src} alt={shot.alt} loading="lazy" />
+                          </figure>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="itin-block">
+                      <h4>What Is Included</h4>
+                      <ul className="itin-inclusions">
+                        {selectedSubPackage.inclusions.map((inclusion) => (
+                          <li key={inclusion}>{inclusion}</li>
+                        ))}
+                      </ul>
+                      <div className="itin-review__shots">
+                        {gallery.included.map((shot, index) => (
+                          <figure
+                            key={`${shot.alt}-${index}`}
+                            className="itin-review__shot itin-review__shot--small"
+                          >
+                            <img src={shot.src} alt={shot.alt} loading="lazy" />
+                          </figure>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })()}
+
+              <p className="itin-review__shot-note">
+                Photographs are indicative of the theme, not of the specific property.
+              </p>
             </div>
 
-            <div className="itin-detail__grid">
-              <div className="itin-block">
-                <h4>The Character</h4>
-                <p>{selected.character}</p>
-              </div>
-
-              <div className="itin-block">
-                <h4>The Route</h4>
-                <ol className="itin-route">
-                  {selected.route.map((stop) => (
-                    <li key={stop}>
-                      <span className="itin-route__dot" aria-hidden="true" />
-                      <span className="itin-route__label">{stop}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div className="itin-block">
-                <h4>Signature Inclusions</h4>
-                <ul className="itin-inclusions">
-                  {selected.inclusions.map((inclusion) => (
-                    <li key={inclusion}>{inclusion}</li>
-                  ))}
-                </ul>
-              </div>
+            <div className="itin-review__pricing">
+              <dl>
+                <div>
+                  <dt>{selected.name}</dt>
+                  <dd>{formatUsd(packagePrice)}</dd>
+                </div>
+                <div>
+                  <dt>
+                    {selectedTheme.title} · {selectedSubPackage.name}
+                  </dt>
+                  <dd>+{formatUsd(selectedSubPackage.priceAdd)}</dd>
+                </div>
+                <div className="itin-review__total">
+                  <dt>Indicative total</dt>
+                  <dd>
+                    {formatUsd(totalPrice)}
+                    <small>per person</small>
+                  </dd>
+                </div>
+              </dl>
+              <p className="itin-review__note">
+                Indicative pricing — your concierge confirms the final figure before anything is
+                booked.
+              </p>
             </div>
 
             <div className="itin-package__actions">
-              {(() => {
-                const added = isIncluded(toJourneyId('package', selected.name))
-                return (
-                  <button
-                    type="button"
-                    className={`itin-button${added ? ' itin-button--added' : ''}`}
-                    aria-pressed={added}
-                    onClick={() => togglePackage(selected)}
-                  >
-                    {added ? 'Added to Journey ✓' : 'Add to Journey'}
-                  </button>
-                )
-              })()}
+              <button
+                type="button"
+                className={`itin-button${added ? ' itin-button--added' : ''}`}
+                aria-pressed={added}
+                onClick={toggleDesignedTrip}
+              >
+                {added ? 'Added to Cart ✓' : 'Add to Cart'}
+              </button>
               <a className="itin-button itin-button--ghost" href="/my-journey">
                 View My Journey
               </a>
             </div>
-          </motion.article>
-        ) : null}
-      </section>
-
-      <section className="itin-compare" aria-labelledby="itin-compare-heading">
-        <header className="itin-section-heading itin-section-heading--centred">
-          <span className="itin-eyebrow">At a Glance</span>
-          <h2 id="itin-compare-heading">Which rhythm suits you?</h2>
-        </header>
-
-        <div className="itin-compare__scroll">
-          <table className="itin-compare__table">
-            <caption className="itin-visually-hidden">
-              Comparison of the Discovery, Deep Dive, and Dynasty itineraries
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">
-                  <span className="itin-visually-hidden">Detail</span>
-                </th>
-                {items.map((itinerary) => (
-                  <th key={itinerary.name} scope="col">
-                    {itinerary.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {comparisonRows.map((row) => (
-                <tr key={row.key}>
-                  <th scope="row">{row.label}</th>
-                  {items.map((itinerary) => (
-                    <td key={itinerary.name}>{itinerary[row.key]}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+          </article>
+        </section>
+      ) : null}
 
       <section className="itin-closing">
         <span className="itin-eyebrow itin-eyebrow--light">A Private Commission</span>
@@ -478,16 +823,16 @@ export function ItinerariesPage() {
           <em>Yours will be.</em>
         </h2>
         <p>
-          These three structures exist so there is something to react to. Lengthen a coastline,
-          remove a city, add a week in the hills — every journey we arrange is written for one party
-          and travelled by no one else.
+          These structures exist so there is something to react to. Lengthen a coastline, remove a
+          city, add a week in the hills — every journey we arrange is written for one party and
+          travelled by no one else.
         </p>
         <div className="itin-closing__actions">
           <a className="itin-button itin-button--light" href="/contact">
             Begin a Conversation
           </a>
           <a className="itin-button itin-button--ghost-light" href="/expectations">
-            Shape Your Own Journey
+            Design Your Own Trip
           </a>
         </div>
       </section>

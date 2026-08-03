@@ -7,7 +7,7 @@ import type { IllustrativeItinerary } from '../../data/journey/types'
 import { ILLUSTRATIVE_DISCLAIMER } from '../../data/journey/mockJourneyTypes'
 import { journeyRegions } from '../../data/journeyRegions'
 import { getSavedDestinationIds, getSavedRegionIds } from '../../journey/contextualRecommendations'
-import type { JourneyItem } from '../../journey/JourneyContext'
+import type { DesignedTripSelection, JourneyItem } from '../../journey/JourneyContext'
 import { checkJourneyDistances } from '../../journey/journeyDistanceCheck'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
@@ -17,13 +17,17 @@ import { buildJourneyGlanceSummary } from '../../journey/savedJourneyDisplay'
 import { orderDestinationIdsEditorially } from '../../journey/savedPlaceResolution'
 import {
   companionOptions,
+  nightsBetween,
   readStoredCompanion,
   readStoredDates,
+  readStoredSecurity,
   readStoredTransport,
   transportOptions,
   writeStoredCompanion,
   writeStoredDates,
+  writeStoredSecurity,
   writeStoredTransport,
+  SECURITY_DETAIL_USD_PER_DAY,
   type CompanionId,
   type TravelDates,
   type TransportId,
@@ -92,6 +96,55 @@ function formatUsdDate(value: string) {
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+/** Breaks a Designed Trips selection down into theme, sub-package and what it locks in. */
+function DesignedTripSummary({ trip }: { trip: DesignedTripSelection }) {
+  return (
+    <div className="myj-designed-trip">
+      <ul className="myj-designed-trip__chain">
+        <li>
+          <span>Package</span>
+          <strong>
+            {trip.packageName} · {trip.packageDuration}
+          </strong>
+        </li>
+        <li>
+          <span>Theme</span>
+          <strong>{trip.themeTitle}</strong>
+        </li>
+        <li>
+          <span>Sub-package</span>
+          <strong>
+            {trip.subPackageName} · {trip.subPackageDays} Days ({trip.subPackageCoverage})
+          </strong>
+        </li>
+      </ul>
+
+      <p className="myj-designed-trip__locked">
+        Inclusions locked <span aria-hidden="true">🔒</span>
+      </p>
+
+      {trip.hotel ? (
+        <p className="myj-designed-trip__hotel">
+          <span>Hotel</span> {trip.hotel}
+        </p>
+      ) : null}
+
+      {trip.activities.length > 0 ? (
+        <ul className="myj-designed-trip__list">
+          {trip.activities.map((activity) => (
+            <li key={activity}>{activity}</li>
+          ))}
+        </ul>
+      ) : null}
+
+      <p className="myj-designed-trip__breakdown">
+        {formatUsd(trip.packagePrice)} package + {formatUsd(trip.subPackagePriceAdd)}{' '}
+        {trip.subPackageName}
+      </p>
+    </div>
+  )
+}
+
 function isPackagePlace(item: JourneyItem) {
   return (
     item.kind === 'destination' ||
@@ -110,6 +163,7 @@ export function MyJourneyPage() {
   const [companion, setCompanion] = useState<CompanionId | null>(readStoredCompanion)
   const [transport, setTransport] = useState<TransportId | null>(readStoredTransport)
   const [travelDates, setTravelDates] = useState<TravelDates>(readStoredDates)
+  const [wantsSecurity, setWantsSecurity] = useState<boolean>(readStoredSecurity)
   const [dismissedDistancePair, setDismissedDistancePair] = useState<string | null>(null)
   const stepsId = useId()
 
@@ -124,6 +178,15 @@ export function MyJourneyPage() {
   useEffect(() => {
     writeStoredDates(travelDates)
   }, [travelDates])
+
+  useEffect(() => {
+    writeStoredSecurity(wantsSecurity)
+  }, [wantsSecurity])
+
+  // Security is charged per day of the trip; a single day when no range is set.
+  const journeyNights = nightsBetween(travelDates.startDate, travelDates.endDate)
+  const securityDays = Math.max(1, journeyNights)
+  const securityCost = wantsSecurity ? securityDays * SECURITY_DETAIL_USD_PER_DAY : 0
 
   const themes = useMemo(() => items.filter(isPackageTheme), [items])
   const destinations = useMemo(() => items.filter((item) => item.kind === 'destination'), [items])
@@ -392,6 +455,9 @@ export function MyJourneyPage() {
                       <div className="myj-package-main">
                         <p className="myj-package-name">{pkg.label}</p>
                         {pkg.detail ? <p className="myj-package-detail">{pkg.detail}</p> : null}
+                        {pkg.designedTrip ? (
+                          <DesignedTripSummary trip={pkg.designedTrip} />
+                        ) : null}
                       </div>
                       <div className="myj-package-side">
                         {typeof pkg.pricePerPerson === 'number' ? (
@@ -496,16 +562,31 @@ export function MyJourneyPage() {
             <section className="myj-preference-section myj-dates" aria-labelledby="myj-dates-head">
               <div className="myj-preference-head">
                 <h3 id="myj-dates-head">When Will You Travel?</h3>
-                <p>Tell us your preferred start and party size so your concierge can hold the right dates.</p>
+                <p>
+                  Tell us your preferred dates and party size so your concierge can hold the right
+                  dates.
+                </p>
               </div>
               <div className="myj-dates-fields">
                 <label>
-                  <span>Preferred start date</span>
+                  <span>Start date</span>
                   <input
                     type="date"
                     value={travelDates.startDate}
                     onChange={(event) =>
                       setTravelDates((current) => ({ ...current, startDate: event.target.value }))
+                    }
+                  />
+                </label>
+                <label>
+                  <span>End date</span>
+                  <input
+                    type="date"
+                    // Cannot end before it begins.
+                    min={travelDates.startDate || undefined}
+                    value={travelDates.endDate}
+                    onChange={(event) =>
+                      setTravelDates((current) => ({ ...current, endDate: event.target.value }))
                     }
                   />
                 </label>
@@ -525,6 +606,47 @@ export function MyJourneyPage() {
                   />
                 </label>
               </div>
+              {journeyNights > 0 ? (
+                <p className="myj-dates-duration">
+                  {journeyNights} {journeyNights === 1 ? 'night' : 'nights'} on the island.
+                </p>
+              ) : null}
+            </section>
+
+            <section
+              className={`myj-preference-section myj-security${wantsSecurity ? ' is-selected' : ''}`}
+              aria-labelledby="myj-security-head"
+            >
+              <div className="myj-preference-head">
+                <h3 id="myj-security-head">Personal Security Detail</h3>
+                <p>
+                  Discreet close protection for the length of your journey, arranged through vetted
+                  personnel. Added to your journey at a separate cost.
+                </p>
+              </div>
+
+              <label className="myj-security-option">
+                <input
+                  type="checkbox"
+                  checked={wantsSecurity}
+                  onChange={(event) => setWantsSecurity(event.target.checked)}
+                />
+                <span className="myj-security-copy">
+                  <span className="myj-security-title">Add a personal security detail</span>
+                  <span className="myj-security-price">
+                    {formatUsd(SECURITY_DETAIL_USD_PER_DAY)} per day
+                    {wantsSecurity ? ` · ${securityDays} ${securityDays === 1 ? 'day' : 'days'}` : ''}
+                  </span>
+                </span>
+                {wantsSecurity ? (
+                  <span className="myj-security-total">{formatUsd(securityCost)}</span>
+                ) : null}
+              </label>
+
+              <p className="myj-security-note">
+                Indicative pricing. Final cost is confirmed by your concierge once dates and party
+                size are fixed.
+              </p>
             </section>
 
             <HealthInsuranceCard />
@@ -631,6 +753,16 @@ export function MyJourneyPage() {
                       <dd>{travelDates.startDate ? formatUsdDate(travelDates.startDate) : 'Not set'}</dd>
                     </div>
                     <div>
+                      <dt>End Date</dt>
+                      <dd>{travelDates.endDate ? formatUsdDate(travelDates.endDate) : 'Not set'}</dd>
+                    </div>
+                    {journeyNights > 0 ? (
+                      <div>
+                        <dt>Nights</dt>
+                        <dd>{journeyNights}</dd>
+                      </div>
+                    ) : null}
+                    <div>
                       <dt>Travellers</dt>
                       <dd>{travelDates.travellers}</dd>
                     </div>
@@ -657,6 +789,10 @@ export function MyJourneyPage() {
                     <div>
                       <dt>Health Insurance</dt>
                       <dd>Included ✓</dd>
+                    </div>
+                    <div>
+                      <dt>Security Detail</dt>
+                      <dd>{wantsSecurity ? `${formatUsd(securityCost)} added` : 'Not added'}</dd>
                     </div>
                     {packages.length > 0 ? (
                       <div>

@@ -9,6 +9,14 @@ import oilLamps from '../assets/experiences/oil-lamps.jpg'
 import poolVilla from '../assets/experiences/pool-villa.jpg'
 import sigiriyaMain from '../assets/images/Sigiriya Main.jpg'
 import hillCountryNuwaraEliya from '../assets/images/Hill Country Nuwaraeliya.jpg'
+import sriPada from '../assets/images/Sripadaya .jpeg'
+import sriPadaSky from '../assets/images/sripadaya sky.jpeg'
+import gregoryLake from '../assets/images/geogary lake nuwra eliya .jpg'
+import theruFestival from '../assets/images/theru festival.jpg'
+import ahangama from '../assets/images/Ahangama.jpeg'
+import galleBeach from '../assets/images/Galle beach.jpeg'
+import gartmoreFalls from '../assets/images/Gartmore waterfall.jpg'
+import kithulgala from '../assets/images/Kithulgala.jpeg'
 import { getDestinationRecommendationMetadata } from './journeyConsultation'
 import { getExperienceIdsForDestination } from './experiences'
 import { MapMode, type MapMode as MapModeValue } from './mapModes'
@@ -172,7 +180,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'mawella',
         title: 'Mawella',
         coordinates: [80.745, 5.9764],
-        coverImage: galleFort,
+        coverImage: ahangama,
         description: 'A low-key sweep of sand for travellers who prefer privacy to spectacle.',
         bestTimeToVisit: 'December - April',
         journeyMood: ['Secluded', 'Romantic', 'Slow'],
@@ -183,7 +191,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'dickwella',
         title: 'Dickwella',
         coordinates: [80.6952, 5.9661],
-        coverImage: mirissaBoats,
+        coverImage: galleBeach,
         description: 'A southern coastal town used as a quiet anchor for nearby bays, temples and villas.',
         bestTimeToVisit: 'December - April',
         journeyMood: ['Coastal', 'Local', 'Relaxed'],
@@ -230,7 +238,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'nuwara-eliya',
         title: 'Nuwara Eliya',
         coordinates: [80.7829, 6.9497],
-        coverImage: blueWhaleSunset,
+        coverImage: gregoryLake,
         description: 'Cool air, old estates and a slower colonial-era rhythm among the tea fields.',
         bestTimeToVisit: 'January - April',
         journeyMood: ['Elegant', 'Reflective', 'Cool-climate'],
@@ -379,7 +387,7 @@ export const journeyRegions: JourneyRegion[] = [
         id: 'jaffna',
         title: 'Jaffna',
         coordinates: [80.0255, 9.6615],
-        coverImage: brassLamp,
+        coverImage: theruFestival,
         description: 'Northern light, temple life and a culture that feels distinct from the rest of the island.',
         bestTimeToVisit: 'January - September',
         journeyMood: ['Curious', 'Cultural', 'Reflective'],
@@ -778,7 +786,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
     id: 'romantic-sabaragamuwa-province',
     title: 'Sabaragamuwa Province',
     description: 'Sunrise pilgrim peaks, trekking valleys and soft adventure for nature-led couples.',
-    heroImage: oilLamps,
+    heroImage: sriPadaSky,
     center: [80.55, 6.63],
     zoom: 8.65,
     polygon: [
@@ -807,7 +815,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'adams-peak',
         title: 'Adam’s Peak',
         coordinates: [80.4994, 6.8096],
-        coverImage: oilLamps,
+        coverImage: sriPada,
         description:
           'A spiritually significant sunrise hike for couples drawn to shared effort and quiet meaning.',
         bestTimeToVisit: 'January - April',
@@ -819,12 +827,25 @@ const romanticJourneyRegions: JourneyRegion[] = [
         id: 'belihuloya',
         title: 'Belihuloya',
         coordinates: [80.7543, 6.7167],
-        coverImage: hillCountryNuwaraEliya,
+        coverImage: gartmoreFalls,
         description: 'A nature-led valley for trekking, canoeing, bird watching and quiet outdoor romance.',
         bestTimeToVisit: 'January - April',
         journeyMood: ['Nature', 'Soft adventure', 'Quiet'],
         nearbyExperiences: ['Trekking', 'Canoeing', 'Bird watching'],
         travelNotes: 'Best for couples who want active days and simple, restorative evenings.',
+      }),
+      createDestination({
+        id: 'kithulgala',
+        title: 'Kithulgala',
+        coordinates: [80.4147, 6.9897],
+        coverImage: kithulgala,
+        description:
+          'A rainforest river town on the Kelani, known for white-water rafting, canopy walks and cool, wet-zone mornings.',
+        bestTimeToVisit: 'December - April',
+        journeyMood: ['Adventure', 'Nature', 'Active'],
+        nearbyExperiences: ['White-water rafting', 'Rainforest walks', 'Bird watching'],
+        travelNotes:
+          'Rafting grades stay gentle outside the monsoon; arranged privately with a dedicated safety team.',
       }),
     ],
   },
@@ -832,7 +853,7 @@ const romanticJourneyRegions: JourneyRegion[] = [
     id: 'romantic-northern-province',
     title: 'Northern Province',
     description: 'Quiet lagoons, cultural heritage and untouched beaches for solitude-seeking couples.',
-    heroImage: brassLamp,
+    heroImage: theruFestival,
     center: [80.05, 9.55],
     zoom: 8.5,
     polygon: [
