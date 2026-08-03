@@ -3778,8 +3778,18 @@
     font-size: 44px;
   }
 
+  .figma-hero-actions {
+    gap: 10px;
+    margin-top: 24px;
+  }
+
   .figma-hero-actions a {
-    width: 100%;
+    width: 220px;
+    max-width: 80%;
+    min-height: 42px;
+    padding: 11px 16px;
+    font-size: 10px;
+    letter-spacing: 1.2px;
   }
 
   .figma-hero-caption {
