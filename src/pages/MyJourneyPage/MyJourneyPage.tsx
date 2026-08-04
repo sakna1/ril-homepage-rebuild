@@ -11,7 +11,6 @@ import type { DesignedTripSelection, JourneyItem } from '../../journey/JourneyCo
 import {
   designedTripDaysUsed,
   designedTripSegments,
-  designedTripTotal,
 } from '../../journey/journeyContextStore'
 import { checkJourneyDistances } from '../../journey/journeyDistanceCheck'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
@@ -133,44 +132,21 @@ function DesignedTripSummary({ trip }: { trip: DesignedTripSelection }) {
         </li>
       </ul>
 
-      <p className="myj-designed-trip__locked">
-        Inclusions locked <span aria-hidden="true">🔒</span>
-      </p>
-
-      {segments.map((segment) => (
-        <div key={`${segment.themeTitle}-${segment.subPackageName}`} className="myj-designed-trip__segment">
-          <p className="myj-designed-trip__segment-head">
-            <strong>{segment.themeTitle}</strong>
-            <span>
-              {segment.subPackageName} · {segment.subPackageDays} Days ({segment.subPackageCoverage})
-            </span>
-          </p>
-
-          {segment.hotel ? (
-            <p className="myj-designed-trip__hotel">
-              <span>Hotel</span> {segment.hotel}
-            </p>
-          ) : null}
-
-          {segment.activities.length > 0 ? (
-            <ul className="myj-designed-trip__list">
-              {segment.activities.map((activity) => (
-                <li key={activity}>{activity}</li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      ))}
-
-      <p className="myj-designed-trip__breakdown">
-        {formatUsd(trip.packagePrice)} package
+      {/* Sub-packages only — the hotel, activities and inclusions live on the
+          Itineraries review panel, so they are not repeated here. */}
+      <ul className="myj-designed-trip__subs">
         {segments.map((segment) => (
-          <span key={`${segment.themeTitle}-price`}>
-            {' '}
-            + {formatUsd(segment.subPackagePriceAdd)} {segment.subPackageName}
-          </span>
-        ))}{' '}
-        = <strong>{formatUsd(designedTripTotal(trip))}</strong> per person
+          <li key={`${segment.themeTitle}-${segment.subPackageName}`}>
+            <span className="myj-designed-trip__sub-theme">{segment.themeTitle}</span>
+            <span className="myj-designed-trip__sub-meta">
+              {segment.subPackageName} · {segment.subPackageDays} days
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <p className="myj-designed-trip__locked">
+        Hotels and inclusions locked <span aria-hidden="true">🔒</span>
       </p>
     </div>
   )

@@ -79,7 +79,7 @@ export function SiteFooter() {
       <div className="footer-bottom">
         <span>&copy; 2026 Royale Isles Lanka. All rights reserved.</span>
         <span className="footer-bottom-note">Crafted for those who travel thoughtfully.</span>
-        <span className="footer-version">v1.11</span>
+        <span className="footer-version">v1.12</span>
       </div>
     </footer>
   )

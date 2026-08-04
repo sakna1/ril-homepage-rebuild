@@ -3076,3 +3076,49 @@
   font-style: italic;
   line-height: 1.55;
 }
+
+/* Condensed sub-package list — package frame plus what was chosen inside it. */
+.myj-designed-trip__subs {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.myj-designed-trip__subs li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  background: var(--color-surface);
+}
+
+.myj-designed-trip__sub-theme {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.myj-designed-trip__sub-meta {
+  flex: 0 0 auto;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .myj-designed-trip__subs li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
