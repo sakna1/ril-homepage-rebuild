@@ -182,7 +182,7 @@ export function Homepage() {
           </p>
           <div className="figma-hero-actions">
             <a className="figma-hero-action-ghost" href="/itineraries">
-              Designed Trips
+              Signature Journeys
             </a>
             <a className="figma-hero-action-ghost" href="/expectations">
               Design Your Own Trip
