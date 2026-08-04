@@ -78,6 +78,45 @@ export function Homepage() {
     video.addEventListener('loadeddata', handleLoadedData)
     video.addEventListener('canplay', handleCanPlay)
 
+    // Browsers block audio autoplay until the first user gesture. Rather than
+    // making the visitor hunt for the sound button, the very first interaction
+    // anywhere on the page (tap, click, scroll, or key press) unmutes the hero
+    // video and gives it sound. This is the earliest point the browser allows.
+    let hasEnabledSound = false
+
+    const enableSoundOnFirstGesture = () => {
+      if (hasEnabledSound) return
+      hasEnabledSound = true
+
+      video.muted = false
+      video.volume = 1
+      setIsHeroMuted(false)
+      void video.play().catch(() => {})
+
+      removeGestureListeners()
+    }
+
+    const gestureEvents: Array<keyof DocumentEventMap> = [
+      'pointerdown',
+      'touchstart',
+      'click',
+      'keydown',
+      'scroll',
+      'wheel',
+    ]
+
+    const removeGestureListeners = () => {
+      gestureEvents.forEach((eventName) => {
+        document.removeEventListener(eventName, enableSoundOnFirstGesture)
+      })
+    }
+
+    gestureEvents.forEach((eventName) => {
+      document.addEventListener(eventName, enableSoundOnFirstGesture, {
+        passive: true,
+      })
+    })
+
     const handleVisibilityChange = () => {
       if (!document.hidden && video.paused) {
         void video.play().catch(() => {})
@@ -89,6 +128,7 @@ export function Homepage() {
     return () => {
       video.removeEventListener('loadeddata', handleLoadedData)
       video.removeEventListener('canplay', handleCanPlay)
+      removeGestureListeners()
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
