@@ -8,6 +8,11 @@ import { ILLUSTRATIVE_DISCLAIMER } from '../../data/journey/mockJourneyTypes'
 import { journeyRegions } from '../../data/journeyRegions'
 import { getSavedDestinationIds, getSavedRegionIds } from '../../journey/contextualRecommendations'
 import type { DesignedTripSelection, JourneyItem } from '../../journey/JourneyContext'
+import {
+  designedTripDaysUsed,
+  designedTripSegments,
+  designedTripTotal,
+} from '../../journey/journeyContextStore'
 import { checkJourneyDistances } from '../../journey/journeyDistanceCheck'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
@@ -96,8 +101,16 @@ function formatUsdDate(value: string) {
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-/** Breaks a Designed Trips selection down into theme, sub-package and what it locks in. */
+/**
+ * Breaks a Designed Trip down into its package frame and each theme committed
+ * inside it. The package is priced once, however many themes it holds.
+ */
 function DesignedTripSummary({ trip }: { trip: DesignedTripSelection }) {
+  const segments = designedTripSegments(trip)
+  const totalDays = parseInt(trip.packageDuration ?? '', 10)
+  const daysUsed = designedTripDaysUsed(trip)
+  const openDays = Number.isNaN(totalDays) ? 0 : Math.max(0, totalDays - daysUsed)
+
   return (
     <div className="myj-designed-trip">
       <ul className="myj-designed-trip__chain">
@@ -108,14 +121,15 @@ function DesignedTripSummary({ trip }: { trip: DesignedTripSelection }) {
           </strong>
         </li>
         <li>
-          <span>Theme</span>
-          <strong>{trip.themeTitle}</strong>
+          <span>Days set</span>
+          <strong>
+            {daysUsed}
+            {Number.isNaN(totalDays) ? '' : ` of ${totalDays}`}
+          </strong>
         </li>
         <li>
-          <span>Sub-package</span>
-          <strong>
-            {trip.subPackageName} · {trip.subPackageDays} Days ({trip.subPackageCoverage})
-          </strong>
+          <span>Still open</span>
+          <strong>{openDays} Days</strong>
         </li>
       </ul>
 
@@ -123,23 +137,40 @@ function DesignedTripSummary({ trip }: { trip: DesignedTripSelection }) {
         Inclusions locked <span aria-hidden="true">🔒</span>
       </p>
 
-      {trip.hotel ? (
-        <p className="myj-designed-trip__hotel">
-          <span>Hotel</span> {trip.hotel}
-        </p>
-      ) : null}
+      {segments.map((segment) => (
+        <div key={`${segment.themeTitle}-${segment.subPackageName}`} className="myj-designed-trip__segment">
+          <p className="myj-designed-trip__segment-head">
+            <strong>{segment.themeTitle}</strong>
+            <span>
+              {segment.subPackageName} · {segment.subPackageDays} Days ({segment.subPackageCoverage})
+            </span>
+          </p>
 
-      {trip.activities.length > 0 ? (
-        <ul className="myj-designed-trip__list">
-          {trip.activities.map((activity) => (
-            <li key={activity}>{activity}</li>
-          ))}
-        </ul>
-      ) : null}
+          {segment.hotel ? (
+            <p className="myj-designed-trip__hotel">
+              <span>Hotel</span> {segment.hotel}
+            </p>
+          ) : null}
+
+          {segment.activities.length > 0 ? (
+            <ul className="myj-designed-trip__list">
+              {segment.activities.map((activity) => (
+                <li key={activity}>{activity}</li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      ))}
 
       <p className="myj-designed-trip__breakdown">
-        {formatUsd(trip.packagePrice)} package + {formatUsd(trip.subPackagePriceAdd)}{' '}
-        {trip.subPackageName}
+        {formatUsd(trip.packagePrice)} package
+        {segments.map((segment) => (
+          <span key={`${segment.themeTitle}-price`}>
+            {' '}
+            + {formatUsd(segment.subPackagePriceAdd)} {segment.subPackageName}
+          </span>
+        ))}{' '}
+        = <strong>{formatUsd(designedTripTotal(trip))}</strong> per person
       </p>
     </div>
   )
@@ -199,6 +230,26 @@ export function MyJourneyPage() {
     [packages],
   )
   const placeGroups = useMemo(() => groupJourneyPlaces(items), [items])
+
+  /**
+   * A Designed Trip already carries its own hotels, activities and days, so it
+   * satisfies the "package" and "places" steps on its own — the traveller does
+   * not need to build the journey up from the map.
+   */
+  const designedTrip = useMemo(
+    () => packages.find((item) => item.designedTrip)?.designedTrip,
+    [packages],
+  )
+  const designedSegments = designedTrip ? designedTripSegments(designedTrip) : []
+  const hasDesignedTrip = designedSegments.length > 0
+  const designedDaysUsed = designedTrip ? designedTripDaysUsed(designedTrip) : 0
+  const designedPackageDays = designedTrip ? parseInt(designedTrip.packageDuration ?? '', 10) : NaN
+  const designedActivityCount = designedSegments.reduce(
+    (total, segment) => total + segment.activities.length,
+    0,
+  )
+  /** The journey is ready to start once a package or places are in place. */
+  const journeyReady = hasDesignedTrip || placeGroups.length > 0
   /** Cart shows package composition only — not auto-saved regions/moods/seasons. */
   const cartItems = useMemo(
     () => [...themes, ...destinations, ...experiences, ...accommodations],
@@ -420,14 +471,27 @@ export function MyJourneyPage() {
         <div className="journey-workspace__layout">
           <section className="journey-workspace__package" aria-labelledby="package-heading">
             <header>
-              <p>Theme = package</p>
-              <h2 id="package-heading">
-                {primaryTheme ? primaryTheme.label : 'No package theme yet'}
-              </h2>
-              <p className="journey-workspace__lede">
-                {glance.themeEditorialLine ||
-                  'Return to Expectations and open a theme package map to begin.'}
-              </p>
+              {hasDesignedTrip && designedTrip ? (
+                <>
+                  <p>Designed Trip</p>
+                  <h2 id="package-heading">{designedTrip.packageName}</h2>
+                  <p className="journey-workspace__lede">
+                    {designedSegments.map((segment) => segment.themeTitle).join(' · ')} — hotels and
+                    days are already set for you.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>Theme = package</p>
+                  <h2 id="package-heading">
+                    {primaryTheme ? primaryTheme.label : 'No package theme yet'}
+                  </h2>
+                  <p className="journey-workspace__lede">
+                    {glance.themeEditorialLine ||
+                      'Return to Expectations and open a theme package map to begin.'}
+                  </p>
+                </>
+              )}
             </header>
 
             {themes.length > 1 ? (
@@ -487,10 +551,32 @@ export function MyJourneyPage() {
             <div className="myj-places">
               <div className="myj-places-head">
                 <h3>Places In This Journey</h3>
-                <a href="/expectations">Add more places</a>
+                <a href="/expectations">
+                  {hasDesignedTrip ? 'Add optional places' : 'Add more places'}
+                </a>
               </div>
 
-              {placeGroups.length === 0 ? (
+              {placeGroups.length === 0 && hasDesignedTrip ? (
+                <div className="myj-places-covered">
+                  <p className="myj-places-covered__lead">
+                    Your package already covers where you stay.
+                  </p>
+                  <ul className="myj-places-covered__list">
+                    {designedSegments.map((segment) => (
+                      <li key={`${segment.themeTitle}-${segment.hotel}`}>
+                        <strong>{segment.hotel}</strong>
+                        <span>
+                          {segment.themeTitle} · {segment.subPackageDays} days
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="myj-places-covered__note">
+                    Nothing more is required. If you would like to add places for the open days, the
+                    map explorer is there for it.
+                  </p>
+                </div>
+              ) : placeGroups.length === 0 ? (
                 <div className="journey-workspace__callout">
                   <p>Your journey needs places.</p>
                   <span>
@@ -655,9 +741,9 @@ export function MyJourneyPage() {
               <h3>Next</h3>
               <div className="journey-workspace__actions">
                 <a
-                  className={`myj-start-journey${placeGroups.length === 0 ? ' is-disabled' : ''}`}
-                  href={placeGroups.length === 0 ? undefined : '/checkout'}
-                  aria-disabled={placeGroups.length === 0}
+                  className={`myj-start-journey${journeyReady ? '' : ' is-disabled'}`}
+                  href={journeyReady ? '/checkout' : undefined}
+                  aria-disabled={!journeyReady}
                 >
                   Start Journey
                 </a>
@@ -688,8 +774,10 @@ export function MyJourneyPage() {
                   Add to cart
                 </button>
               </div>
-              {placeGroups.length === 0 ? (
-                <p className="journey-workspace__hint">Add at least one place before starting your journey.</p>
+              {!journeyReady ? (
+                <p className="journey-workspace__hint">
+                  Choose a designed package, or add at least one place, before starting your journey.
+                </p>
               ) : null}
             </div>
           </section>
@@ -735,73 +823,138 @@ export function MyJourneyPage() {
               {mode === 'package' ? (
                 <>
                   <h3>Journey summary</h3>
-                  <dl>
-                    <div>
-                      <dt>Theme</dt>
-                      <dd>{primaryTheme?.label ?? 'Not set'}</dd>
-                    </div>
-                    <div>
-                      <dt>Stops</dt>
-                      <dd>{placeGroups.length}</dd>
-                    </div>
-                    <div>
-                      <dt>Activities</dt>
-                      <dd>{experiences.length}</dd>
-                    </div>
-                    <div>
-                      <dt>Start Date</dt>
-                      <dd>{travelDates.startDate ? formatUsdDate(travelDates.startDate) : 'Not set'}</dd>
-                    </div>
-                    <div>
-                      <dt>End Date</dt>
-                      <dd>{travelDates.endDate ? formatUsdDate(travelDates.endDate) : 'Not set'}</dd>
-                    </div>
-                    {journeyNights > 0 ? (
-                      <div>
-                        <dt>Nights</dt>
-                        <dd>{journeyNights}</dd>
-                      </div>
+                  {/* Headline: what has been chosen, and what it comes to. */}
+                  <div className="myj-sum-hero">
+                    <p className="myj-sum-hero__label">
+                      {hasDesignedTrip && designedTrip ? 'Designed Trip' : 'Your Journey'}
+                    </p>
+                    <p className="myj-sum-hero__name">
+                      {hasDesignedTrip && designedTrip
+                        ? designedTrip.packageName
+                        : (primaryTheme?.label ?? 'Not yet shaped')}
+                    </p>
+                    {packagesTotal + securityCost > 0 ? (
+                      <p className="myj-sum-hero__total">
+                        {formatUsd(packagesTotal + securityCost)}
+                        <small>per person</small>
+                      </p>
                     ) : null}
-                    <div>
-                      <dt>Travellers</dt>
-                      <dd>{travelDates.travellers}</dd>
-                    </div>
-                    {drivingRoute ? (
-                      <>
+                  </div>
+
+                  <div className="myj-sum-group">
+                    <p className="myj-sum-group__title">The Journey</p>
+                    <dl className="myj-sum-list">
+                      {hasDesignedTrip && designedTrip ? (
+                        <>
+                          <div>
+                            <dt>Themes</dt>
+                            <dd>{designedSegments.map((s) => s.themeTitle).join(', ')}</dd>
+                          </div>
+                          <div>
+                            <dt>Days set</dt>
+                            <dd>
+                              {designedDaysUsed}
+                              {Number.isNaN(designedPackageDays) ? '' : ` of ${designedPackageDays}`}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Hotels</dt>
+                            <dd>{designedSegments.length}</dd>
+                          </div>
+                        </>
+                      ) : (
                         <div>
-                          <dt>Driving Distance</dt>
-                          <dd>{drivingRoute.distanceKm} km</dd>
+                          <dt>Theme</dt>
+                          <dd>{primaryTheme?.label ?? 'Not set'}</dd>
                         </div>
-                        <div>
-                          <dt>Est. Driving Time</dt>
-                          <dd>{formatDrivingDuration(drivingRoute.durationMinutes)}</dd>
-                        </div>
-                      </>
-                    ) : null}
-                    <div>
-                      <dt>Travelling With</dt>
-                      <dd>{companionOptions.find((option) => option.id === companion)?.label ?? 'Not set'}</dd>
-                    </div>
-                    <div>
-                      <dt>Transport</dt>
-                      <dd>{transportOptions.find((option) => option.id === transport)?.label ?? 'Not set'}</dd>
-                    </div>
-                    <div>
-                      <dt>Health Insurance</dt>
-                      <dd>Included ✓</dd>
-                    </div>
-                    <div>
-                      <dt>Security Detail</dt>
-                      <dd>{wantsSecurity ? `${formatUsd(securityCost)} added` : 'Not added'}</dd>
-                    </div>
-                    {packages.length > 0 ? (
+                      )}
                       <div>
-                        <dt>Indicative Total</dt>
-                        <dd>{formatUsd(packagesTotal)} pp</dd>
+                        <dt>Stops</dt>
+                        <dd>{placeGroups.length + designedSegments.length}</dd>
                       </div>
-                    ) : null}
-                  </dl>
-                  <p>{ILLUSTRATIVE_DISCLAIMER}</p>
+                      <div>
+                        <dt>Activities</dt>
+                        <dd>{experiences.length + designedActivityCount}</dd>
+                      </div>
+                      {drivingRoute ? (
+                        <>
+                          <div>
+                            <dt>Driving</dt>
+                            <dd>{drivingRoute.distanceKm} km</dd>
+                          </div>
+                          <div>
+                            <dt>Est. time</dt>
+                            <dd>{formatDrivingDuration(drivingRoute.durationMinutes)}</dd>
+                          </div>
+                        </>
+                      ) : null}
+                    </dl>
+                  </div>
+
+                  <div className="myj-sum-group">
+                    <p className="myj-sum-group__title">The Dates</p>
+                    <dl className="myj-sum-list">
+                      <div>
+                        <dt>Start</dt>
+                        <dd>
+                          {travelDates.startDate ? formatUsdDate(travelDates.startDate) : 'Not set'}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>End</dt>
+                        <dd>
+                          {travelDates.endDate ? formatUsdDate(travelDates.endDate) : 'Not set'}
+                        </dd>
+                      </div>
+                      {journeyNights > 0 ? (
+                        <div>
+                          <dt>Nights</dt>
+                          <dd>{journeyNights}</dd>
+                        </div>
+                      ) : null}
+                      <div>
+                        <dt>Travellers</dt>
+                        <dd>{travelDates.travellers}</dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <div className="myj-sum-group">
+                    <p className="myj-sum-group__title">The Arrangements</p>
+                    <dl className="myj-sum-list">
+                      <div>
+                        <dt>Travelling with</dt>
+                        <dd>
+                          {companionOptions.find((option) => option.id === companion)?.label ??
+                            'Not set'}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Transport</dt>
+                        <dd>
+                          {transportOptions.find((option) => option.id === transport)?.label ??
+                            'Not set'}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Health insurance</dt>
+                        <dd className="is-included">Included</dd>
+                      </div>
+                      <div>
+                        <dt>Security detail</dt>
+                        <dd>{wantsSecurity ? `${formatUsd(securityCost)} added` : 'Not added'}</dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  {packagesTotal + securityCost > 0 ? (
+                    <div className="myj-sum-total">
+                      <span>Indicative total</span>
+                      <strong>{formatUsd(packagesTotal + securityCost)}</strong>
+                    </div>
+                  ) : null}
+
+                  <p className="myj-sum-note">{ILLUSTRATIVE_DISCLAIMER}</p>
                 </>
               ) : null}
 

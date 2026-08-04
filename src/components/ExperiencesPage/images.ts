@@ -22,6 +22,16 @@ import portraitMalini from '../../assets/about/portrait-malini.jpg'
 import queenVictoriaStatue from '../../assets/images/queen-victoria-statue-colombo.jpg'
 import sigiriyaMain from '../../assets/images/Sigiriya Main.jpg'
 import hillCountryNuwaraEliya from '../../assets/images/Hill Country Nuwaraeliya.jpg'
+// Web-sized copies of the client's own photography (see scripts/optimise-photos.mjs).
+import sigiriyaRock from '../../assets/photos/img-0911.jpg'
+import sigiriyaSunrise from '../../assets/photos/img-5565.jpg'
+import sigiriyaSummitView from '../../assets/photos/img-6533.jpg'
+import sigiriyaSummitRuins from '../../assets/photos/img-5544.jpg'
+import ancientStairway from '../../assets/photos/img-6516.jpg'
+import culturalTriangleTank from '../../assets/photos/img-6696.jpg'
+import galleDutchChurch from '../../assets/photos/img-8974.jpg'
+import southernFishingBoats from '../../assets/photos/img-8956.jpg'
+import artisanMasks from '../../assets/photos/img-2822.jpg'
 
 export const experienceImages = {
   arjun,
@@ -50,4 +60,14 @@ export const experienceImages = {
   brassLamp,
   portraitMalini,
   queenVictoriaStatue,
+  // Client photography
+  sigiriyaRock,
+  sigiriyaSunrise,
+  sigiriyaSummitView,
+  sigiriyaSummitRuins,
+  ancientStairway,
+  culturalTriangleTank,
+  galleDutchChurch,
+  southernFishingBoats,
+  artisanMasks,
 } as const
