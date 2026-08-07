@@ -533,49 +533,6 @@ export function MyJourneyPage() {
             ) : null}
 
 
-            <div className="journey-workspace__next">
-              <h3>Next</h3>
-              <div className="journey-workspace__actions">
-                <a
-                  className={`myj-start-journey${journeyReady ? '' : ' is-disabled'}`}
-                  href={journeyReady ? '/checkout' : undefined}
-                  aria-disabled={!journeyReady}
-                >
-                  Start Journey
-                </a>
-                <button
-                  className="journey-workspace__ghost"
-                  type="button"
-                  onClick={handleGenerateItinerary}
-                  disabled={placeGroups.length === 0}
-                >
-                  {itinerary ? 'View itinerary' : 'Generate itinerary'}
-                </button>
-                <button
-                  className="journey-workspace__ghost"
-                  type="button"
-                  onClick={() => setMode('edit')}
-                  disabled={!itinerary}
-                >
-                  Edit itinerary
-                </button>
-                <button
-                  className="journey-workspace__ghost"
-                  type="button"
-                  onClick={() => setMode('builder')}
-                >
-                  Custom builder
-                </button>
-                <button className="journey-workspace__ghost" type="button" onClick={openCart}>
-                  Add to cart
-                </button>
-              </div>
-              {!journeyReady ? (
-                <p className="journey-workspace__hint">
-                  Choose a designed package, or add at least one place, before starting your journey.
-                </p>
-              ) : null}
-            </div>
           </section>
 
           <aside className="journey-workspace__side">
@@ -828,6 +785,52 @@ export function MyJourneyPage() {
               </section>
 
               <HealthInsuranceCard />
+        </section>
+
+        <section className="journey-workspace__next-band" aria-label="Next steps">
+          <div className="journey-workspace__next">
+            <h3>Next</h3>
+            <div className="journey-workspace__actions">
+              <a
+                className={`myj-start-journey${journeyReady ? '' : ' is-disabled'}`}
+                href={journeyReady ? '/checkout' : undefined}
+                aria-disabled={!journeyReady}
+              >
+                Start Journey
+              </a>
+              <button
+                className="journey-workspace__ghost"
+                type="button"
+                onClick={handleGenerateItinerary}
+                disabled={placeGroups.length === 0}
+              >
+                {itinerary ? 'View itinerary' : 'Generate itinerary'}
+              </button>
+              <button
+                className="journey-workspace__ghost"
+                type="button"
+                onClick={() => setMode('edit')}
+                disabled={!itinerary}
+              >
+                Edit itinerary
+              </button>
+              <button
+                className="journey-workspace__ghost"
+                type="button"
+                onClick={() => setMode('builder')}
+              >
+                Custom builder
+              </button>
+              <button className="journey-workspace__ghost" type="button" onClick={openCart}>
+                Add to cart
+              </button>
+            </div>
+            {!journeyReady ? (
+              <p className="journey-workspace__hint">
+                Choose a designed package, or add at least one place, before starting your journey.
+              </p>
+            ) : null}
+          </div>
         </section>
 
         {otherItems.length > 0 ? (

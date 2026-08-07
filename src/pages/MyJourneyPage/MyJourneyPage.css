@@ -2738,17 +2738,16 @@
 
 /* ---------- Travel dates ---------- */
 
+/*
+ * Sized to the card, not the viewport: the dates card can be a third of a row
+ * on a wide screen, so a fixed three-column grid overflowed it. auto-fit lets
+ * the fields reflow on whatever width the card actually has.
+ */
 .myj-dates-fields {
   display: grid;
-  grid-template-columns: 1fr 1fr 140px;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 14px;
   margin-top: 18px;
-}
-
-@media (max-width: 720px) {
-  .myj-dates-fields {
-    grid-template-columns: 1fr;
-  }
 }
 
 .myj-dates-duration {
@@ -2764,6 +2763,9 @@
 .myj-dates-fields label {
   display: grid;
   gap: 8px;
+  /* Grid items default to min-content; without this the native date input's
+     intrinsic width pushes the track wider than the card. */
+  min-width: 0;
 }
 
 .myj-dates-fields span {
@@ -2775,6 +2777,8 @@
 }
 
 .myj-dates-fields input {
+  width: 100%;
+  min-width: 0;
   padding: 14px 16px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
@@ -3232,4 +3236,35 @@
   .journey-workspace__map-empty {
     min-height: clamp(460px, 58vh, 620px);
   }
+}
+
+/* ---------- Next steps (closes the page) ---------- */
+
+.journey-workspace__next-band {
+  margin-top: clamp(20px, 2.6vw, 32px);
+}
+
+.journey-workspace__next-band .journey-workspace__next {
+  padding: clamp(24px, 2.6vw, 34px);
+  border: 1px solid var(--color-accent-subtle);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(197, 160, 89, 0.1), transparent 46%),
+    var(--color-surface);
+}
+
+/* Secondary actions first, then Start Journey as the closing move. */
+.journey-workspace__next-band .journey-workspace__actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.journey-workspace__next-band .myj-start-journey {
+  order: 1;
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  padding-block: 18px;
+  font-size: 12px;
+  letter-spacing: 0.22em;
 }
