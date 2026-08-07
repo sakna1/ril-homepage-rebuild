@@ -7,13 +7,22 @@ type RoadTransportSectionProps = {
   onSelect: (id: TransportId) => void
 }
 
+const usd = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+})
+
 export function RoadTransportSection({ selected, onSelect }: RoadTransportSectionProps) {
   const prefersReducedMotion = useReducedMotion()
 
   return (
     <section className="myj-preference-section" aria-labelledby="transport-heading">
       <h3 id="transport-heading">Road Transportation</h3>
-      <p>Choose how you would like to travel between destinations.</p>
+      <p>
+        Choose how you would like to travel between destinations. The Private Luxury Car is included
+        as standard; anything beyond it is charged as an upgrade.
+      </p>
 
       <div className="myj-transport-grid" role="radiogroup" aria-labelledby="transport-heading">
         {transportOptions.map((option, index) => {
@@ -37,6 +46,15 @@ export function RoadTransportSection({ selected, onSelect }: RoadTransportSectio
                 <TravelIcon id={option.icon} />
               </span>
               <span className="myj-transport-label">{option.label}</span>
+
+              {/* The first vehicle comes with every package; the rest are upgrades. */}
+              <span
+                className={`myj-transport-price${option.priceAdd === 0 ? ' is-standard' : ''}`}
+              >
+                {option.priceAdd === 0
+                  ? 'Standard · included'
+                  : `+ ${usd.format(option.priceAdd)} per person`}
+              </span>
 
               <dl className="myj-transport-meta">
                 <div>

@@ -60,7 +60,7 @@ const themeImages: Record<string, { image: string; imageAlt: string }> = {
     image: experienceImages.artisanMasks,
     imageAlt: 'Hand-carved Sri Lankan masks in an artisan workshop',
   },
-  'Shared Heritage': {
+  'Shared History': {
     image: experienceImages.galleDutchChurch,
     imageAlt: 'The Dutch Reformed Church inside Galle Fort',
   },
@@ -159,7 +159,7 @@ const themeGalleries: Record<string, ThemeGallery> = {
       { src: experienceImages.spices, alt: 'A family kitchen meal' },
     ],
   },
-  'Shared Heritage': {
+  'Shared History': {
     hotel: { src: experienceImages.galleFort, alt: 'A residence within Galle Fort' },
     doing: [
       { src: experienceImages.hillCountry, alt: 'Highland tea country and railway' },
@@ -276,7 +276,7 @@ const themeReviews: Record<string, readonly ThemeReview[]> = {
       quote: 'The evening puja was handled with real respect. That mattered to us.',
     },
   ],
-  'Shared Heritage': [
+  'Shared History': [
     {
       name: 'G. Chandra',
       origin: 'Toronto',
@@ -642,11 +642,11 @@ export const fallbackThemes: readonly ItineraryTheme[] = [
   },
   {
     id: 'shared-heritage',
-    title: 'Shared Heritage',
+    title: 'Shared History',
     description:
       'Rolling tea estates, timeless hill stations, railway journeys, old gardens, and civic architecture.',
     traveller: 'For the Thoughtful Historian',
-    ...imageForTheme('Shared Heritage'),
+    ...imageForTheme('Shared History'),
     subPackages: [
       {
         id: 'shared-heritage-glimpse',

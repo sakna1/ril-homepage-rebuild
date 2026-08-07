@@ -37,8 +37,17 @@ export type TransportOption = {
   luggage: string
   comfort: string
   recommendedFor: string
+  /**
+   * USD per person added to the journey. The first option is the standard
+   * vehicle included in every package, so it carries no supplement.
+   */
+  priceAdd: number
 }
 
+/**
+ * Listed standard-first. The Private Luxury Car is included in every package;
+ * anything above it is an upgrade and carries a supplement per person.
+ */
 export const transportOptions: TransportOption[] = [
   {
     id: 'private-car',
@@ -48,6 +57,7 @@ export const transportOptions: TransportOption[] = [
     luggage: '2 – 3 bags',
     comfort: 'Premium',
     recommendedFor: 'Couples and solo travellers',
+    priceAdd: 0,
   },
   {
     id: 'luxury-van',
@@ -57,6 +67,7 @@ export const transportOptions: TransportOption[] = [
     luggage: '6 – 8 bags',
     comfort: 'Spacious',
     recommendedFor: 'Families and small groups',
+    priceAdd: 420,
   },
   {
     id: 'chauffeur',
@@ -66,17 +77,25 @@ export const transportOptions: TransportOption[] = [
     luggage: '3 – 4 bags',
     comfort: 'Personal',
     recommendedFor: 'Guests who want a dedicated private driver throughout',
+    priceAdd: 680,
   },
   {
     id: 'helicopter',
-    label: 'Helicopter',
+    label: 'Heli Transfers',
     icon: 'helicopter',
     capacity: '1 – 5 guests',
     luggage: '2 – 3 bags',
     comfort: 'Exceptional',
     recommendedFor: 'Guests crossing the island quickly, with scenic private transfers',
+    priceAdd: 2400,
   },
 ]
+
+/** The supplement for a chosen vehicle; zero when none is chosen. */
+export function transportPriceAdd(transportId: TransportId | null): number {
+  if (!transportId) return 0
+  return transportOptions.find((option) => option.id === transportId)?.priceAdd ?? 0
+}
 
 const COMPANION_STORAGE_KEY = 'royale-isles-travel-companion'
 const TRANSPORT_STORAGE_KEY = 'royale-isles-transport-preference'

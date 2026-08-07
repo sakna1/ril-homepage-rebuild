@@ -93,7 +93,7 @@ const experienceThemes = [
     image: experienceImages.queenVictoriaStatue,
     imageAlt: 'Marble statue of Queen Victoria, a British monument in Sri Lanka',
     href: '#shared-heritage-quietly-read',
-    encounter: 'Shared Heritage, Quietly Read',
+    encounter: 'Shared History, Quietly Read',
   },
 ] as const
 
@@ -172,7 +172,7 @@ export function ExpectationsPage() {
       const parentRegion = inferJourneyRegion({
         kind: 'destination',
         label: destination,
-        source: 'Shared Heritage recommendations',
+        source: 'Shared History recommendations',
       })
       includeItem({
         id: toJourneyId('destination', destination),

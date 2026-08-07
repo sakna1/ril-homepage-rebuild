@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useId, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { JourneyConstellationLayer } from '../../components/Map/JourneyConstellationLayer'
 import { JourneyRegionLayer } from '../../components/Map/JourneyRegionLayer'
 import { RouteStopMarker } from '../../components/Map/RouteStopMarker'
 import { TravelMap } from '../../components/Map/TravelMap'
 import type { IllustrativeItinerary } from '../../data/journey/types'
-import { ILLUSTRATIVE_DISCLAIMER } from '../../data/journey/mockJourneyTypes'
 import { journeyRegions } from '../../data/journeyRegions'
 import { getSavedDestinationIds, getSavedRegionIds } from '../../journey/contextualRecommendations'
 import type { DesignedTripSelection, JourneyItem } from '../../journey/JourneyContext'
@@ -16,17 +15,14 @@ import { checkJourneyDistances } from '../../journey/journeyDistanceCheck'
 import { groupJourneyPlaces } from '../../journey/journeyPlaceGroups'
 import { useJourney } from '../../journey/useJourney'
 import { useJourneyRoute } from '../../journey/useJourneyRoute'
-import { formatDrivingDuration } from '../../services/mapboxDirections'
 import { buildJourneyGlanceSummary } from '../../journey/savedJourneyDisplay'
 import { orderDestinationIdsEditorially } from '../../journey/savedPlaceResolution'
 import {
-  companionOptions,
   nightsBetween,
   readStoredCompanion,
   readStoredDates,
   readStoredSecurity,
   readStoredTransport,
-  transportOptions,
   writeStoredCompanion,
   writeStoredDates,
   writeStoredSecurity,
@@ -92,12 +88,6 @@ const usdFormatter = new Intl.NumberFormat('en-US', {
 
 function formatUsd(amount: number) {
   return usdFormatter.format(amount)
-}
-
-function formatUsdDate(value: string) {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 /**
@@ -172,7 +162,6 @@ export function MyJourneyPage() {
   const [travelDates, setTravelDates] = useState<TravelDates>(readStoredDates)
   const [wantsSecurity, setWantsSecurity] = useState<boolean>(readStoredSecurity)
   const [dismissedDistancePair, setDismissedDistancePair] = useState<string | null>(null)
-  const stepsId = useId()
 
   useEffect(() => {
     writeStoredCompanion(companion)
@@ -218,12 +207,6 @@ export function MyJourneyPage() {
   )
   const designedSegments = designedTrip ? designedTripSegments(designedTrip) : []
   const hasDesignedTrip = designedSegments.length > 0
-  const designedDaysUsed = designedTrip ? designedTripDaysUsed(designedTrip) : 0
-  const designedPackageDays = designedTrip ? parseInt(designedTrip.packageDuration ?? '', 10) : NaN
-  const designedActivityCount = designedSegments.reduce(
-    (total, segment) => total + segment.activities.length,
-    0,
-  )
   /** The journey is ready to start once a package or places are in place. */
   const journeyReady = hasDesignedTrip || placeGroups.length > 0
   /** Cart shows package composition only — not auto-saved regions/moods/seasons. */
@@ -271,32 +254,6 @@ export function MyJourneyPage() {
   const distanceAdvisory = useMemo(() => checkJourneyDistances(savedDestinationIds), [savedDestinationIds])
   const distancePairKey = distanceAdvisory ? `${distanceAdvisory.from}::${distanceAdvisory.to}` : null
   const showDistanceAdvisory = Boolean(distanceAdvisory) && distancePairKey !== dismissedDistancePair
-
-  const completedSteps = useMemo(() => {
-    const done = new Set<JourneyStep['id']>()
-    if (themes.length > 0) {
-      done.add('theme')
-    }
-    if (placeGroups.length > 0) {
-      done.add('places')
-    }
-    if (itinerary && itinerary.segments.length >= 2) {
-      done.add('itinerary')
-    }
-    if (placeGroups.length > 0) {
-      done.add('cart')
-    }
-    return done
-  }, [itinerary, placeGroups.length, themes.length])
-
-  const activeStep: JourneyStep['id'] =
-    mode === 'itinerary' || mode === 'edit' || mode === 'builder'
-      ? 'itinerary'
-      : placeGroups.length === 0
-        ? themes.length === 0
-          ? 'theme'
-          : 'places'
-        : 'places'
 
   useEffect(() => {
     let cancelled = false
@@ -400,49 +357,6 @@ export function MyJourneyPage() {
       </section>
 
       <div className="my-journey-unified-page__container">
-        <nav className="journey-workspace__stepper" aria-labelledby={stepsId}>
-          <p id={stepsId} className="journey-workspace__stepper-label">
-            Clear next steps
-          </p>
-          <ol>
-            {STEPS.map((step, index) => {
-              const isComplete = completedSteps.has(step.id)
-              const isActive = activeStep === step.id || (step.id === 'cart' && isCartOpen)
-              const stepHint =
-                step.id === 'places' && placeCount > 0
-                  ? `${placeCount} ${placeCount === 1 ? 'place' : 'places'} in this package`
-                  : step.id === 'places' && placeCount === 0
-                    ? 'No places chosen yet'
-                    : step.hint
-
-              return (
-                <li
-                  key={step.id}
-                  className={`${isComplete ? 'is-complete' : ''}${isActive ? ' is-active' : ''}`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (step.id === 'cart') {
-                        openCart()
-                        return
-                      }
-                      if (step.id === 'itinerary') {
-                        setMode('itinerary')
-                        return
-                      }
-                      setMode('package')
-                    }}
-                  >
-                    <span>Step {String(index + 1).padStart(2, '0')}</span>
-                    <strong>{step.label}</strong>
-                    <em>{stepHint}</em>
-                  </button>
-                </li>
-              )
-            })}
-          </ol>
-        </nav>
 
         <div className="journey-workspace__layout">
           <section className="journey-workspace__package" aria-labelledby="package-heading">
@@ -495,9 +409,6 @@ export function MyJourneyPage() {
                       <div className="myj-package-main">
                         <p className="myj-package-name">{pkg.label}</p>
                         {pkg.detail ? <p className="myj-package-detail">{pkg.detail}</p> : null}
-                        {pkg.designedTrip ? (
-                          <DesignedTripSummary trip={pkg.designedTrip} />
-                        ) : null}
                       </div>
                       <div className="myj-package-side">
                         {typeof pkg.pricePerPerson === 'number' ? (
@@ -510,6 +421,9 @@ export function MyJourneyPage() {
                           Remove
                         </button>
                       </div>
+                      {/* Full row width, so the sub-package rows are not
+                          squeezed by the price column beside the name. */}
+                      {pkg.designedTrip ? <DesignedTripSummary trip={pkg.designedTrip} /> : null}
                     </li>
                   ))}
                 </ul>
@@ -618,100 +532,6 @@ export function MyJourneyPage() {
               />
             ) : null}
 
-            <TravelCompanionsSection selected={companion} onSelect={setCompanion} />
-            <RoadTransportSection selected={transport} onSelect={setTransport} />
-
-            <section className="myj-preference-section myj-dates" aria-labelledby="myj-dates-head">
-              <div className="myj-preference-head">
-                <h3 id="myj-dates-head">When Will You Travel?</h3>
-                <p>
-                  Tell us your preferred dates and party size so your concierge can hold the right
-                  dates.
-                </p>
-              </div>
-              <div className="myj-dates-fields">
-                <label>
-                  <span>Start date</span>
-                  <input
-                    type="date"
-                    value={travelDates.startDate}
-                    onChange={(event) =>
-                      setTravelDates((current) => ({ ...current, startDate: event.target.value }))
-                    }
-                  />
-                </label>
-                <label>
-                  <span>End date</span>
-                  <input
-                    type="date"
-                    // Cannot end before it begins.
-                    min={travelDates.startDate || undefined}
-                    value={travelDates.endDate}
-                    onChange={(event) =>
-                      setTravelDates((current) => ({ ...current, endDate: event.target.value }))
-                    }
-                  />
-                </label>
-                <label>
-                  <span>Travellers</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={40}
-                    value={travelDates.travellers}
-                    onChange={(event) =>
-                      setTravelDates((current) => ({
-                        ...current,
-                        travellers: Math.max(1, Math.floor(Number(event.target.value) || 1)),
-                      }))
-                    }
-                  />
-                </label>
-              </div>
-              {journeyNights > 0 ? (
-                <p className="myj-dates-duration">
-                  {journeyNights} {journeyNights === 1 ? 'night' : 'nights'} on the island.
-                </p>
-              ) : null}
-            </section>
-
-            <section
-              className={`myj-preference-section myj-security${wantsSecurity ? ' is-selected' : ''}`}
-              aria-labelledby="myj-security-head"
-            >
-              <div className="myj-preference-head">
-                <h3 id="myj-security-head">Personal Security Detail</h3>
-                <p>
-                  Discreet close protection for the length of your journey, arranged through vetted
-                  personnel. Added to your journey at a separate cost.
-                </p>
-              </div>
-
-              <label className="myj-security-option">
-                <input
-                  type="checkbox"
-                  checked={wantsSecurity}
-                  onChange={(event) => setWantsSecurity(event.target.checked)}
-                />
-                <span className="myj-security-copy">
-                  <span className="myj-security-title">Add a personal security detail</span>
-                  <span className="myj-security-price">
-                    {formatUsd(SECURITY_DETAIL_USD_PER_DAY)} per day
-                    {wantsSecurity ? ` · ${securityDays} ${securityDays === 1 ? 'day' : 'days'}` : ''}
-                  </span>
-                </span>
-                {wantsSecurity ? (
-                  <span className="myj-security-total">{formatUsd(securityCost)}</span>
-                ) : null}
-              </label>
-
-              <p className="myj-security-note">
-                Indicative pricing. Final cost is confirmed by your concierge once dates and party
-                size are fixed.
-              </p>
-            </section>
-
-            <HealthInsuranceCard />
 
             <div className="journey-workspace__next">
               <h3>Next</h3>
@@ -795,146 +615,9 @@ export function MyJourneyPage() {
               </div>
             )}
 
-            <div className="journey-workspace__panel">
-              {mode === 'package' ? (
-                <>
-                  <h3>Journey summary</h3>
-                  {/* Headline: what has been chosen, and what it comes to. */}
-                  <div className="myj-sum-hero">
-                    <p className="myj-sum-hero__label">
-                      {hasDesignedTrip && designedTrip ? 'Designed Trip' : 'Your Journey'}
-                    </p>
-                    <p className="myj-sum-hero__name">
-                      {hasDesignedTrip && designedTrip
-                        ? designedTrip.packageName
-                        : (primaryTheme?.label ?? 'Not yet shaped')}
-                    </p>
-                    {packagesTotal + securityCost > 0 ? (
-                      <p className="myj-sum-hero__total">
-                        {formatUsd(packagesTotal + securityCost)}
-                        <small>per person</small>
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <div className="myj-sum-group">
-                    <p className="myj-sum-group__title">The Journey</p>
-                    <dl className="myj-sum-list">
-                      {hasDesignedTrip && designedTrip ? (
-                        <>
-                          <div>
-                            <dt>Themes</dt>
-                            <dd>{designedSegments.map((s) => s.themeTitle).join(', ')}</dd>
-                          </div>
-                          <div>
-                            <dt>Days set</dt>
-                            <dd>
-                              {designedDaysUsed}
-                              {Number.isNaN(designedPackageDays) ? '' : ` of ${designedPackageDays}`}
-                            </dd>
-                          </div>
-                          <div>
-                            <dt>Hotels</dt>
-                            <dd>{designedSegments.length}</dd>
-                          </div>
-                        </>
-                      ) : (
-                        <div>
-                          <dt>Theme</dt>
-                          <dd>{primaryTheme?.label ?? 'Not set'}</dd>
-                        </div>
-                      )}
-                      <div>
-                        <dt>Stops</dt>
-                        <dd>{placeGroups.length + designedSegments.length}</dd>
-                      </div>
-                      <div>
-                        <dt>Activities</dt>
-                        <dd>{experiences.length + designedActivityCount}</dd>
-                      </div>
-                      {drivingRoute ? (
-                        <>
-                          <div>
-                            <dt>Driving</dt>
-                            <dd>{drivingRoute.distanceKm} km</dd>
-                          </div>
-                          <div>
-                            <dt>Est. time</dt>
-                            <dd>{formatDrivingDuration(drivingRoute.durationMinutes)}</dd>
-                          </div>
-                        </>
-                      ) : null}
-                    </dl>
-                  </div>
-
-                  <div className="myj-sum-group">
-                    <p className="myj-sum-group__title">The Dates</p>
-                    <dl className="myj-sum-list">
-                      <div>
-                        <dt>Start</dt>
-                        <dd>
-                          {travelDates.startDate ? formatUsdDate(travelDates.startDate) : 'Not set'}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>End</dt>
-                        <dd>
-                          {travelDates.endDate ? formatUsdDate(travelDates.endDate) : 'Not set'}
-                        </dd>
-                      </div>
-                      {journeyNights > 0 ? (
-                        <div>
-                          <dt>Nights</dt>
-                          <dd>{journeyNights}</dd>
-                        </div>
-                      ) : null}
-                      <div>
-                        <dt>Travellers</dt>
-                        <dd>{travelDates.travellers}</dd>
-                      </div>
-                    </dl>
-                  </div>
-
-                  <div className="myj-sum-group">
-                    <p className="myj-sum-group__title">The Arrangements</p>
-                    <dl className="myj-sum-list">
-                      <div>
-                        <dt>Travelling with</dt>
-                        <dd>
-                          {companionOptions.find((option) => option.id === companion)?.label ??
-                            'Not set'}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Transport</dt>
-                        <dd>
-                          {transportOptions.find((option) => option.id === transport)?.label ??
-                            'Not set'}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Health insurance</dt>
-                        <dd className="is-included">Included</dd>
-                      </div>
-                      <div>
-                        <dt>Security detail</dt>
-                        <dd>{wantsSecurity ? `${formatUsd(securityCost)} added` : 'Not added'}</dd>
-                      </div>
-                    </dl>
-                  </div>
-
-                  {packagesTotal + securityCost > 0 ? (
-                    <div className="myj-sum-total">
-                      <span>Indicative total</span>
-                      <strong>{formatUsd(packagesTotal + securityCost)}</strong>
-                    </div>
-                  ) : null}
-
-                  <p className="myj-sum-note">{ILLUSTRATIVE_DISCLAIMER}</p>
-                </>
-              ) : null}
-
-              {mode === 'itinerary' ? (
+            {mode !== 'package' ? (
+              <div className="journey-workspace__panel">
+                {mode === 'itinerary' ? (
                 <>
                   <h3>Itinerary</h3>
                   {isGenerating ? <p>Composing an outline…</p> : null}
@@ -970,7 +653,7 @@ export function MyJourneyPage() {
                     </div>
                   ) : null}
                 </>
-              ) : null}
+                ) : null}
 
               {mode === 'edit' ? (
                 <>
@@ -1042,10 +725,110 @@ export function MyJourneyPage() {
                     </div>
                   )}
                 </>
-              ) : null}
-            </div>
+                ) : null}
+              </div>
+            ) : null}
           </aside>
         </div>
+
+        {/* Preferences read better across the full width than stacked in a
+            narrow column, so they sit below the package/map row. */}
+        <section className="journey-workspace__prefs" aria-label="Journey preferences">
+              <TravelCompanionsSection selected={companion} onSelect={setCompanion} />
+              <RoadTransportSection selected={transport} onSelect={setTransport} />
+
+              <section className="myj-preference-section myj-dates" aria-labelledby="myj-dates-head">
+                <div className="myj-preference-head">
+                  <h3 id="myj-dates-head">When Will You Travel?</h3>
+                  <p>
+                    Tell us your preferred dates and party size so your concierge can hold the right
+                    dates.
+                  </p>
+                </div>
+                <div className="myj-dates-fields">
+                  <label>
+                    <span>Start date</span>
+                    <input
+                      type="date"
+                      value={travelDates.startDate}
+                      onChange={(event) =>
+                        setTravelDates((current) => ({ ...current, startDate: event.target.value }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    <span>End date</span>
+                    <input
+                      type="date"
+                      // Cannot end before it begins.
+                      min={travelDates.startDate || undefined}
+                      value={travelDates.endDate}
+                      onChange={(event) =>
+                        setTravelDates((current) => ({ ...current, endDate: event.target.value }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    <span>Travellers</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={40}
+                      value={travelDates.travellers}
+                      onChange={(event) =>
+                        setTravelDates((current) => ({
+                          ...current,
+                          travellers: Math.max(1, Math.floor(Number(event.target.value) || 1)),
+                        }))
+                      }
+                    />
+                  </label>
+                </div>
+                {journeyNights > 0 ? (
+                  <p className="myj-dates-duration">
+                    {journeyNights} {journeyNights === 1 ? 'night' : 'nights'} on the island.
+                  </p>
+                ) : null}
+              </section>
+
+              <section
+                className={`myj-preference-section myj-security${wantsSecurity ? ' is-selected' : ''}`}
+                aria-labelledby="myj-security-head"
+              >
+                <div className="myj-preference-head">
+                  <h3 id="myj-security-head">Personal Security Detail</h3>
+                  <p>
+                    Discreet close protection for the length of your journey, arranged through vetted
+                    personnel. Added to your journey at a separate cost.
+                  </p>
+                </div>
+
+                <label className="myj-security-option">
+                  <input
+                    type="checkbox"
+                    checked={wantsSecurity}
+                    onChange={(event) => setWantsSecurity(event.target.checked)}
+                  />
+                  <span className="myj-security-copy">
+                    <span className="myj-security-title">Add a personal security detail</span>
+                    <span className="myj-security-price">
+                      {formatUsd(SECURITY_DETAIL_USD_PER_DAY)} per day
+                      {wantsSecurity ? ` · ${securityDays} ${securityDays === 1 ? 'day' : 'days'}` : ''}
+                    </span>
+                  </span>
+                  {wantsSecurity ? (
+                    <span className="myj-security-total">{formatUsd(securityCost)}</span>
+                  ) : null}
+                </label>
+
+                <p className="myj-security-note">
+                  Indicative pricing. Final cost is confirmed by your concierge once dates and party
+                  size are fixed.
+                </p>
+              </section>
+
+              <HealthInsuranceCard />
+        </section>
 
         {otherItems.length > 0 ? (
           <section className="journey-workspace__extras" aria-label="Other saved preferences">

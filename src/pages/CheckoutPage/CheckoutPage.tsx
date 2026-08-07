@@ -5,6 +5,9 @@ import {
   nightsBetween,
   readStoredDates,
   readStoredSecurity,
+  readStoredTransport,
+  transportOptions,
+  transportPriceAdd,
   SECURITY_DETAIL_USD_PER_DAY,
 } from '../../journey/travelPreferences'
 import { getTravellerToken } from '../../traveller/travellerAuthApi'
@@ -45,8 +48,13 @@ export function CheckoutPage() {
   const wantsSecurity = readStoredSecurity()
   const securityDays = Math.max(1, nightsBetween(startDate, endDate))
   const securityCost = wantsSecurity ? securityDays * SECURITY_DETAIL_USD_PER_DAY : 0
-  const fullAmount = packagesAmount + securityCost
-  const hasPricing = perPersonTotal > 0 || securityCost > 0
+  // Vehicle upgrades are per person; the standard car adds nothing.
+  const transport = readStoredTransport()
+  const transportPerPerson = transportPriceAdd(transport)
+  const transportCost = transportPerPerson * Math.max(1, travellers)
+  const transportLabel = transportOptions.find((option) => option.id === transport)?.label
+  const fullAmount = packagesAmount + transportCost + securityCost
+  const hasPricing = perPersonTotal > 0 || securityCost > 0 || transportCost > 0
   const alreadySignedIn = Boolean(getTravellerToken())
 
   function updateField<K extends keyof GuestDetails>(key: K, value: GuestDetails[K]) {
@@ -202,6 +210,12 @@ export function CheckoutPage() {
                 <span>Travellers</span>
                 <strong>× {Math.max(1, travellers)}</strong>
               </div>
+              {transportCost > 0 ? (
+                <div className="checkout-total checkout-total--sub">
+                  <span>{transportLabel} upgrade</span>
+                  <strong>{usd.format(transportCost)}</strong>
+                </div>
+              ) : null}
               {securityCost > 0 ? (
                 <div className="checkout-total checkout-total--sub">
                   <span>

@@ -142,7 +142,7 @@ const regionRecommendationSeeds: Record<string, RecommendationSeed[]> = {
       label: 'Colombo Fort',
       detail: 'Civic streets, old institutions, and harbour history for a layered first arrival.',
       parentRegion: 'West Coast',
-      parentTheme: 'Shared Heritage',
+      parentTheme: 'Shared History',
       reason: 'Because West Coast is already in your journey.',
     },
     {
@@ -150,7 +150,7 @@ const regionRecommendationSeeds: Record<string, RecommendationSeed[]> = {
       label: 'Galle Face Hotel',
       detail: 'A seafront landmark for arrival rituals and Colombo memory.',
       parentRegion: 'West Coast',
-      parentTheme: 'Shared Heritage',
+      parentTheme: 'Shared History',
       reason: 'A classic Colombo companion.',
     },
     {
@@ -356,22 +356,22 @@ const themeRecommendationSeeds: Record<string, RecommendationSeed[]> = {
       reason: 'A rainforest counterpoint to the dry-zone wilderness.',
     },
   ],
-  'Shared Heritage': [
+  'Shared History': [
     {
       kind: 'destination',
       label: 'Colombo Fort',
       detail: 'Civic streets, old institutions, and harbour history for a layered first arrival.',
       parentRegion: 'West Coast',
-      parentTheme: 'Shared Heritage',
-      reason: 'Because Shared Heritage is in your journey.',
+      parentTheme: 'Shared History',
+      reason: 'Because Shared History is in your journey.',
     },
     {
       kind: 'destination',
       label: 'Nuwara Eliya',
       detail: 'Tea, gardens, old hill-station air, and a visible shared past in the landscape.',
       parentRegion: 'Hill Country',
-      parentTheme: 'Shared Heritage',
-      reason: 'A highland expression of the shared heritage thread.',
+      parentTheme: 'Shared History',
+      reason: 'A highland expression of the Shared History thread.',
     },
   ],
 }

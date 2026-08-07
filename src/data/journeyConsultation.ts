@@ -419,7 +419,7 @@ export const getJourneyRecommendation = (
   const selectedThemeTitles = themeIds
     .map((themeId) => {
       if (themeId === SHARED_HERITAGE_THEME_ID) {
-        return 'Shared Heritage'
+        return 'Shared History'
       }
       return journeyThemes.find((theme) => theme.id === themeId)?.title
     })

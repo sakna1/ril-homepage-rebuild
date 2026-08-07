@@ -21,7 +21,7 @@ export const regionSignatureExperiences: Record<string, string> = {
 export const experienceThemeFallbacks: Record<string, string> = {
   'The Sigiriya Dawn Ascent': 'Heritage & Memory',
   'A Private Tea Estate, Locked Before Dawn': 'Rail & Landscape',
-  'Shared Heritage, Quietly Read': DISCOVERY_WORLD_NAMES.sharedHeritage,
+  'Shared History, Quietly Read': DISCOVERY_WORLD_NAMES.sharedHeritage,
   'The Leopard Research Circuit': 'Wildlife & Wilderness',
   "The Mirissa Fishermen's Dawn": 'Ocean & Discovery',
   'A Private Kandyan Dance Rehearsal': 'Culture & Human Connection',
@@ -34,7 +34,7 @@ export const experienceThemeFallbacks: Record<string, string> = {
 export const experienceRegionFallbacks: Record<string, string> = {
   'The Sigiriya Dawn Ascent': 'Cultural Triangle',
   'A Private Tea Estate, Locked Before Dawn': 'Hill Country',
-  'Shared Heritage, Quietly Read': 'Hill Country',
+  'Shared History, Quietly Read': 'Hill Country',
   'The Leopard Research Circuit': 'South Coast',
   "The Mirissa Fishermen's Dawn": 'South Coast',
   'A Private Kandyan Dance Rehearsal': 'Hill Country',

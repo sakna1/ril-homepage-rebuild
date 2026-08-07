@@ -1,7 +1,7 @@
 import { experienceImages } from '../components/ExperiencesPage/images'
 
 export const DISCOVERY_WORLD_NAMES = {
-  sharedHeritage: 'Shared Heritage',
+  sharedHeritage: 'Shared History',
 } as const
 
 export type DiscoveryWorldName = (typeof DISCOVERY_WORLD_NAMES)[keyof typeof DISCOVERY_WORLD_NAMES]
