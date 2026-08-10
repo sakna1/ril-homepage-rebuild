@@ -7,6 +7,7 @@ import { ContactPage } from './components/ContactPage/ContactPage'
 import { ExperienceDetailPage } from './components/ExperienceDetailPage/ExperienceDetailPage'
 import { ExpectationsPage } from './components/ExperiencesPage/ExperiencesPage'
 import { Homepage } from './components/Homepage/Homepage'
+import { OurStoryPage } from './components/OurStoryPage/OurStoryPage'
 import { ItinerariesPage } from './components/ItinerariesPage/ItinerariesPage'
 import { JournalArticlePage } from './components/JournalArticlePage/JournalArticlePage'
 import { JournalLandingPage } from './components/JournalLandingPage/JournalLandingPage'
@@ -31,6 +32,10 @@ function AppContent() {
 
   if (path === '/') {
     return renderPage(<Homepage />)
+  }
+
+  if (path === '/our-story') {
+    return renderPage(<OurStoryPage />)
   }
 
   // The concierge is now an in-page popup (see ConciergeChat), so the old

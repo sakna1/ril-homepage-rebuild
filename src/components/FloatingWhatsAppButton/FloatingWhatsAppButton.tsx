@@ -1,31 +1,23 @@
-import { useState } from 'react'
 import './FloatingWhatsAppButton.css'
 import { getDefaultWhatsAppHref } from '../../consultation/whatsApp'
-import { ConciergeChat } from '../ConciergeChat/ConciergeChat'
+import royaleIslesLogoImage from '../../assets/images/logo_bg_remove.png'
+// AI Concierge is hidden for now. To bring it back, restore the ConciergeChat
+// import, the isConciergeOpen state, and the concierge trigger button below.
+// import { ConciergeChat } from '../ConciergeChat/ConciergeChat'
 
 export function FloatingWhatsAppButton() {
-  const [isConciergeOpen, setIsConciergeOpen] = useState(false)
-
   return (
     <div className="floating-action-group" aria-label="Quick contact actions">
-      <ConciergeChat open={isConciergeOpen} onClose={() => setIsConciergeOpen(false)} />
-
-      <button
-        type="button"
-        className={`floating-action-button floating-action-button--concierge${
-          isConciergeOpen ? ' is-active' : ''
-        }`}
-        aria-label={isConciergeOpen ? 'Close AI Concierge' : 'Open AI Concierge'}
-        aria-expanded={isConciergeOpen}
-        onClick={() => setIsConciergeOpen((current) => !current)}
+      <a
+        className="floating-action-button floating-action-button--story"
+        href="/our-story"
+        aria-label="Read our story"
       >
         <span className="floating-action-button__icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" focusable="false">
-            <path d="M16 3.5 18.14 11 25.5 13.14 18.14 15.28 16 22.5 13.86 15.28 6.5 13.14 13.86 11 16 3.5Zm7.75 16.25.98 3.52 3.52.98-3.52.98-.98 3.52-.98-3.52-3.52-.98 3.52-.98.98-3.52ZM8.25 20l.76 2.49 2.49.76-2.49.76-.76 2.49-.76-2.49L5 23.25l2.49-.76L8.25 20Z" />
-          </svg>
+          <img src={royaleIslesLogoImage} alt="" />
         </span>
-        <span className="floating-action-button__text">AI Concierge</span>
-      </button>
+        <span className="floating-action-button__text">Our Story</span>
+      </a>
 
       <a
         className="floating-action-button floating-action-button--whatsapp"

@@ -50,6 +50,27 @@
   color: var(--color-accent);
 }
 
+/* Our Story — carries the brand mark rather than an icon glyph. */
+.floating-action-button--story {
+  background: var(--color-surface-atmospheric);
+  color: var(--color-accent);
+}
+
+.floating-action-button--story .floating-action-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+}
+
+.floating-action-button--story .floating-action-button__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 /* The concierge trigger is a <button>, so it needs the UA styles reset to
    match the anchor-based actions beside it. */
 button.floating-action-button {

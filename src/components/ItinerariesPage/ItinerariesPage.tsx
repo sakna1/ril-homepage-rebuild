@@ -479,9 +479,9 @@ export function ItinerariesPage() {
         </div>
 
         <div className="itin-hero__copy">
-          <span className="itin-eyebrow itin-eyebrow--light">Designed Trips</span>
+          <span className="itin-eyebrow itin-eyebrow--light">Signature Journeys</span>
           <h1>
-            Four Choices, and
+            Three Choices, and
             <em>the Journey Is Yours.</em>
           </h1>
           <p>
