@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react'
 import { AboutPage } from './components/AboutPage/AboutPage'
-import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage'
+// Checkout hidden — the site takes enquiries, not payments. Restore this
+// import with the route below.
+// import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage'
 import { ContactPage } from './components/ContactPage/ContactPage'
 // Discover temporarily hidden — restore this import with the route below.
 // import { DiscoveryGuide } from './components/DiscoveryGuide/DiscoveryGuide'
+import { DestinationsPage } from './components/DestinationsPage/DestinationsPage'
 import { ExperienceDetailPage } from './components/ExperienceDetailPage/ExperienceDetailPage'
 import { ExpectationsPage } from './components/ExperiencesPage/ExperiencesPage'
 import { Homepage } from './components/Homepage/Homepage'
@@ -17,7 +20,8 @@ import { TravellerLoginPage } from './components/LoginPage/TravellerLoginPage'
 import { ResetPasswordPage } from './components/LoginPage/ResetPasswordPage'
 import { PageLayout } from './components/PageLayout/PageLayout'
 import { TravelPreparationPage } from './components/TravelPreparationPage/TravelPreparationPage'
-import { MyJourneyPage } from './pages/MyJourneyPage/MyJourneyPage'
+// My Journey temporarily hidden — restore this import with the route below.
+// import { MyJourneyPage } from './pages/MyJourneyPage/MyJourneyPage'
 import { TravellerDashboardPage } from './pages/TravellerDashboardPage/TravellerDashboardPage'
 import { AdminDashboardPage } from './pages/AdminDashboardPage/AdminDashboardPage'
 import { JourneyProvider } from './journey/JourneyContext'
@@ -55,6 +59,10 @@ function AppContent() {
       return null
     }
     return renderPage(<Homepage />)
+  }
+
+  if (path === '/destinations') {
+    return renderPage(<DestinationsPage />)
   }
 
   if (path === '/expectations' || path === '/experiences') {
@@ -113,12 +121,15 @@ function AppContent() {
     return renderPage(<TravelPreparationPage />)
   }
 
-  if (path === '/travel-planner' || path === '/my-journey') {
-    return renderPage(<MyJourneyPage />)
-  }
-
-  if (path === '/checkout') {
-    return renderPage(<CheckoutPage />)
+  // My Journey and Checkout are temporarily hidden: the site now takes
+  // enquiries rather than bookings. Redirect any lingering links home. To bring
+  // them back, restore the imports above and render the pages here.
+  if (path === '/travel-planner' || path === '/my-journey' || path === '/checkout') {
+    if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+      window.location.replace('/')
+      return null
+    }
+    return renderPage(<Homepage />)
   }
 
   return renderPage(<Homepage />)

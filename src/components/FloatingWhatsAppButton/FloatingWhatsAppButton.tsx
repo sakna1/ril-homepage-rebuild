@@ -8,15 +8,15 @@ import royaleIslesLogoImage from '../../assets/images/logo_bg_remove.png'
 export function FloatingWhatsAppButton() {
   return (
     <div className="floating-action-group" aria-label="Quick contact actions">
-      <a
-        className="floating-action-button floating-action-button--story"
-        href="/our-story"
-        aria-label="Read our story"
-      >
-        <span className="floating-action-button__icon" aria-hidden="true">
+      {/* Our Story wears the brand mark itself — the turtle silhouette is the
+          button, with a gold halo behind it instead of a pill. */}
+      <a className="turtle-action-button" href="/our-story" aria-label="Read our story">
+        <span className="turtle-action-button__glow" aria-hidden="true"></span>
+        <span className="turtle-action-button__fill" aria-hidden="true"></span>
+        <span className="turtle-action-button__art" aria-hidden="true">
           <img src={royaleIslesLogoImage} alt="" />
         </span>
-        <span className="floating-action-button__text">Our Story</span>
+        <span className="turtle-action-button__label">Our Story</span>
       </a>
 
       <a

@@ -212,6 +212,11 @@
   margin-top: 40px;
 }
 
+/* Only "What To Do" remains now that hotels are gone. */
+.theme-map-detail-columns--single {
+  grid-template-columns: 1fr;
+}
+
 .theme-map-detail-column h4 {
   padding-bottom: 14px;
   border-bottom: 1px solid var(--experience-border);

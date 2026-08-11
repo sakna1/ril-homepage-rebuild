@@ -5,7 +5,9 @@ const footerNav = {
     // Discover temporarily hidden — restore this entry to bring it back.
     { href: '/expectations', label: 'Expectations' },
     { href: '/travel-preparation', label: 'On Arrival' },
-    { href: '/my-journey', label: 'My Journey' },
+    { href: '/destinations', label: 'Destinations' },
+    // My Journey temporarily hidden — restore this entry to bring it back.
+    // { href: '/my-journey', label: 'My Journey' },
     { href: '/journal', label: 'Journal' },
     { href: '/about', label: 'About' },
   ] as const,

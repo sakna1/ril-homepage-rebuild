@@ -6,7 +6,9 @@ const primaryNavLinks = [
   // { href: '/discover-sri-lanka', label: 'Discover' },
   { href: '/itineraries', label: 'Itineraries' },
   { href: '/expectations', label: 'Expectations' },
-  { href: '/my-journey', label: 'My Journey' },
+  { href: '/destinations', label: 'Destinations' },
+  // My Journey temporarily hidden — restore this entry to bring it back.
+  // { href: '/my-journey', label: 'My Journey' },
   { href: '/travel-preparation', label: 'On Arrival' },
   { href: '/journal', label: 'Journal' },
   { href: '/about', label: 'About' },

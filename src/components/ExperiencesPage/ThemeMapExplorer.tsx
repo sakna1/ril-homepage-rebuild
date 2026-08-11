@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import mapboxgl, { type Map } from 'mapbox-gl'
 import { TravelMap } from '../Map/TravelMap'
-import { getHotelsForDestination, type HotelListing } from '../../data/hotels'
 import type { RegionDestination } from '../../data/journeyRegions'
-import { toJourneyId } from '../../journey/journeyItemHelpers'
-import { useJourney } from '../../journey/useJourney'
 import { galleryForTheme, reviewsForTheme } from '../ItinerariesPage/themeCatalog'
 import { getPackagePlacesForTheme, type PackagePlace, type PackageThemeTitle } from './packageMapCatalog'
 import './ThemeMapExplorer.css'
@@ -92,7 +89,6 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
   const mapRef = useRef<Map | null>(null)
   const [mapReady, setMapReady] = useState(false)
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | undefined>()
-  const { confirmRemoveItem, count, includeItem, isIncluded } = useJourney()
 
   const places = useMemo(() => (selectedTheme ? getPackagePlacesForTheme(selectedTheme) : []), [selectedTheme])
   const selectedPlace = places.find((place) => place.destination.id === selectedPlaceId) ?? places[0] ?? null
@@ -144,47 +140,7 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
   const leftThemes = themes.slice(0, half)
   const rightThemes = themes.slice(half)
 
-  const hotels = selectedPlace ? getHotelsForDestination(selectedPlace.destination) : []
   const activities = selectedPlace?.destination.nearbyExperiences ?? []
-
-  function toggleHotelInJourney(hotel: HotelListing) {
-    if (!selectedPlace || !selectedTheme) return
-    const journeyId = toJourneyId('accommodation', hotel.name)
-
-    if (isIncluded(journeyId)) {
-      confirmRemoveItem(journeyId)
-      return
-    }
-
-    includeItem({
-      id: journeyId,
-      kind: 'accommodation',
-      label: hotel.name,
-      detail: hotel.description,
-      source: 'Expectations',
-      parentTheme: selectedTheme,
-      parentRegion: selectedPlace.destination.title,
-    })
-  }
-
-  function toggleActivityInJourney(activity: string) {
-    if (!selectedPlace || !selectedTheme) return
-    const journeyId = toJourneyId('experience', `${selectedPlace.destination.title} ${activity}`)
-
-    if (isIncluded(journeyId)) {
-      confirmRemoveItem(journeyId)
-      return
-    }
-
-    includeItem({
-      id: journeyId,
-      kind: 'experience',
-      label: activity,
-      source: selectedPlace.destination.title,
-      parentTheme: selectedTheme,
-      parentRegion: selectedPlace.destination.title,
-    })
-  }
 
   function renderShortcut(theme: ThemeShortcut) {
     const isActive = theme.title === selectedTheme
@@ -278,55 +234,18 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
             )
           })()}
 
-          <div className="theme-map-detail-columns">
-            <div className="theme-map-detail-column">
-              <h4>Where To Stay</h4>
-              <ul className="theme-map-hotel-list">
-                {hotels.map((hotel) => {
-                  const added = isIncluded(toJourneyId('accommodation', hotel.name))
-                  return (
-                    <li key={hotel.id}>
-                      <div className="theme-map-list-item-heading">
-                        <p className="theme-map-hotel-name">{hotel.name}</p>
-                        <button
-                          type="button"
-                          className={`theme-map-add-button${added ? ' is-added' : ''}`}
-                          aria-pressed={added}
-                          onClick={() => toggleHotelInJourney(hotel)}
-                        >
-                          {added ? 'Added' : 'Add to Journey'}
-                        </button>
-                      </div>
-                      <p className="theme-map-hotel-description">{hotel.description}</p>
-                      <p className="theme-map-hotel-price">{hotel.priceHint}</p>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-
+          {/* Hotels and packages were removed from the map — a place shows what
+              there is to see, and enquiries go to the destination team. */}
+          <div className="theme-map-detail-columns theme-map-detail-columns--single">
             <div className="theme-map-detail-column">
               <h4>What To Do</h4>
               {activities.length > 0 ? (
                 <ul className="theme-map-activity-list">
-                  {activities.map((activity) => {
-                    const added = isIncluded(
-                      toJourneyId('experience', `${selectedPlace.destination.title} ${activity}`),
-                    )
-                    return (
-                      <li key={activity}>
-                        <span>{activity}</span>
-                        <button
-                          type="button"
-                          className={`theme-map-add-button${added ? ' is-added' : ''}`}
-                          aria-pressed={added}
-                          onClick={() => toggleActivityInJourney(activity)}
-                        >
-                          {added ? 'Added' : 'Add to Journey'}
-                        </button>
-                      </li>
-                    )
-                  })}
+                  {activities.map((activity) => (
+                    <li key={activity}>
+                      <span>{activity}</span>
+                    </li>
+                  ))}
                 </ul>
               ) : (
                 <p className="theme-map-activity-empty">
@@ -373,9 +292,8 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
       ) : null}
 
       <footer className="theme-map-explorer-footer">
-        <a className="theme-map-journey-link" href="/my-journey">
-          View My Journey
-          {count > 0 ? <span className="theme-map-journey-link-count">{count}</span> : null}
+        <a className="theme-map-journey-link" href="/contact">
+          Enquire About These Places
           <span aria-hidden="true">→</span>
         </a>
       </footer>
