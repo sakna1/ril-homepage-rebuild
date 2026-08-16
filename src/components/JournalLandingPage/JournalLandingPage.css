@@ -82,38 +82,6 @@
   padding-top: 48px;
 }
 
-.journal-title-block > p,
-.journal-rule-header p,
-.journal-rail-heading p,
-.journal-story-card header p,
-.journal-story-date,
-.journal-story-tags > span,
-.journal-story-tags a,
-.journal-read-link,
-.journal-vignette-entry,
-.journal-vignette small,
-.journal-archive-places,
-.journal-dispatch-copy > p,
-.journal-dispatch-copy small,
-.journal-newsletter p,
-.journal-newsletter label,
-.journal-newsletter small,
-.journal-panorama p,
-.journal-panorama cite,
-.journal-photo figcaption,
-.journal-texture-item figcaption,
-.journal-weather-note,
-.journal-pinned-note > p,
-.journal-pinned-note cite,
-.journal-side-note {
-  color: var(--journal-muted);
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  line-height: var(--line-height-caption);
-  text-transform: uppercase;
-}
-
 .journal-title-block h1 {
   color: var(--journal-ink);
   font-family: var(--font-display);
@@ -775,147 +743,6 @@
   font-style: normal;
 }
 
-.journal-archive {
-  padding: 56px 80px 80px;
-  background: var(--color-surface-secondary-soft);
-}
-
-.journal-region-guide {
-  padding: 72px 0 0;
-  background: var(--color-surface-secondary-soft);
-}
-
-.journal-region-guide-card {
-  display: grid;
-  grid-template-columns: minmax(260px, 0.8fr) minmax(520px, 1.2fr);
-  gap: 56px;
-  padding: 40px;
-  border: 1px solid var(--journal-soft);
-  background:
-    linear-gradient(135deg, rgba(251, 249, 245, 0.86), rgba(232, 225, 213, 0.26)),
-    var(--journal-ivory);
-}
-
-.journal-region-guide-card > div p {
-  color: var(--journal-sepia);
-  font-size: 10px;
-  letter-spacing: 3px;
-  line-height: var(--line-height-caption);
-  text-transform: uppercase;
-}
-
-.journal-region-guide-card h2 {
-  max-width: 340px;
-  margin-top: 18px;
-  color: var(--journal-ink);
-  font-family: var(--font-display);
-  font-size: 30px;
-  font-weight: 400;
-  line-height: var(--line-height-heading);
-}
-
-.journal-region-guide-card nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border: 1px solid var(--journal-soft);
-}
-
-.journal-region-guide-card a {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  min-height: 116px;
-  padding: 24px;
-  color: var(--journal-ink);
-  text-decoration: none;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.journal-region-guide-card a:nth-child(odd) {
-  border-right: 1px solid var(--journal-soft);
-}
-
-.journal-region-guide-card a:nth-child(n + 3) {
-  border-top: 1px solid var(--journal-soft);
-}
-
-.journal-region-guide-card a:hover {
-  background: var(--journal-ink);
-  color: var(--journal-ivory);
-}
-
-.journal-region-guide-card a span {
-  font-family: var(--font-display);
-  font-size: 18px;
-  line-height: var(--line-height-ui);
-}
-
-.journal-region-guide-card a small {
-  color: var(--journal-muted);
-  font-size: 9px;
-  letter-spacing: 2.1px;
-  line-height: var(--line-height-caption);
-  text-transform: uppercase;
-}
-
-.journal-region-guide-card a:hover small {
-  color: var(--journal-soft);
-}
-
-.journal-archive .journal-rule-header {
-  margin-bottom: 48px;
-}
-
-.journal-archive-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 1px solid var(--journal-soft);
-}
-
-.journal-archive-card {
-  min-height: 248px;
-  padding: 32px;
-  border-right: 1px solid var(--journal-soft);
-}
-
-.journal-archive-card:last-child {
-  border-right: 0;
-}
-
-.journal-archive-marker {
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border: 1px solid var(--color-text-subtle);
-  border-radius: 50%;
-  color: var(--journal-sepia);
-  font-family: var(--font-display);
-  font-size: 13px;
-}
-
-.journal-archive-card h3 {
-  margin-top: 24px;
-  color: var(--journal-ink);
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 400;
-  line-height: var(--line-height-ui);
-}
-
-.journal-archive-places {
-  margin-top: 8px;
-}
-
-.journal-archive-card > p:last-child {
-  margin-top: 8px;
-  color: var(--journal-muted);
-  font-size: 12px;
-  line-height: var(--line-height-copy);
-}
-
 .journal-dispatch {
   padding: 96px 0;
 }
@@ -1083,32 +910,6 @@
 
   .journal-vignette {
     transform: none;
-  }
-
-  .journal-archive {
-    padding: 64px 48px;
-  }
-
-  .journal-region-guide {
-    padding-left: 48px;
-    padding-right: 48px;
-  }
-
-  .journal-region-guide-card {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .journal-archive-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .journal-archive-card:nth-child(2) {
-    border-right: 0;
-  }
-
-  .journal-archive-card:nth-child(n + 3) {
-    border-top: 1px solid var(--journal-soft);
   }
 
   .journal-dispatch-grid {
@@ -1304,51 +1105,6 @@
 
   .journal-panorama blockquote {
     font-size: 28px;
-  }
-
-  .journal-archive {
-    padding: 56px 0;
-  }
-
-  .journal-region-guide {
-    padding: 56px 0 0;
-  }
-
-  .journal-region-guide-card {
-    padding: 28px 22px;
-  }
-
-  .journal-region-guide-card h2 {
-    font-size: 28px;
-  }
-
-  .journal-region-guide-card nav {
-    grid-template-columns: 1fr;
-  }
-
-  .journal-region-guide-card a,
-  .journal-region-guide-card a:nth-child(odd),
-  .journal-region-guide-card a:nth-child(n + 3) {
-    border-right: 0;
-    border-top: 0;
-  }
-
-  .journal-region-guide-card a + a {
-    border-top: 1px solid var(--journal-soft);
-  }
-
-  .journal-archive-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .journal-archive-card,
-  .journal-archive-card:nth-child(2) {
-    border-right: 0;
-    border-bottom: 1px solid var(--journal-soft);
-  }
-
-  .journal-archive-card:last-child {
-    border-bottom: 0;
   }
 
   .journal-dispatch {
@@ -1713,15 +1469,6 @@
   font-size: 36px;
 }
 
-.journal-region-guide,
-.journal-archive {
-  background: rgba(232, 225, 213, 0.26);
-}
-
-.journal-region-guide-card {
-  border-color: rgba(197, 160, 89, 0.26);
-}
-
 .journal-dispatch {
   padding: 96px 0;
   background:
@@ -1773,10 +1520,6 @@
   .journal-story-entry--monsoon .journal-image-cluster {
     order: 2;
   }
-
-  .journal-region-guide-card {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 767px) {
@@ -1795,12 +1538,6 @@
 
   .journal-title-block > div {
     flex-direction: column;
-  }
-
-  .journal-scattered-layout,
-  .journal-vignettes,
-  .journal-region-guide-card nav {
-    grid-template-columns: 1fr;
   }
 
   .journal-hero-galle,
@@ -1846,10 +1583,6 @@
 
   .journal-panorama {
     height: 360px;
-  }
-
-  .journal-region-guide-card {
-    padding: 24px;
   }
 }
 
@@ -2280,12 +2013,6 @@
   border-top-color: var(--journal-gold-rule);
 }
 
-.journal-flow-intro-grid > p:first-child,
-.journal-region-guide-card > div p {
-  color: var(--journal-gold);
-  font-weight: 700;
-}
-
 .journal-flow-intro h2 {
   max-width: 760px;
   font-size: clamp(36px, 4vw, 64px);
@@ -2302,11 +2029,6 @@
   background:
     linear-gradient(180deg, rgba(232, 225, 213, 0.18), rgba(251, 249, 245, 0.94)),
     var(--journal-ivory);
-}
-
-.journal-rule-header h2,
-.journal-region-guide-card h2 {
-  font-size: clamp(34px, 3vw, 48px);
 }
 
 .journal-rule-header p {
@@ -2400,64 +2122,12 @@
     linear-gradient(0deg, rgba(13, 31, 23, 0.24), transparent);
 }
 
+/* The pull quote is a caption over a photograph, not a page heading — at 72px
+   it wrapped to seven lines and buried the image behind it. */
 .journal-panorama blockquote {
-  font-size: clamp(40px, 5vw, 72px);
-  line-height: var(--line-height-display);
-}
-
-.journal-region-guide,
-.journal-archive {
-  background:
-    radial-gradient(circle at 10% 10%, rgba(197, 160, 89, 0.12), transparent 24%),
-    rgba(232, 225, 213, 0.28);
-}
-
-.journal-region-guide-card {
-  padding: clamp(32px, 4vw, 56px);
-  border-color: var(--journal-gold-rule);
-  background: var(--journal-night);
-  color: var(--color-text-inverse);
-  box-shadow: 0 30px 90px rgba(13, 31, 23, 0.14);
-}
-
-.journal-region-guide-card h2,
-.journal-region-guide-card a {
-  color: var(--color-text-inverse);
-}
-
-.journal-region-guide-card nav {
-  border-color: rgba(197, 160, 89, 0.32);
-}
-
-.journal-region-guide-card a {
-  border-color: rgba(197, 160, 89, 0.32);
-}
-
-.journal-region-guide-card a:hover {
-  background: var(--journal-gold);
-  color: var(--journal-night);
-}
-
-.journal-archive-grid {
-  border-color: var(--journal-gold-rule);
-  background: rgba(251, 249, 245, 0.52);
-}
-
-.journal-archive-card {
-  border-color: var(--journal-gold-rule);
-  transition:
-    background-color 180ms ease,
-    transform 180ms ease;
-}
-
-.journal-archive-card:hover {
-  background: rgba(251, 249, 245, 0.82);
-  transform: translateY(-4px);
-}
-
-.journal-archive-marker {
-  border-color: var(--journal-gold);
-  color: var(--journal-gold);
+  max-width: 15ch;
+  font-size: clamp(26px, 2.9vw, 42px);
+  line-height: 1.2;
 }
 
 .journal-dispatch {
@@ -2567,13 +2237,8 @@
   }
 
   .journal-panorama blockquote {
-    font-size: clamp(48px, 5vw, 78px);
-  }
-
-  .journal-region-guide-card,
-  .journal-archive-grid {
-    max-width: min(1500px, calc(100vw - var(--container-inset-desktop)));
-    margin-inline: auto;
+    max-width: 20ch;
+    font-size: clamp(30px, 2.6vw, 44px);
   }
 }
 
@@ -2647,13 +2312,6 @@
 
   .journal-story-card footer {
     align-items: flex-start;
-  }
-
-  .journal-story-card h3,
-  .journal-flow-intro h2,
-  .journal-rule-header h2,
-  .journal-region-guide-card h2 {
-    font-size: 34px;
   }
 
   .journal-panorama {
@@ -3016,5 +2674,91 @@
 @media (min-width: 1200px) {
   .journal-hero-inner {
     grid-template-columns: minmax(380px, 0.76fr) minmax(720px, 1.24fr);
+  }
+}
+
+/* ==========================================================================
+   Responsive corrections — must remain the last block in this file.
+
+   Several rules above (notably the "final hero width correction") are declared
+   outside any media query but sized for desktop, so they applied at every
+   width and pushed the hero gallery off-screen on phones and tablets. These
+   override them from the narrow end up.
+   ========================================================================== */
+
+/* A quote must never be cropped by a fixed panel height. The copy was absolutely
+   positioned, so it contributed no height and simply overflowed a fixed panel;
+   it now sits in the flow with the photograph filling the panel behind it. */
+.journal-panorama {
+  display: grid;
+  align-items: center;
+  height: auto;
+  min-height: clamp(320px, 42vw, 520px);
+}
+
+.journal-panorama > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journal-panorama > div {
+  position: relative;
+  inset: auto;
+  max-width: min(672px, 100%);
+  padding: clamp(28px, 5vw, 64px);
+}
+
+@media (max-width: 1199px) {
+  .journal-hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 48px);
+    min-height: 0;
+  }
+
+  .journal-scattered-layout {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    padding-right: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .journal-panorama {
+    min-height: 380px;
+  }
+
+  .journal-panorama blockquote {
+    max-width: none;
+    font-size: clamp(24px, 4.4vw, 36px);
+  }
+}
+
+@media (max-width: 767px) {
+  .journal-hero-inner {
+    gap: 24px;
+  }
+
+  .journal-scattered-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .journal-panorama {
+    min-height: 320px;
+  }
+
+  .journal-panorama blockquote {
+    font-size: clamp(21px, 6vw, 30px);
+    line-height: 1.24;
+  }
+}
+
+/* Portrait phones: one image at a time reads better than two slivers. */
+@media (max-width: 520px) {
+  .journal-scattered-layout {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

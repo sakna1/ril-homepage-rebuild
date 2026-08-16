@@ -20,9 +20,9 @@ type Itinerary = {
 }
 
 /**
- * The page presents the three signature packages and nothing else. The themes,
+ * The page presents the three signature journeys and nothing else. The themes,
  * sub-packages and inclusions steps that used to follow were removed while the
- * package content is being rewritten — see git history to restore them.
+ * journey content is being rewritten — see git history to restore them.
  */
 
 // The three signature structures shown on this page, in order.
@@ -36,7 +36,7 @@ const fallbackItineraries: readonly Itinerary[] = [
     duration: '10 Days',
     priceFrom: 4850,
     character:
-      'Brisk and spirited. The island’s defining sights gathered without a wasted morning — for travellers whose diary is short but whose appetite is not.',
+      'The island at a spirited pace, with not a morning wasted. For travellers whose diary is short and whose appetite is anything but.',
     route: [
       'Colombo',
       'Sigiriya (Cultural Triangle)',
@@ -65,7 +65,7 @@ const fallbackItineraries: readonly Itinerary[] = [
     duration: '16 Days',
     priceFrom: 7900,
     character:
-      'Immersive and unhurried. The celebrated landmarks are all here, but so is the time to sit with them — cultural depth balanced against long, unclaimed afternoons.',
+      'Every celebrated place, and the long unclaimed afternoons in between. Time enough to sit with a view rather than photograph it and move on.',
     route: [
       'Negombo',
       'Anuradhapura',
@@ -97,7 +97,7 @@ const fallbackItineraries: readonly Itinerary[] = [
     duration: '21 Days',
     priceFrom: 12400,
     character:
-      'The grand overland passage. The entire island read from north to south, at the pace such a journey deserves — including the quarters most itineraries never reach.',
+      'The whole island read slowly, north to south. Including the quarters most travellers are never shown, at the pace such a journey has always deserved.',
     route: [
       'Colombo',
       'Wilpattu National Park',
@@ -234,37 +234,37 @@ export function ItinerariesPage() {
         </div>
 
         <div className="itin-hero__copy">
-          <span className="itin-eyebrow itin-eyebrow--light">Signature Journeys</span>
+          <span className="itin-eyebrow itin-eyebrow--light">Three Ways to Meet the Island</span>
           <h1>
-            Three Choices, and
-            <em>the Journey Is Yours.</em>
+            How long should a place
+            <em>be allowed to keep you?</em>
           </h1>
           <p>
-            Begin with a structure. Ten days, sixteen, or twenty-one — the shape of the journey is
-            the first thing to settle, and everything else follows from it.
+            Ten days, sixteen, or twenty-one. Tell us how much time Sri Lanka gets, and we will
+            spend every hour of it well.
           </p>
           <a className="itin-hero__cta" href="#itin-collection">
-            Begin With a Package
+            See the Three Journeys
             <span aria-hidden="true">→</span>
           </a>
         </div>
       </section>
 
-      <section className="itin-collection" id="itin-collection" aria-label="Choose a package">
+      <section className="itin-collection" id="itin-collection" aria-label="Choose a journey">
         <div className="itin-gallery4">
           <header className="itin-gallery4__head">
             <div className="itin-gallery4__intro">
-              <span className="itin-eyebrow">The Package</span>
-              <h2>Chosen rhythms, not fixed schedules.</h2>
+              <span className="itin-eyebrow">Choose Your Pace</span>
+              <h2>Time is the real luxury.</h2>
               <p>
-                Ten days, sixteen, or twenty-one. The difference is not how much is seen, but how
-                much time each place is given.
+                Ten days, sixteen, or twenty one choose the one that lets you linger where it
+                matters. We take care of everything in between.
               </p>
             </div>
             <div className="itin-gallery4__nav">
               <button
                 type="button"
-                aria-label="Previous package"
+                aria-label="Previous journey"
                 onClick={() => scrollToIndex(Math.max(0, current - 1))}
                 disabled={!canPrev}
               >
@@ -272,7 +272,7 @@ export function ItinerariesPage() {
               </button>
               <button
                 type="button"
-                aria-label="Next package"
+                aria-label="Next journey"
                 onClick={() => scrollToIndex(Math.min(visible.length - 1, current + 1))}
                 disabled={!canNext}
               >
@@ -312,7 +312,7 @@ export function ItinerariesPage() {
                           {shortDescription(itinerary.character)}
                         </span>
                         <span className="itin-card4__more">
-                          {isChosen ? 'Selected ✓' : 'Choose this package'}{' '}
+                          {isChosen ? 'Yours ✓' : 'This is the one'}{' '}
                           <span aria-hidden="true">→</span>
                         </span>
                       </span>
@@ -339,22 +339,22 @@ export function ItinerariesPage() {
       </section>
 
       <section className="itin-closing">
-        <span className="itin-eyebrow itin-eyebrow--light">A Private Commission</span>
+        <span className="itin-eyebrow itin-eyebrow--light">Written for One Party Only</span>
         <h2>
-          None of these is the finished article.
+          None of these is the finished thing.
           <em>Yours will be.</em>
         </h2>
         <p>
-          These structures exist so there is something to react to. Lengthen a coastline, remove a
-          city, add a week in the hills — every journey we arrange is written for one party and
-          travelled by no one else.
+          Think of these as an opening line rather than a last word. Stretch a coastline, lose a
+          city, steal another week in the hills — no two journeys we arrange have ever read the
+          same, and yours will be travelled by no one else.
         </p>
         <div className="itin-closing__actions">
           <a className="itin-button itin-button--light" href="/contact">
-            Begin a Conversation
+            Start the Conversation
           </a>
           <a className="itin-button itin-button--ghost-light" href="/expectations">
-            Design Your Own Trip
+            Tell Us What You Are Imagining
           </a>
         </div>
       </section>

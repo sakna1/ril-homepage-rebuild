@@ -3,8 +3,15 @@ import './TravelPreparationPage.css'
 import { experienceImages } from '../ExperiencesPage/images'
 import { sharedHeritageWorld } from '../../journey/discoveryWorlds'
 
+/*
+ * Two images, both deliberately modest. The page is a handbook, not a gallery —
+ * a full-bleed photograph here pushes the reading matter below the fold and
+ * says nothing the copy does not already say.
+ */
 const images = {
   hero: experienceImages.poolVilla,
+  dawn: experienceImages.sigiriyaSunrise,
+  concierge: experienceImages.teaEstate,
 } as const
 
 const handbookLinks = [
@@ -104,9 +111,9 @@ const assurances = [
   },
 ] as const
 
-function SectionHeading({ title, inverse = false }: { title: string; inverse?: boolean }) {
+function SectionHeading({ title }: { title: string }) {
   return (
-    <div className={`prep-section-heading${inverse ? ' prep-section-heading--inverse' : ''}`}>
+    <div className="prep-section-heading">
       <i />
       <h2>{title}</h2>
     </div>
@@ -119,57 +126,67 @@ export function TravelPreparationPage() {
   return (
     <main className="travel-prep-page">
       <section className="prep-hero">
-        <div className="prep-hero-copy">
-          <div className="prep-kicker">
-            <span />
-            <p>Your Journey Begins</p>
-          </div>
-          <h1>
-            On Arrival
-          </h1>
-          <i className="prep-gold-rule" />
-          <p className="prep-hero-intro">
-            From the moment your flight touches Sri Lanka, Royale Isles Lanka has already considered the details that
-            allow you to simply arrive, breathe, and begin.
-          </p>
-          <nav className="prep-chip-nav" aria-label="On Arrival sections">
-            {handbookLinks.map((link) => (
-              <a key={link.href} href={link.href}>
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-        <div className="prep-hero-image">
-          <img src={images.hero} alt="Private villa pool overlooking misty Sri Lankan highlands at dawn" />
-          <aside className="prep-hero-protocol" aria-label="Arrival care highlights">
-            <p>Arrival Care</p>
-            <h2>Everything is in motion before you land.</h2>
-            <ul>
-              {heroProtocols.map((protocol) => (
-                <li key={protocol}>{protocol}</li>
+        <div className="prep-container prep-hero-inner">
+          <div className="prep-hero-text">
+            <div className="prep-kicker">
+              <span />
+              <p>Your Journey Begins</p>
+            </div>
+            <h1>On Arrival</h1>
+            <i className="prep-gold-rule" />
+            <p className="prep-hero-intro">
+              From the moment your flight touches Sri Lanka, Royale Isles Lanka has already considered the details that
+              allow you to simply arrive, breathe, and begin.
+            </p>
+            <nav className="prep-chip-nav" aria-label="On Arrival sections">
+              {handbookLinks.map((link) => (
+                <a key={link.href} href={link.href}>
+                  {link.label}
+                </a>
               ))}
-            </ul>
-          </aside>
+            </nav>
+          </div>
+
+          {/* A staggered pair rather than one plate — it fills the band without
+              becoming the photograph the page used to open with. */}
+          <div className="prep-hero-collage" aria-hidden="true">
+            <img src={images.hero} alt="" />
+            <img src={images.dawn} alt="" />
+          </div>
+        </div>
+      </section>
+
+      {/* The arrival checklist used to float on top of the photograph, where it
+          fought the image for legibility. It reads better as its own strip. */}
+      <section className="prep-arrival-care" aria-label="Arrival care highlights">
+        <div className="prep-container">
+          <p className="prep-arrival-care__label">Arrival Care — everything is in motion before you land</p>
+          <ul className="prep-arrival-care__list">
+            {heroProtocols.map((protocol) => (
+              <li key={protocol}>{protocol}</li>
+            ))}
+          </ul>
         </div>
       </section>
 
       <section className="prep-assurance" aria-label="Private arrival assurance">
-        <div className="prep-assurance-copy">
-          <span>For Principals, Family Offices & Private Travellers</span>
-          <p>
-            Arrival should never feel like a list of tasks. It should feel like being expected, recognised, and gracefully
-            looked after from the first minute.
-          </p>
+        <div className="prep-container prep-assurance-inner">
+          <div className="prep-assurance-copy">
+            <span>For Principals, Family Offices &amp; Private Travellers</span>
+            <p>
+              Arrival should never feel like a list of tasks. It should feel like being expected, recognised, and
+              gracefully looked after from the first minute.
+            </p>
+          </div>
+          <dl className="prep-assurance-grid">
+            {assurancePoints.map((point) => (
+              <div key={point.label}>
+                <dt>{point.value}</dt>
+                <dd>{point.label}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <dl className="prep-assurance-grid">
-          {assurancePoints.map((point) => (
-            <div key={point.label}>
-              <dt>{point.value}</dt>
-              <dd>{point.label}</dd>
-            </div>
-          ))}
-        </dl>
       </section>
 
       <section className="prep-section prep-payments" id="arranged">
@@ -197,44 +214,49 @@ export function TravelPreparationPage() {
 
       <section className="prep-section prep-faq" id="assurance">
         <div className="prep-faq-container">
-          <div className="prep-faq-header">
-            <div>
-              <SectionHeading title="Quiet Assurances" />
-              <p>
-                The purpose of preparation is not to give you more to remember. It is to remove the need to keep track
-                of what has already been considered.
-              </p>
+          <div className="prep-faq-intro">
+            <SectionHeading title="Quiet Assurances" />
+            <p>
+              The purpose of preparation is not to give you more to remember. It is to remove the need to keep track of
+              what has already been considered.
+            </p>
+          </div>
+
+          {/*
+            The advisory card sits beside the questions it answers, not beside
+            the two-line intro — which left most of a column empty.
+          */}
+          <div className="prep-faq-body">
+            <div className="prep-faq-panel">
+              <div className="prep-faq-list">
+                {assurances.map((item, index) => (
+                  <details key={item.title} open={openAssuranceIndex === index}>
+                    <summary
+                      onClick={(event) => {
+                        event.preventDefault()
+                        setOpenAssuranceIndex((currentIndex) => (currentIndex === index ? null : index))
+                      }}
+                    >
+                      <div>
+                        <small>Prepared Privately</small>
+                        <strong>{item.title}</strong>
+                      </div>
+                    </summary>
+                    <p>{item.copy}</p>
+                  </details>
+                ))}
+              </div>
             </div>
+
             <aside className="prep-faq-concierge">
+              <img src={images.concierge} alt="Tea terraces in the Sri Lankan hill country at first light" />
               <span>Private Advisory</span>
               <h3>Questions with nuance belong in conversation.</h3>
               <p>
                 For principals, entourages, medical considerations, special access, or discretion-sensitive movement,
                 our team briefs you directly before any journey is finalised.
               </p>
-              <a href="/concierge">Ask The Concierge</a>
             </aside>
-          </div>
-
-          <div className="prep-faq-panel">
-            <div className="prep-faq-list">
-              {assurances.map((item, index) => (
-                <details key={item.title} open={openAssuranceIndex === index}>
-                  <summary
-                    onClick={(event) => {
-                      event.preventDefault()
-                      setOpenAssuranceIndex((currentIndex) => (currentIndex === index ? null : index))
-                    }}
-                  >
-                    <div>
-                      <small>Prepared Privately</small>
-                      <strong>{item.title}</strong>
-                    </div>
-                  </summary>
-                  <p>{item.copy}</p>
-                </details>
-              ))}
-            </div>
           </div>
         </div>
       </section>

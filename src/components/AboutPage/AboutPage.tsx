@@ -3,6 +3,7 @@ import './AboutPage.css'
 import { aboutImages } from './images'
 import { experienceImages } from '../ExperiencesPage/images'
 import breathSeaImage from '../../assets/images/breath-sea.jpg'
+import { offices } from '../../data/offices'
 
 const custodians = [
   {
@@ -43,44 +44,8 @@ const custodians = [
   },
 ] as const
 
-/**
- * PLACEHOLDER DATA — replace with the real office addresses when supplied.
- * Kept in one place so it can be swapped without touching the markup.
- */
-const branches = [
-  {
-    city: 'Colombo',
-    role: 'Head Office',
-    address: 'Level 12, Access Towers, Union Place, Colombo 02',
-    region: 'Western Province',
-    phone: '+94 76 396 2161',
-    hours: 'Mon – Fri, 09:00 – 18:00',
-  },
-  {
-    city: 'Kandy',
-    role: 'Hill Country Desk',
-    address: '18 Rajapihilla Mawatha, Kandy',
-    region: 'Central Province',
-    phone: '+94 76 396 2162',
-    hours: 'Mon – Sat, 09:00 – 17:30',
-  },
-  {
-    city: 'Galle',
-    role: 'Southern Coast Desk',
-    address: '42 Lighthouse Street, Galle Fort, Galle',
-    region: 'Southern Province',
-    phone: '+94 76 396 2163',
-    hours: 'Mon – Sat, 09:00 – 17:30',
-  },
-  {
-    city: 'Jaffna',
-    role: 'Northern Desk',
-    address: '7 Temple Road, Nallur, Jaffna',
-    region: 'Northern Province',
-    phone: '+94 76 396 2164',
-    hours: 'Mon – Fri, 09:00 – 17:00',
-  },
-] as const
+/** The international office network — shared with the Contact page. */
+const branches = offices
 
 /**
  * PLACEHOLDER DATA — replace with the confirmed banking relationships.
@@ -203,7 +168,12 @@ export function AboutPage() {
       </section>
 
       {/* Branches */}
-      <section className="about-section about-branches" aria-labelledby="about-branches-head">
+      {/* The Contact page links here rather than repeating the addresses. */}
+      <section
+        className="about-section about-branches"
+        id="office-network"
+        aria-labelledby="about-branches-head"
+      >
         <div className="about-container about-branches-inner">
           <header className="about-branches-header">
             <div className="about-custodians-labels">
@@ -212,48 +182,42 @@ export function AboutPage() {
             </div>
             <div>
               <h2 id="about-branches-head" className="about-branches-heading">
-                Our Offices Across
+                Our International
                 <br />
-                The <em>Island.</em>
+                Office <em>Network.</em>
               </h2>
               <p className="about-branches-description">
-                Journeys are arranged from the region they belong to. Each desk is staffed by people
-                who know their province personally, so access, timing, and local judgement are never
-                second-hand.
+                Wherever a journey begins, there is someone close enough to speak with properly.
+                Our offices in Britain, Canada and Bahrain sit alongside the people who arrange
+                everything on the island itself.
               </p>
             </div>
           </header>
 
           <div className="about-branch-grid">
             {branches.map((branch) => (
-              <article key={branch.city} className="about-branch-card">
+              <article key={branch.country} className="about-branch-card">
                 <header>
-                  <h3>{branch.city}</h3>
-                  <span className="about-branch-role">{branch.role}</span>
+                  <h3>{branch.country}</h3>
+                  <span className="about-branch-role">{branch.city}</span>
                 </header>
                 <address>
-                  <span>{branch.address}</span>
+                  {branch.address.map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
                   <span className="about-branch-region">{branch.region}</span>
                 </address>
                 <dl className="about-branch-meta">
                   <div>
-                    <dt>Telephone</dt>
+                    <dt>Text</dt>
                     <dd>
                       <a href={`tel:${branch.phone.replace(/\s/g, '')}`}>{branch.phone}</a>
                     </dd>
-                  </div>
-                  <div>
-                    <dt>Hours</dt>
-                    <dd>{branch.hours}</dd>
                   </div>
                 </dl>
               </article>
             ))}
           </div>
-
-          <p className="about-placeholder-note">
-            Office addresses and direct lines are being confirmed and will be published shortly.
-          </p>
         </div>
       </section>
 

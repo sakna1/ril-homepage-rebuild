@@ -1,0 +1,454 @@
+.bento-gallery {
+  width: 100%;
+}
+
+/* --- Grid ---------------------------------------------------------------- */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: clamp(52px, 5.4vw, 76px);
+  /* Dense packing backfills the gaps the mixed tile sizes would otherwise
+     leave, so the grid stays tight without every tile matching. */
+  grid-auto-flow: dense;
+  gap: clamp(10px, 1.4vw, 16px);
+}
+
+.bento-tile {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--color-surface);
+  box-shadow: 0 18px 40px rgba(4, 26, 18, 0.1);
+  cursor: grab;
+  text-align: left;
+  touch-action: none;
+  appearance: none;
+}
+
+.bento-tile:active {
+  cursor: grabbing;
+}
+
+.bento-tile:focus-visible {
+  outline: 3px solid var(--focus-ring-accent);
+  outline-offset: 3px;
+}
+
+/* Six footprints, from a two-column feature down to a squat single. Heights are
+   all multiples of two rows (6 / 4 / 2), so tall tiles line up with stacks of
+   shorter ones instead of leaving ragged holes. */
+.bento-tile.is-hero {
+  grid-column: span 2;
+  grid-row: span 6;
+}
+
+.bento-tile.is-tall {
+  grid-column: span 1;
+  grid-row: span 6;
+}
+
+.bento-tile.is-block {
+  grid-column: span 2;
+  grid-row: span 4;
+}
+
+.bento-tile.is-standard {
+  grid-column: span 1;
+  grid-row: span 4;
+}
+
+.bento-tile.is-wide {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-tile.is-short {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+/* Film is shot vertically, so it takes the tallest single-column footprint —
+   six rows, the same as `is-tall`, which keeps it on the band rhythm. Taller
+   than that and the grid cannot close the row, leaving a hole beside it. */
+.bento-tile.is-reel {
+  grid-column: span 1;
+  grid-row: span 6;
+}
+
+.bento-tile__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bento-tile__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(4, 26, 18, 0.82), rgba(4, 26, 18, 0.32) 45%, transparent);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.bento-tile:hover .bento-tile__scrim,
+.bento-tile:focus-visible .bento-tile__scrim {
+  opacity: 1;
+}
+
+.bento-tile__copy {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: block;
+  padding: 12px 14px 14px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+.bento-tile:hover .bento-tile__copy,
+.bento-tile:focus-visible .bento-tile__copy {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bento-tile__region {
+  display: block;
+  color: var(--color-accent);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.bento-tile__title {
+  display: block;
+  margin-top: 4px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.5vw, 22px);
+  line-height: var(--line-height-none);
+}
+
+.bento-tile__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: var(--font-size-label);
+  line-height: var(--line-height-caption);
+}
+
+/* Marks a place that has film attached. */
+.bento-tile__play {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background: rgba(4, 26, 18, 0.45);
+  color: #fff;
+  font-size: 11px;
+  backdrop-filter: blur(2px);
+}
+
+/* --- Modal --------------------------------------------------------------- */
+
+.bento-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 3vw, 40px);
+  background: rgba(4, 20, 14, 0.74);
+  backdrop-filter: blur(6px);
+}
+
+.bento-modal__panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 1fr);
+  gap: clamp(20px, 3vw, 34px);
+  width: min(1080px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: clamp(20px, 3vw, 34px);
+  border-radius: 20px;
+  background: var(--color-surface);
+}
+
+.bento-modal__stage {
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(4, 26, 18, 0.12);
+}
+
+.bento-modal__stage img {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  object-fit: cover;
+}
+
+.bento-modal__stage video {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  object-fit: cover;
+  background: #000;
+}
+
+/* A reel is portrait, so it gets a 9:16 stage with far more height than the
+   landscape stills — and the panel narrows its media column to suit. */
+.bento-modal__panel.is-reel {
+  grid-template-columns: minmax(0, 0.62fr) minmax(280px, 1fr);
+}
+
+.bento-modal__stage.is-reel {
+  background: #000;
+}
+
+.bento-modal__stage.is-reel video {
+  width: 100%;
+  height: min(76vh, 760px);
+  max-height: none;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+}
+
+.bento-modal__stage iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 60vh;
+  border: 0;
+}
+
+.bento-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.bento-modal__close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.bento-modal__close:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.bento-modal__region {
+  color: var(--color-accent);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.bento-modal__copy h3 {
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 400;
+  line-height: var(--line-height-none);
+}
+
+.bento-modal__desc {
+  margin-top: 12px;
+  color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
+}
+
+.bento-modal__facts {
+  margin-top: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.bento-modal__facts dt {
+  color: var(--color-accent);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.bento-modal__facts dd {
+  margin: 6px 0 0;
+  color: var(--color-text);
+  font-size: var(--font-size-label);
+  line-height: var(--line-height-relaxed);
+}
+
+.bento-modal__nearby {
+  margin-top: 22px;
+}
+
+.bento-modal__nearby h4 {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.bento-modal__nearby ul {
+  margin-top: 10px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.bento-modal__nearby li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+}
+
+.bento-modal__nearby li::before {
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+  content: '—';
+}
+
+/* --- Draggable dock ------------------------------------------------------ */
+
+.bento-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  z-index: 1300;
+  transform: translateX(-50%);
+  touch-action: none;
+}
+
+.bento-dock__rail {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: min(92vw, 760px);
+  padding: 10px 14px;
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  border-radius: 16px;
+  background: rgba(4, 26, 18, 0.55);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 44px rgba(4, 26, 18, 0.4);
+  overflow-x: auto;
+  cursor: grab;
+}
+
+.bento-dock__rail:active {
+  cursor: grabbing;
+}
+
+.bento-dock__thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  margin-right: -8px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  appearance: none;
+}
+
+.bento-dock__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bento-dock__thumb.is-current {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.75);
+}
+
+.bento-dock__thumb:focus-visible {
+  outline: 2px solid var(--focus-ring-accent);
+  outline-offset: 2px;
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .bento-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bento-modal__panel.is-reel {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-modal__stage.is-reel video {
+    height: min(56vh, 560px);
+  }
+
+  .bento-tile.is-hero {
+    grid-row: span 5;
+  }
+
+  .bento-modal__panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 56px;
+  }
+
+  .bento-tile.is-hero,
+  .bento-tile.is-block,
+  .bento-tile.is-wide {
+    grid-column: span 2;
+  }
+
+  .bento-tile.is-hero {
+    grid-row: span 5;
+  }
+
+  .bento-tile__copy {
+    opacity: 1;
+    transform: none;
+  }
+
+  .bento-tile__scrim {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-tile__scrim,
+  .bento-tile__copy {
+    transition: none;
+  }
+}

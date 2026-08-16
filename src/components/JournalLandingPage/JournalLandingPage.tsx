@@ -22,13 +22,6 @@ type Texture = {
   cite?: string
 }
 
-type ArchiveRegion = {
-  title: string
-  places: string
-  description: string
-  marker: string
-}
-
 type Vignette = {
   entry: string
   title: string
@@ -77,37 +70,6 @@ const textures: Texture[] = [
   { label: 'Monsoon · Aug', image: journalAssets.monsoonStone, alt: 'Highland horizon in mist above the Sri Lankan hills', rotate: '-2deg' },
   { label: 'Spice Garden · Matale', image: journalAssets.cardamom, alt: 'Ground cardamom and star anise on stone mortar', wide: true },
 ]
-
-const archiveRegions: ArchiveRegion[] = [
-  {
-    title: 'The South',
-    places: 'Galle · Tangalle · Mirissa · Weligama',
-    description: 'Fortified coasts, market mornings, and the particular amber of afternoon light on Portuguese stone.',
-    marker: 'S',
-  },
-  {
-    title: 'The Hill Country',
-    places: 'Kandy · Ella · Nuwara Eliya · Haputale',
-    description: 'Mist-wrapped tea estates, colonial bungalows, and the slow patience of mountain time.',
-    marker: 'H',
-  },
-  {
-    title: 'The Coast',
-    places: 'Trinco · Arugam Bay · Kalpitiya · Negombo',
-    description: 'Surf fishermen, outrigger at dawn, and water colours that refuse to be named.',
-    marker: 'C',
-  },
-  {
-    title: 'The Ancient North',
-    places: 'Jaffna · Anuradhapura · Polonnaruwa',
-    description: 'Ruins absorbed by jungle, palmyrah horizons, and the particular weight of very old stone.',
-    marker: 'N',
-  },
-]
-
-function getArchiveRegionId(title: string) {
-  return `journal-region-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
-}
 
 const vignettes: Vignette[] = [
   {
@@ -278,17 +240,6 @@ function VignetteCard({ vignette }: { vignette: Vignette }) {
   )
 }
 
-function ArchiveCard({ region }: { region: ArchiveRegion }) {
-  return (
-    <article className="journal-archive-card" id={getArchiveRegionId(region.title)}>
-      <span className="journal-archive-marker">{region.marker}</span>
-      <h3>{region.title}</h3>
-      <p className="journal-archive-places">{region.places}</p>
-      <p>{region.description}</p>
-    </article>
-  )
-}
-
 export function JournalLandingPage() {
   return (
     <main className="journal-landing-page">
@@ -315,9 +266,11 @@ export function JournalLandingPage() {
               <li>Privately vetted</li>
               <li>Access-minded</li>
             </ul>
+            {/* The archive section was removed, and /concierge redirects home
+                while the assistant is hidden — both links now go somewhere. */}
             <div className="journal-hero-actions" aria-label="Journal actions">
-              <a href="#journal-archive">Explore the Archive</a>
-              <a href="/concierge">Ask the Concierge</a>
+              <a href="#journal-dispatches">Read the Dispatches</a>
+              <a href="/contact">Ask the Concierge</a>
             </div>
           </div>
 
@@ -419,7 +372,7 @@ export function JournalLandingPage() {
         </div>
       </section>
 
-      <section className="journal-stories">
+      <section className="journal-stories" id="journal-dispatches">
         <div className="journal-container">
           <SectionRuleHeader title="Private Dispatches" meta="Two long-form entries · Read before you travel" />
 
@@ -474,69 +427,14 @@ export function JournalLandingPage() {
         <img src={journalAssets.sigiriyaPanorama} alt="Sigiriya rock fortress rising above the Sri Lankan landscape" />
         <div>
           <p>Featured Passage · Sigiriya · Feb 2024</p>
+          {/* No forced line breaks: the quote wraps to whatever width it has. */}
           <blockquote>
-            "The King climbed this
-            <br />
-            rock to be closer to God.
-            <br />
-            I climbed it to understand why."
+            "The King climbed this rock to be closer to God. I climbed it to understand why."
           </blockquote>
           <cite>— Journal Entry #055 · Lion Rock · 370m Ascent</cite>
         </div>
       </section>
 
-      <section className="journal-region-guide" aria-labelledby="journal-region-guide-title">
-        <div className="journal-container">
-          <div className="journal-region-guide-card">
-            <div>
-              <p>Regional Intelligence</p>
-              <h2 id="journal-region-guide-title">Choose the chapter that matches your private journey.</h2>
-            </div>
-            <nav aria-label="Journal regions">
-              {archiveRegions.map((region) => (
-                <a href={`#${getArchiveRegionId(region.title)}`} key={region.title}>
-                  <span>{region.title}</span>
-                  <small>{region.places}</small>
-                </a>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </section>
-
-      <section className="journal-archive" id="journal-archive">
-        <div className="journal-container">
-          <SectionRuleHeader title="The Private Archive" meta="55 entries · 4 volumes · Ongoing" />
-          <div className="journal-archive-grid">
-            {archiveRegions.map((region) => (
-              <ArchiveCard key={region.title} region={region} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="journal-dispatch">
-        <div className="journal-dispatch-inner">
-          <div className="journal-dispatch-mark" aria-hidden="true">
-            ✦
-          </div>
-          <p>Members&apos; Monthly Dispatch</p>
-          <h2>
-            Receive Sri Lanka
-            <br />
-            <em>before it becomes obvious.</em>
-          </h2>
-          <p>
-            One discreet letter each month: a new private address, a cultural note from our team, and
-            a single seasonal recommendation worth planning around.
-          </p>
-          <form className="journal-newsletter" action="#" onSubmit={(event) => event.preventDefault()}>
-            <input type="email" aria-label="Email address for the monthly dispatch" placeholder="Your email address" />
-            <button type="submit">Request The Dispatch</button>
-          </form>
-          <small>Private correspondence. No campaigns. Unsubscribe with one click.</small>
-        </div>
-      </section>
     </main>
   )
 }

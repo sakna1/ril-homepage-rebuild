@@ -1,16 +1,28 @@
+/*
+ * On Arrival.
+ *
+ * Rewritten from a version that carried styles for a dozen sections the page no
+ * longer renders (visa cards, season tables, region cards, etiquette, notes).
+ * Only the live sections are described here; see git history for the rest.
+ *
+ * Sizing is container-relative — auto-fit grids and clamp() rather than a
+ * ladder of viewport breakpoints — so the page holds together at any width
+ * instead of only at the four it was once tested on.
+ */
+
 .travel-prep-page {
   --prep-gold: var(--color-accent);
   --prep-ivory: var(--color-surface);
-  --prep-stone: var(--color-surface-secondary);
   --prep-green: var(--color-primary);
   --prep-forest: var(--color-surface-atmospheric);
   --prep-text: var(--color-text);
   --prep-muted: var(--color-text-muted);
-  --prep-faint: var(--color-text-faint);
-  --prep-border: var(--color-border);
+  --prep-line: rgba(26, 26, 26, 0.1);
+  --prep-gold-line: rgba(197, 160, 89, 0.28);
+  /* One knob for the vertical rhythm of every band. */
+  --prep-band: clamp(36px, 4vw, 64px);
 
   width: 100%;
-  overflow: hidden;
   background:
     radial-gradient(circle at 12% 6%, rgba(197, 160, 89, 0.13), transparent 28%),
     linear-gradient(180deg, var(--prep-ivory) 0%, var(--color-surface-warm) 45%, var(--prep-ivory) 100%);
@@ -22,43 +34,40 @@
   width: 100%;
   max-width: var(--container-max-prep);
   margin: 0 auto;
-  padding: 0 var(--container-gutter-desktop);
+  padding-inline: clamp(18px, 3.5vw, 64px);
 }
+
+/* ---------- Hero ---------- */
 
 .prep-hero {
-  position: relative;
+  padding-block: clamp(28px, 3vw, 48px) var(--prep-band);
+  border-bottom: 1px solid var(--prep-line);
+}
+
+/*
+ * Copy left, one modest portrait right. The right track is fluid and capped, so
+ * the photograph stays a supporting note at every width rather than the 750px
+ * square that used to own the fold.
+ */
+.prep-hero-inner {
   display: grid;
-  grid-template-columns: minmax(420px, 0.9fr) minmax(0, 1.1fr);
-  padding-top: 73px;
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 32vw, 440px);
+  gap: clamp(28px, 4vw, 72px);
+  align-items: center;
 }
 
-.prep-hero::before {
-  content: '';
-  position: absolute;
-  inset: 56px auto 56px 32px;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(197, 160, 89, 0.42), transparent);
+.prep-hero-text {
+  min-width: 0;
 }
 
-.prep-hero-copy {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 48px 64px;
-}
-
-.prep-kicker,
-.prep-cta-mark {
+.prep-kicker {
   display: flex;
   align-items: center;
   gap: 20px;
   color: var(--prep-gold);
 }
 
-.prep-kicker span,
-.prep-cta-mark i {
+.prep-kicker span {
   width: 40px;
   height: 1px;
   background: currentColor;
@@ -66,32 +75,33 @@
 
 .prep-kicker p {
   font-size: 12px;
-  letter-spacing: 4.2px;
+  letter-spacing: 0.32em;
   line-height: var(--line-height-caption);
   text-transform: uppercase;
 }
 
 .prep-hero h1 {
-  margin-top: 24px;
+  margin-top: 18px;
   color: var(--prep-green);
   font-family: var(--font-display);
-  font-size: clamp(60px, 5.6vw, 92px);
+  font-size: clamp(46px, 5.4vw, 84px);
   font-weight: 400;
-  letter-spacing: -0.055em;
-  line-height: 0.96;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
 }
 
 .prep-gold-rule {
+  display: block;
   width: 56px;
   height: 1px;
-  margin: 24px 0 20px;
+  margin: 20px 0 18px;
   background: var(--prep-gold);
 }
 
 .prep-hero-intro {
-  max-width: 444px;
+  max-width: 52ch;
   color: var(--prep-muted);
-  font-size: 18px;
+  font-size: clamp(15px, 1.1vw, 18px);
   font-weight: 300;
   line-height: 1.75;
 }
@@ -100,20 +110,22 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  max-width: 680px;
-  margin-top: 26px;
+  margin-top: 24px;
 }
 
 .prep-chip-nav a {
   padding: 9px 16px;
   border: 1px solid rgba(26, 26, 26, 0.15);
-  color: rgba(26, 26, 26, 0.45);
+  border-radius: 999px;
+  color: rgba(26, 26, 26, 0.5);
   font-size: 12px;
-  letter-spacing: 2.16px;
+  letter-spacing: 0.18em;
   line-height: var(--line-height-caption);
   text-decoration: none;
   text-transform: uppercase;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .prep-chip-nav a:hover {
@@ -121,218 +133,174 @@
   color: var(--prep-green);
 }
 
-.prep-hero-image {
-  position: relative;
-  min-height: 560px;
-  margin: 32px 32px 32px 0;
-  overflow: hidden;
-  border: 1px solid rgba(197, 160, 89, 0.24);
-  background: var(--prep-forest);
-  box-shadow: 0 24px 64px rgba(13, 31, 23, 0.18);
+/*
+ * A staggered pair: the left plate runs the full height, the right one drops a
+ * step. Six rows give the offset without magic margins.
+ *
+ * Tracks are minmax(0, 1fr) rather than 1fr — a bare 1fr is minmax(auto, 1fr),
+ * and an image's automatic minimum size is its intrinsic height, so the rows
+ * would inflate past this container once the photographs decode.
+ */
+.prep-hero-collage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  height: clamp(260px, 29vw, 420px);
 }
 
-.prep-hero-image::before {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  inset: 16px;
-  border: 1px solid rgba(251, 249, 245, 0.22);
-  pointer-events: none;
-}
-
-.prep-hero-image::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(13, 31, 23, 0.08), rgba(13, 31, 23, 0.5)),
-    linear-gradient(90deg, transparent 52%, rgba(0, 66, 37, 0.34));
-  pointer-events: none;
-}
-
-.prep-hero-image img {
+.prep-hero-collage img {
   display: block;
   width: 100%;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
   object-fit: cover;
-  opacity: 0.82;
-  filter: saturate(0.82) contrast(1.08);
+  object-position: center;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(13, 31, 23, 0.16);
 }
 
-.prep-hero-protocol {
-  position: absolute;
-  z-index: 2;
-  left: 32px;
-  bottom: 32px;
-  width: 340px;
-  max-width: calc(100% - 64px);
-  padding: 22px;
-  border: 1px solid rgba(197, 160, 89, 0.34);
-  background: rgba(13, 31, 23, 0.78);
-  backdrop-filter: blur(12px);
-  color: var(--prep-ivory);
+.prep-hero-collage img:first-child {
+  grid-column: 1;
+  grid-row: 1 / span 5;
 }
 
-.prep-hero-protocol > p {
+.prep-hero-collage img:last-child {
+  grid-column: 2;
+  grid-row: 2 / span 5;
+}
+
+/* ---------- Arrival care strip ---------- */
+
+.prep-arrival-care {
+  padding-block: clamp(20px, 2.4vw, 32px);
+  border-bottom: 1px solid var(--prep-line);
+  background: rgba(232, 225, 213, 0.32);
+}
+
+.prep-arrival-care__label {
   color: var(--prep-gold);
   font-size: 10px;
-  letter-spacing: 3px;
+  letter-spacing: 0.3em;
   line-height: var(--line-height-caption);
   text-transform: uppercase;
 }
 
-.prep-hero-protocol h2 {
-  margin-top: 10px;
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.16;
-}
-
-.prep-hero-protocol ul {
+.prep-arrival-care__list {
   display: grid;
-  gap: 10px;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(197, 160, 89, 0.26);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 10px clamp(14px, 2vw, 28px);
+  margin-top: 16px;
+  padding: 0;
   list-style: none;
 }
 
-.prep-hero-protocol li {
+.prep-arrival-care__list li {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  gap: 10px;
+  min-width: 0;
+  color: rgba(26, 26, 26, 0.6);
   font-size: 12px;
-  letter-spacing: 1.2px;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
   text-transform: uppercase;
 }
 
-.prep-hero-protocol li::before {
+.prep-arrival-care__list li::before {
   content: '';
+  flex: none;
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: var(--prep-gold);
 }
 
-.prep-contents {
-  position: sticky;
-  top: 66px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  min-height: 58px;
-  padding: 0 80px;
-  border-top: 1px solid var(--prep-border);
-  border-bottom: 1px solid var(--prep-border);
-  background: color-mix(in srgb, var(--prep-ivory) 88%, transparent);
-  backdrop-filter: blur(12px);
-}
+/* ---------- Assurance band ---------- */
 
 .prep-assurance {
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  gap: clamp(24px, 3vw, 48px);
-  align-items: center;
-  padding: clamp(32px, 4vw, 44px) clamp(24px, 5vw, 64px);
-  border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+  padding-block: var(--prep-band);
   background:
     linear-gradient(90deg, rgba(13, 31, 23, 0.98), rgba(0, 66, 37, 0.94)),
     var(--prep-forest);
   color: var(--prep-ivory);
 }
 
+.prep-assurance-inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: clamp(24px, 3vw, 48px);
+  align-items: center;
+}
+
 .prep-assurance-copy {
-  max-width: 620px;
   min-width: 0;
 }
 
 .prep-assurance-copy span {
   color: var(--prep-gold);
   font-size: 10px;
-  letter-spacing: 4px;
+  letter-spacing: 0.34em;
   line-height: var(--line-height-caption);
   text-transform: uppercase;
 }
 
 .prep-assurance-copy p {
   margin-top: 14px;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.74);
   font-family: var(--font-display);
-  font-size: clamp(22px, 2.2vw, 30px);
+  font-size: clamp(21px, 2.1vw, 30px);
   font-weight: 300;
   line-height: 1.3;
 }
 
 .prep-assurance-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 1px;
   min-width: 0;
-  min-height: 160px;
-  border: 1px solid rgba(197, 160, 89, 0.28);
+  margin: 0;
+  border: 1px solid var(--prep-gold-line);
+  background: var(--prep-gold-line);
 }
 
+/* Gap plus a background paints the dividers, so no nth-child border juggling
+   is needed when the columns reflow. */
 .prep-assurance-grid div {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-width: 0;
-  padding: clamp(16px, 1.8vw, 20px) clamp(10px, 1.2vw, 16px);
+  padding: clamp(16px, 1.8vw, 22px) clamp(10px, 1.2vw, 16px);
+  background: rgba(13, 31, 23, 0.55);
   text-align: center;
-}
-
-.prep-assurance-grid div + div {
-  border-left: 1px solid rgba(197, 160, 89, 0.24);
 }
 
 .prep-assurance-grid dt {
   color: var(--prep-ivory);
   font-family: var(--font-display);
-  font-size: clamp(20px, 1.55vw, 24px);
+  font-size: clamp(19px, 1.5vw, 24px);
   font-style: italic;
   line-height: var(--line-height-ui);
 }
 
 .prep-assurance-grid dd {
   max-width: 100%;
-  margin-top: 10px;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: clamp(9px, 0.72vw, 10px);
-  letter-spacing: clamp(1.6px, 0.18vw, 2.2px);
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 10px;
+  letter-spacing: 0.16em;
   line-height: 1.55;
   text-wrap: balance;
   text-transform: uppercase;
 }
 
-.prep-contents span {
-  padding-right: 24px;
-  border-right: 1px solid var(--prep-border);
-  color: var(--prep-text);
-  font-size: 12px;
-  letter-spacing: 2.4px;
-  text-transform: uppercase;
-}
-
-.prep-contents a {
-  display: inline-flex;
-  gap: 8px;
-  color: var(--prep-muted);
-  font-size: 12px;
-  line-height: var(--line-height-caption);
-  text-decoration: none;
-}
-
-.prep-contents a strong {
-  color: var(--prep-gold);
-  font-weight: 500;
-}
+/* ---------- Shared section furniture ---------- */
 
 .prep-section {
-  padding: 64px 0;
+  padding-block: var(--prep-band);
 }
 
 .prep-section-heading {
@@ -342,6 +310,7 @@
 }
 
 .prep-section-heading i {
+  flex: none;
   width: 32px;
   height: 1px;
   background: var(--prep-gold);
@@ -350,535 +319,171 @@
 .prep-section-heading h2 {
   color: var(--prep-green);
   font-family: var(--font-display);
-  font-size: 32px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.prep-section-heading--inverse h2 {
-  color: var(--prep-ivory);
-}
-
-.prep-visa-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(16px, 2vw, 28px);
-  margin-top: 56px;
-}
-
-.prep-visa-card {
-  display: flex;
-  min-height: clamp(360px, 28vw, 448px);
-  flex-direction: column;
-  padding: clamp(34px, 3vw, 44px);
-  box-shadow: 0 22px 60px rgba(13, 31, 23, 0.05);
-}
-
-.prep-visa-card > p:first-child {
-  color: rgba(26, 26, 26, 0.4);
-  font-size: 12px;
-  letter-spacing: 2.4px;
-  line-height: var(--line-height-caption);
-  text-transform: uppercase;
-}
-
-.prep-visa-card h3 {
-  margin-top: 20px;
-  font-family: var(--font-display);
-  font-size: 24px;
+  font-size: clamp(25px, 2.6vw, 34px);
   font-weight: 400;
   line-height: 1.25;
 }
 
-.prep-visa-card > i {
-  display: block;
-  width: 32px;
-  height: 1px;
-  margin-top: 20px;
-  background: var(--prep-gold);
+/* ---------- Arranged details ---------- */
+
+.prep-payments {
+  border-top: 1px solid var(--prep-line);
+  background: linear-gradient(180deg, rgba(232, 225, 213, 0.2), rgba(251, 249, 245, 0));
 }
 
-.prep-visa-card > p:not(:first-child) {
-  margin-top: 28px;
-  color: rgba(26, 26, 26, 0.55);
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.63;
-}
-
-.prep-visa-card--primary {
-  background:
-    linear-gradient(180deg, rgba(0, 66, 37, 0.96), rgba(13, 31, 23, 0.98)),
-    var(--prep-green);
-  color: var(--prep-ivory);
-}
-
-.prep-visa-card--primary > p:first-child {
-  color: var(--prep-gold);
-}
-
-.prep-visa-card--primary > p:not(:first-child) {
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.prep-visa-card--primary dl {
+/* Exactly six cards, so the column count is stepped rather than auto-fit: 6
+   divides evenly by 3 and by 2, and never leaves a ragged final row. */
+.prep-payment-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 32px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+  margin-top: clamp(22px, 2.4vw, 32px);
 }
 
-.prep-visa-card--primary dl div {
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+.prep-payment-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(20px, 2vw, 26px) clamp(18px, 1.8vw, 22px);
+  border-top: 2px solid var(--prep-gold);
+  border-radius: 0 0 10px 10px;
+  background: rgba(251, 249, 245, 0.66);
+  box-shadow: inset 0 0 0 1px rgba(232, 225, 213, 0.72);
+  transition:
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
 }
 
-.prep-visa-card--primary dt {
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 12px;
+.prep-payment-card:hover {
+  background: rgba(251, 249, 245, 0.94);
+  box-shadow:
+    inset 0 0 0 1px rgba(197, 160, 89, 0.34),
+    0 14px 32px rgba(13, 31, 23, 0.08);
+  transform: translateY(-2px);
 }
 
-.prep-visa-card--primary dd {
-  margin-top: 4px;
-  color: var(--prep-ivory);
+.prep-payment-card p {
+  color: rgba(26, 26, 26, 0.38);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.prep-payment-card h3 {
+  margin-top: 10px;
+  color: var(--prep-green);
   font-family: var(--font-display);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: clamp(18px, 1.5vw, 21px);
+  font-weight: 400;
+  line-height: 1.3;
 }
 
-.prep-visa-card--steps {
-  background:
-    linear-gradient(145deg, rgba(251, 249, 245, 0.3), transparent),
-    var(--prep-stone);
-}
-
-.prep-visa-card--steps ol {
-  display: grid;
-  gap: 20px;
-  margin-top: 28px;
-  list-style: none;
-}
-
-.prep-visa-card--steps li {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  gap: 16px;
-  color: rgba(26, 26, 26, 0.6);
-  font-size: 14px;
+.prep-payment-card small {
+  display: block;
+  margin-top: 10px;
+  color: rgba(26, 26, 26, 0.5);
+  font-size: 13px;
   font-weight: 300;
-  line-height: 1.62;
+  line-height: 1.7;
 }
 
-.prep-visa-card--steps li span {
-  color: var(--prep-gold);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.prep-visa-card--arrival {
-  border: 1px solid rgba(26, 26, 26, 0.1);
-  background: rgba(251, 249, 245, 0.72);
-}
-
-.prep-visa-card--arrival ul {
-  display: grid;
-  gap: 16px;
-  margin-top: 32px;
-  list-style: none;
-}
-
-.prep-visa-card--arrival li {
-  position: relative;
-  padding-left: 18px;
-  color: rgba(26, 26, 26, 0.45);
-  font-size: 12px;
-  line-height: var(--line-height-caption);
-}
-
-.prep-visa-card--arrival li::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  left: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--prep-gold);
-}
-
-.prep-visa-card--arrival strong {
-  color: var(--prep-text);
-}
-
-.prep-visa-card--arrival span::before {
-  content: ' - ';
-}
+/* ---------- What we need from you ---------- */
 
 .prep-service-note {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 24px;
-  margin-top: 24px;
-  padding: 22px 26px;
-  border: 1px solid rgba(197, 160, 89, 0.24);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: clamp(16px, 2vw, 28px);
+  align-items: start;
+  margin-top: clamp(18px, 2vw, 26px);
+  padding: clamp(20px, 2.2vw, 28px);
+  border: 1px solid var(--prep-gold-line);
+  border-radius: 12px;
   background: rgba(232, 225, 213, 0.36);
 }
 
 .prep-service-note span {
   color: var(--prep-gold);
   font-size: 10px;
-  letter-spacing: 4px;
+  letter-spacing: 0.3em;
   line-height: var(--line-height-caption);
   text-transform: uppercase;
 }
 
-.prep-service-note p {
-  color: rgba(26, 26, 26, 0.62);
-  font-size: 15px;
-  font-weight: 300;
-  line-height: 1.8;
-}
-
-.prep-service-note--stacked {
-  grid-template-columns: 220px minmax(0, 1fr);
-  align-items: start;
-}
-
 .prep-service-note--stacked ul {
   display: grid;
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px clamp(16px, 2vw, 32px);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .prep-service-note--stacked li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
   color: rgba(26, 26, 26, 0.62);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 300;
   line-height: 1.7;
 }
 
 .prep-service-note--stacked li::before {
   content: '';
-  display: inline-block;
+  flex: none;
   width: 5px;
   height: 5px;
-  margin-right: 10px;
   border-radius: 50%;
   background: var(--prep-gold);
-  vertical-align: middle;
+  transform: translateY(-2px);
 }
 
-.prep-payments {
-  border-top: 1px solid rgba(26, 26, 26, 0.08);
-  background: linear-gradient(180deg, rgba(232, 225, 213, 0.2), rgba(251, 249, 245, 0));
-}
-
-.prep-payment-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: 1fr;
-  align-items: stretch;
-  gap: 20px;
-  margin-top: 32px;
-}
-
-.prep-payment-card {
-  display: flex;
-  flex-direction: column;
-  grid-column: span 2;
-  min-height: 200px;
-  padding: 26px 22px 22px;
-  border-top: 2px solid var(--prep-gold);
-  background: rgba(251, 249, 245, 0.6);
-  box-shadow: inset 0 0 0 1px rgba(232, 225, 213, 0.72);
-}
-
-.prep-payment-card:nth-last-child(2):nth-child(3n + 1) {
-  grid-column: 2 / span 2;
-}
-
-.prep-payment-card p {
-  color: rgba(26, 26, 26, 0.35);
-  font-size: 12px;
-  letter-spacing: 2.4px;
-  text-transform: uppercase;
-}
-
-.prep-payment-card h3 {
-  margin-top: 8px;
-  color: var(--prep-green);
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 400;
-}
-
-.prep-payment-card small {
-  display: block;
-  margin-top: 8px;
-  color: rgba(26, 26, 26, 0.45);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.6;
-}
-
-.prep-seasons {
-  background:
-    radial-gradient(circle at 82% 16%, rgba(197, 160, 89, 0.14), transparent 34%),
-    linear-gradient(180deg, var(--color-forest-deep), var(--prep-forest));
-  color: var(--prep-ivory);
-}
-
-.prep-seasons-note {
-  margin-top: 18px;
-  padding-left: 72px;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 14px;
-  font-weight: 300;
-  line-height: var(--line-height-caption);
-}
-
-.prep-season-table {
-  margin-top: 64px;
-}
-
-.prep-season-months,
-.prep-season-row {
-  display: grid;
-  grid-template-columns: 208px repeat(12, minmax(28px, 1fr)) 128px;
-  align-items: center;
-  gap: 0;
-}
-
-.prep-season-months {
-  color: rgba(255, 255, 255, 0.25);
-  font-size: 12px;
-  line-height: var(--line-height-caption);
-  text-align: center;
-}
-
-.prep-season-row {
-  min-height: 85px;
-}
-
-.prep-season-region strong {
-  display: block;
-  color: var(--prep-ivory);
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-style: italic;
-  font-weight: 400;
-}
-
-.prep-season-region span {
-  display: block;
-  max-width: 168px;
-  margin-top: 4px;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.38;
-}
-
-.prep-season-row > span {
-  justify-self: center;
-  width: 10px;
-  height: 10px;
-  border: 1px solid rgba(197, 160, 89, 0.32);
-  border-radius: 50%;
-}
-
-.prep-season-row > span.is-active {
-  border-color: var(--prep-gold);
-  background: var(--prep-gold);
-}
-
-.prep-season-row > p {
-  color: var(--prep-gold);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: var(--line-height-caption);
-}
-
-.prep-region-cards {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-top: 80px;
-}
-
-.prep-region-cards img {
-  display: block;
-  width: 100%;
-  height: 290px;
-  object-fit: cover;
-  opacity: 0.78;
-  filter: saturate(0.8) contrast(1.08);
-  transition:
-    opacity 0.25s ease,
-    transform 1.2s ease;
-}
-
-.prep-region-cards article {
-  overflow: hidden;
-}
-
-.prep-region-cards article:hover img {
-  opacity: 0.96;
-  transform: scale(1.025);
-}
-
-.prep-region-cards h3 {
-  margin-top: 16px;
-  color: var(--prep-ivory);
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 400;
-}
-
-.prep-region-cards p {
-  margin-top: 4px;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.38;
-}
-
-.prep-notes {
-  border-top: 1px solid rgba(26, 26, 26, 0.08);
-  background:
-    linear-gradient(90deg, rgba(197, 160, 89, 0.08), transparent 28%),
-    var(--prep-ivory);
-}
-
-.prep-notes-list {
-  margin-top: 64px;
-  border-top: 1px solid rgba(26, 26, 26, 0.08);
-}
-
-.prep-notes-list article {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.7fr);
-  gap: clamp(32px, 5vw, 72px);
-  padding: 44px 0;
-  border-bottom: 1px solid rgba(26, 26, 26, 0.08);
-}
-
-.prep-notes-list h3 {
-  max-width: 320px;
-  color: var(--prep-green);
-  font-family: var(--font-display);
-  font-size: clamp(24px, 2.4vw, 34px);
-  font-weight: 400;
-  line-height: 1.14;
-}
-
-.prep-notes-list p {
-  max-width: 620px;
-  color: rgba(26, 26, 26, 0.55);
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 1.85;
-}
-
-.prep-etiquette {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(197, 160, 89, 0.14), transparent 32%),
-    var(--prep-stone);
-}
-
-.prep-etiquette-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  max-width: 1120px;
-  margin-top: 64px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.prep-etiquette-grid article {
-  min-height: 216px;
-  padding: 36px 36px 36px 38px;
-  border-left: 2px solid var(--prep-gold);
-  background: var(--prep-ivory);
-  box-shadow: 0 18px 45px rgba(13, 31, 23, 0.05);
-  transition:
-    border-color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.prep-etiquette-grid article:hover {
-  border-left-color: var(--prep-green);
-  box-shadow: 0 28px 70px rgba(13, 31, 23, 0.09);
-  transform: translateY(-3px);
-}
-
-.prep-etiquette-grid h3 {
-  color: var(--prep-green);
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.56;
-}
-
-.prep-etiquette-grid p {
-  margin-top: 16px;
-  color: rgba(26, 26, 26, 0.55);
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.8;
-}
+/* ---------- Quiet assurances ---------- */
 
 .prep-faq {
-  position: relative;
-  overflow: hidden;
+  padding-block: var(--prep-band);
   background:
     radial-gradient(circle at 88% 14%, rgba(197, 160, 89, 0.14), transparent 30%),
     linear-gradient(180deg, rgba(232, 225, 213, 0.28), rgba(251, 249, 245, 0.96));
 }
 
-.prep-faq::before {
-  content: '';
-  position: absolute;
-  inset: 32px;
-  border: 1px solid rgba(197, 160, 89, 0.12);
-  pointer-events: none;
-}
-
 .prep-faq-container {
-  position: relative;
-  z-index: 1;
   width: 100%;
   max-width: var(--container-max-prep);
   margin: 0 auto;
-  padding: 0 var(--container-gutter-desktop);
+  padding-inline: clamp(18px, 3.5vw, 64px);
 }
 
-.prep-faq-header {
-  display: grid;
-  grid-template-columns: minmax(0, 760px) minmax(340px, 420px);
-  justify-content: center;
-  gap: clamp(24px, 3vw, 44px);
-  align-items: start;
-}
-
-.prep-faq-header > div > p {
-  max-width: 640px;
-  margin-top: 20px;
+.prep-faq-intro > p {
+  max-width: 62ch;
+  margin-top: 18px;
   padding-left: 22px;
   border-left: 1px solid rgba(197, 160, 89, 0.45);
   color: rgba(26, 26, 26, 0.58);
-  font-size: 16px;
+  font-size: clamp(14px, 1.05vw, 16px);
   font-weight: 300;
   line-height: 1.8;
 }
 
+/* Questions wide, advisory card alongside them. The card is short next to a
+   five-item accordion, so it sticks rather than leaving a gap on scroll. */
+.prep-faq-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(min(100%, 290px), 0.85fr);
+  gap: clamp(16px, 2vw, 28px);
+  align-items: start;
+  margin-top: clamp(22px, 2.4vw, 32px);
+}
+
 .prep-faq-concierge {
-  padding: 26px;
+  position: sticky;
+  top: 96px;
+  min-width: 0;
+  padding: clamp(20px, 2vw, 26px);
   border: 1px solid rgba(197, 160, 89, 0.3);
+  border-radius: 14px;
   background:
     linear-gradient(145deg, rgba(0, 66, 37, 0.94), rgba(13, 31, 23, 0.98)),
     var(--prep-forest);
@@ -886,54 +491,47 @@
   box-shadow: 0 20px 56px rgba(13, 31, 23, 0.14);
 }
 
+/* A small landscape plate, not a hero — it sits above the label. */
+.prep-faq-concierge img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-width: 0;
+  margin-bottom: 18px;
+  object-fit: cover;
+  border-radius: 8px;
+  opacity: 0.9;
+}
+
 .prep-faq-concierge span {
   color: var(--prep-gold);
   font-size: 10px;
-  letter-spacing: 3.6px;
+  letter-spacing: 0.28em;
   line-height: var(--line-height-caption);
   text-transform: uppercase;
 }
 
 .prep-faq-concierge h3 {
-  margin-top: 14px;
+  margin-top: 12px;
   font-family: var(--font-display);
-  font-size: 25px;
+  font-size: clamp(20px, 1.8vw, 25px);
   font-weight: 400;
-  line-height: 1.18;
+  line-height: 1.2;
 }
 
 .prep-faq-concierge p {
-  margin-top: 14px;
-  color: rgba(255, 255, 255, 0.62);
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.64);
   font-size: 14px;
   font-weight: 300;
   line-height: 1.75;
 }
 
-.prep-faq-concierge a {
-  display: inline-flex;
-  margin-top: 20px;
-  padding: 13px 22px;
-  border: 1px solid var(--prep-gold);
-  color: var(--prep-gold);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 2.6px;
-  line-height: var(--line-height-caption);
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.prep-faq-concierge a:hover {
-  background: var(--prep-gold);
-  color: var(--prep-forest);
-}
-
 .prep-faq-panel {
-  margin-top: 32px;
+  min-width: 0;
   padding: 10px;
   border: 1px solid rgba(197, 160, 89, 0.22);
+  border-radius: 14px;
   background: rgba(251, 249, 245, 0.68);
   box-shadow: 0 16px 48px rgba(13, 31, 23, 0.07);
 }
@@ -945,6 +543,7 @@
 
 .prep-faq-list details {
   border: 1px solid rgba(232, 225, 213, 0.86);
+  border-radius: 10px;
   background:
     linear-gradient(90deg, rgba(232, 225, 213, 0.28), rgba(251, 249, 245, 0.92)),
     var(--prep-ivory);
@@ -956,18 +555,21 @@
 }
 
 .prep-faq-list summary {
-  position: relative;
   display: grid;
-  grid-template-columns: 1fr 42px;
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: clamp(12px, 2vw, 20px);
   align-items: center;
-  padding: 20px 24px;
+  padding: clamp(16px, 1.8vw, 20px) clamp(16px, 2vw, 24px);
   cursor: pointer;
   list-style: none;
 }
 
 .prep-faq-list summary::-webkit-details-marker {
   display: none;
+}
+
+.prep-faq-list summary > div {
+  min-width: 0;
 }
 
 .prep-faq-list summary::after {
@@ -984,22 +586,20 @@
   line-height: 1;
   transition:
     background 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease;
+    color 0.25s ease;
 }
 
 .prep-faq-list details[open] summary::after {
+  content: '−';
   background: var(--prep-gold);
   color: var(--prep-forest);
-  content: '-';
-  transform: rotate(180deg);
 }
 
 .prep-faq-list summary small {
   display: block;
   color: rgba(26, 26, 26, 0.36);
   font-size: 10px;
-  letter-spacing: 3px;
+  letter-spacing: 0.26em;
   line-height: var(--line-height-caption);
   text-transform: uppercase;
 }
@@ -1009,26 +609,27 @@
   margin-top: 6px;
   color: var(--prep-green);
   font-family: var(--font-display);
-  font-size: clamp(19px, 1.8vw, 24px);
+  font-size: clamp(17px, 1.7vw, 23px);
   font-weight: 400;
-  line-height: 1.22;
+  line-height: 1.24;
 }
 
 .prep-faq-list details > p {
-  max-width: 760px;
-  margin-left: 24px;
-  padding: 0 24px 22px 0;
+  max-width: 76ch;
+  margin: 0 clamp(16px, 2vw, 24px) clamp(16px, 1.8vw, 22px);
   color: rgba(26, 26, 26, 0.58);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 300;
   line-height: 1.8;
 }
+
+/* ---------- Closing ---------- */
 
 .prep-final-cta {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: 72px 0;
+  padding-block: clamp(48px, 5vw, 72px);
   background:
     radial-gradient(circle at 50% 0%, var(--color-accent-haze), transparent 34%),
     linear-gradient(135deg, var(--color-forest-deep), var(--prep-green) 58%, var(--color-forest-dark));
@@ -1049,22 +650,13 @@
 
 .prep-final-cta-inner {
   position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  width: min(1080px, calc(100% - var(--space-5xl)));
+  width: min(1080px, calc(100% - clamp(36px, 8vw, 120px)));
   margin: 0 auto;
   text-align: center;
-}
-
-.prep-final-cta-inner::before {
-  content: '';
-  position: absolute;
-  inset: -36px;
-  border: 1px solid var(--color-accent-rule);
-  pointer-events: none;
 }
 
 .prep-final-cta-mark {
@@ -1077,7 +669,7 @@
 .prep-final-cta-mark::before,
 .prep-final-cta-mark::after {
   content: '';
-  width: 48px;
+  width: clamp(24px, 5vw, 48px);
   height: 1px;
   background: currentColor;
 }
@@ -1085,17 +677,15 @@
 .prep-final-cta-inner > p:first-of-type {
   color: var(--color-accent);
   font-size: 10px;
-  letter-spacing: 3px;
+  letter-spacing: 0.3em;
   line-height: var(--line-height-caption);
   text-transform: uppercase;
 }
 
 .prep-final-cta h2 {
-  margin-top: 0;
   color: var(--prep-ivory);
   font-family: var(--font-display);
-  font-size: 36px;
-  font-style: normal;
+  font-size: clamp(28px, 3.4vw, 40px);
   font-weight: 400;
   line-height: var(--line-height-display);
 }
@@ -1103,14 +693,12 @@
 .prep-final-cta h2 em {
   color: var(--color-accent);
   font-style: normal;
-  font-weight: 400;
 }
 
 .prep-final-cta-inner > p:nth-of-type(2) {
-  max-width: 760px;
-  margin-top: 0;
+  max-width: 68ch;
   color: var(--color-text-muted-on-dark);
-  font-size: 16px;
+  font-size: clamp(14px, 1.05vw, 16px);
   font-weight: 300;
   line-height: var(--line-height-body);
 }
@@ -1120,7 +708,7 @@
   flex-wrap: wrap;
   gap: 16px;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 8px;
 }
 
 .prep-cta-actions a {
@@ -1129,11 +717,12 @@
   justify-content: center;
   min-height: 50px;
   padding: 16px 36px;
-  border: 1px solid var(--prep-ivory);
+  border: 2px solid var(--prep-gold);
+  border-radius: 999px;
   color: var(--prep-ivory);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 2.4px;
+  letter-spacing: 0.2em;
   line-height: var(--line-height-caption);
   text-align: center;
   text-decoration: none;
@@ -1142,10 +731,6 @@
     background 0.25s ease,
     color 0.25s ease,
     border-color 0.25s ease;
-}
-
-.prep-cta-actions a:first-child {
-  border: 2px solid var(--prep-gold);
 }
 
 .prep-cta-actions a:hover {
@@ -1157,297 +742,80 @@
 .prep-final-cta small {
   color: var(--color-text-subtle-on-dark);
   font-size: 12px;
-  letter-spacing: 0.3px;
   line-height: var(--line-height-caption);
 }
 
-@media (max-width: 1360px) and (min-width: 1201px) {
-  .prep-assurance-grid {
+/* ---------- Breakpoints ---------- */
+
+/* Below this the portrait squeezes the heading, so the hero stacks and the
+   image drops to a wide plate that does not dominate the phone screen. */
+@media (max-width: 860px) {
+  .prep-hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  /* Stacked, the pair would run the full width and become the very thing this
+     rewrite removed. Capped, and shorter so it reads as a plate. */
+  .prep-hero-collage {
+    max-width: 480px;
+    height: clamp(200px, 42vw, 280px);
+  }
+
+  .prep-faq-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Nothing to stick to once it is stacked under the accordion. */
+  .prep-faq-concierge {
+    position: static;
+  }
+
+  /* The concierge card goes full width here; its plate should not follow. */
+  .prep-faq-concierge img {
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 980px) {
+  .prep-payment-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
-  .prep-assurance-grid div:nth-child(odd) {
-    border-left: 0;
-  }
-
-  .prep-assurance-grid div:nth-child(n + 3) {
-    border-top: 1px solid rgba(197, 160, 89, 0.24);
+@media (max-width: 620px) {
+  .prep-payment-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-@media (max-width: 1200px) {
-  .prep-container,
-  .prep-faq-container {
-    padding: 0 var(--space-2xl);
-  }
-
-  .prep-hero {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-
-  .prep-hero::before {
-    display: none;
-  }
-
-  .prep-hero-copy {
-    padding: 64px 40px;
-  }
-
-  .prep-hero-image {
-    min-height: 480px;
-    margin: 0 40px 40px;
-  }
-
-  .prep-assurance {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    padding: 36px;
-  }
-
-  .prep-assurance-grid {
-    width: 100%;
-    max-width: none;
-    justify-self: stretch;
-  }
-
-  .prep-faq-header {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-
-  .prep-faq-concierge {
-    max-width: 640px;
-  }
-
-  .prep-contents {
-    overflow-x: auto;
-    padding: 0 48px;
-  }
-
-  .prep-contents a,
-  .prep-contents span {
-    flex: 0 0 auto;
-  }
-
-  .prep-visa-grid,
-  .prep-payment-grid,
-  .prep-etiquette-grid,
-  .prep-final-cta {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .prep-payment-card,
-  .prep-payment-card:nth-last-child(2):nth-child(3n + 1) {
-    grid-column: auto;
-  }
-
-  .prep-season-table {
-    overflow-x: auto;
-    padding-bottom: 16px;
-  }
-
-  .prep-season-months,
-  .prep-season-row {
-    min-width: 960px;
-  }
-
-  .prep-region-cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .prep-final-cta {
-    gap: 40px;
-    padding-left: 40px;
-    padding-right: 40px;
-  }
-}
-
-@media (max-width: 760px) {
-  .prep-container,
-  .prep-faq-container {
-    padding: 0 var(--space-md);
-  }
-
-  .prep-section {
-    padding: 48px 0;
-  }
-
-  .prep-hero-copy {
-    padding: 56px 24px;
-  }
-
-  .prep-hero h1 {
-    font-size: 52px;
-  }
-
-  .prep-hero-image {
-    min-height: 380px;
-    margin: 0 24px 32px;
-  }
-
-  .prep-hero-protocol {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: auto;
-    margin: -96px 20px 24px;
-  }
-
-  .prep-assurance {
-    padding: 28px 20px;
-  }
-
-  .prep-assurance-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .prep-assurance-grid div:nth-child(odd) {
-    border-left: 0;
-  }
-
-  .prep-assurance-grid div:nth-child(n + 3) {
-    border-top: 1px solid rgba(197, 160, 89, 0.24);
-  }
-
-  .prep-contents {
-    top: 117px;
-    padding: 0 24px;
-  }
-
-  .prep-visa-grid,
-  .prep-payment-grid,
-  .prep-etiquette-grid,
-  .prep-final-cta,
-  .prep-notes-list article {
-    grid-template-columns: 1fr;
-  }
-
-  .prep-visa-card {
-    min-height: auto;
-    padding: 32px 28px;
-  }
-
-  .prep-service-note {
-    grid-template-columns: 1fr;
-    padding: 24px;
-  }
-
-  .prep-payment-grid,
-  .prep-region-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .prep-seasons-note {
-    padding-left: 0;
-  }
-
-  .prep-notes-list article {
-    gap: 12px;
-    padding: 36px 0;
-  }
-
-  .prep-etiquette-grid article {
-    min-height: auto;
-  }
-
-  .prep-faq::before {
-    inset: 18px;
-  }
-
-  .prep-faq-header > div > p {
-    padding-left: 18px;
-    font-size: 15px;
-  }
-
-  .prep-faq-concierge {
-    padding: 22px;
-  }
-
-  .prep-faq-panel {
-    margin-top: 24px;
-    padding: 8px;
-  }
-
+@media (max-width: 560px) {
   .prep-faq-list summary {
-    grid-template-columns: 1fr 36px;
-    gap: 14px;
-    padding: 18px 16px;
+    grid-template-columns: minmax(0, 1fr) 34px;
   }
 
   .prep-faq-list summary::after {
-    width: 36px;
-    height: 36px;
-    font-size: 20px;
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
   }
 
-  .prep-faq-list details > p {
-    margin-left: 20px;
-    padding: 0 20px 26px 0;
-  }
-
-  .prep-final-cta {
-    padding: 56px 24px 152px;
-  }
-
-  .prep-final-cta-inner {
-    width: 100%;
-  }
-
-  .prep-final-cta-inner::before {
-    inset: -28px -12px;
-  }
-
-  .prep-final-cta h2 {
-    font-size: 32px;
-  }
-
-  .prep-final-image img {
-    height: 340px;
-  }
-}
-
-@media (max-width: 680px) {
-  .prep-hero {
-    padding-top: 0;
-  }
-}
-
-@media (max-width: 520px) {
-  .prep-chip-nav a,
   .prep-cta-actions a {
     width: 100%;
   }
+}
 
-  .prep-hero-protocol {
-    margin-top: -72px;
-    padding: 22px;
+@media (prefers-reduced-motion: reduce) {
+  .prep-payment-card,
+  .prep-chip-nav a,
+  .prep-faq-list details,
+  .prep-faq-list summary::after,
+  .prep-cta-actions a,
+  .prep-faq-concierge a {
+    transition: none;
   }
 
-  .prep-assurance-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .prep-assurance-grid div,
-  .prep-assurance-grid div:nth-child(odd) {
-    border-left: 0;
-  }
-
-  .prep-assurance-grid div + div,
-  .prep-assurance-grid div:nth-child(n + 3) {
-    border-top: 1px solid rgba(197, 160, 89, 0.24);
-  }
-
-  .prep-visa-card--primary dl {
-    grid-template-columns: 1fr;
-  }
-
-  .prep-faq-list summary {
-    grid-template-columns: 1fr 34px;
-  }
-
-  .prep-faq-list details > p {
-    margin-left: 0;
-    padding-left: 20px;
+  .prep-payment-card:hover {
+    transform: none;
   }
 }

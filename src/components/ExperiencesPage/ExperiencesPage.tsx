@@ -1,9 +1,10 @@
 import './ExperiencesPage.css'
-import { type MouseEvent, type ReactNode } from 'react'
+import { useState, type MouseEvent, type ReactNode } from 'react'
 import { ArrowIcon } from '../ArrowIcon'
 import { experienceImages } from './images'
 import { experienceThemes } from './experienceThemes'
 import { ThreeDCarousel } from './ThreeDCarousel'
+import { ThemeInquiryForm } from './ThemeInquiryForm'
 
 const curatorTitles = {
   arjun: 'Founder & Lead Curator',
@@ -48,7 +49,19 @@ function TextLink({
   )
 }
 
+const themeTitles = experienceThemes.map((theme) => theme.title)
+
 export function ExpectationsPage() {
+  // Themes are marks of interest that gather into a single enquiry, rather
+  // than seven separate ones.
+  const [chosenThemes, setChosenThemes] = useState<readonly string[]>([])
+  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false)
+
+  const toggleTheme = (title: string) => {
+    setChosenThemes((current) =>
+      current.includes(title) ? current.filter((entry) => entry !== title) : [...current, title],
+    )
+  }
 
   return (
     <main className="experiences-page">
@@ -83,7 +96,7 @@ export function ExpectationsPage() {
               <div>
                 <img src={experienceImages.arjun} alt="" />
                 <span>
-                  <strong>Arjun Fernando</strong>
+                  <strong>Dr Suren Raghavan</strong>
                   <small>{curatorTitles.arjun}</small>
                 </span>
               </div>
@@ -133,26 +146,33 @@ export function ExpectationsPage() {
 
             <div className="experience-themes-board">
               {experienceThemes.map((theme) => {
-                // The map moved to Destinations, so a world opens it there.
-                const worldHref = `/destinations?world=${encodeURIComponent(theme.title)}#discover-map`
+                const isChosen = chosenThemes.includes(theme.title)
 
                 return (
-                  <article key={theme.title} className="theme-chapter-shell">
-                    <a
+                  <article
+                    key={theme.title}
+                    className={`theme-chapter-shell${isChosen ? ' is-chosen' : ''}`}
+                  >
+                    <button
+                      type="button"
                       className="theme-chapter"
-                      href={worldHref}
-                      aria-label={`${theme.title}: see these places on the map`}
+                      onClick={() => toggleTheme(theme.title)}
+                      aria-pressed={isChosen}
+                      aria-label={`${theme.title}: ${isChosen ? 'chosen' : 'choose this world'}`}
                     >
                       <figure>
                         <img src={theme.image} alt={theme.imageAlt} />
                       </figure>
+                      <span className="theme-chapter-mark" aria-hidden="true">
+                        {isChosen ? '✓' : '+'}
+                      </span>
                       <div className="theme-chapter-copy">
                         <p>{theme.traveller}</p>
                         <h3>{theme.title}</h3>
                         <p>{theme.description}</p>
                         <small>{theme.encounter}</small>
                       </div>
-                    </a>
+                    </button>
                   </article>
                 )
               })}
@@ -160,6 +180,70 @@ export function ExpectationsPage() {
           </div>
         </div>
       </section>
+
+      <section className="theme-enquiry-invite experiences-reveal" aria-labelledby="theme-enquiry-title">
+        <div className="experiences-container theme-enquiry-invite__inner">
+          <div className="theme-enquiry-invite__copy">
+            <Eyebrow>Plan With Us</Eyebrow>
+            <h2 id="theme-enquiry-title">
+              Tell us which worlds are yours,
+              <em>and we will shape the rest.</em>
+            </h2>
+            <p>
+              Choose the worlds above that feel true, add anything you are already imagining, and
+              send it across. Your enquiry reaches the destination team directly — no booking, no
+              payment, simply the beginning of a conversation.
+            </p>
+          </div>
+
+          <div className="theme-enquiry-invite__panel">
+            <p className="theme-enquiry-invite__label">
+              {chosenThemes.length === 0
+                ? 'No worlds chosen yet'
+                : `${chosenThemes.length} ${chosenThemes.length === 1 ? 'world' : 'worlds'} chosen`}
+            </p>
+
+            <ul className="theme-enquiry-invite__chips">
+              {chosenThemes.length === 0 ? (
+                <li className="theme-enquiry-invite__chip is-empty">
+                  Select a world above, or choose them inside the form
+                </li>
+              ) : (
+                chosenThemes.map((title) => (
+                  <li key={title} className="theme-enquiry-invite__chip">
+                    {title}
+                    <button
+                      type="button"
+                      onClick={() => toggleTheme(title)}
+                      aria-label={`Remove ${title}`}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))
+              )}
+            </ul>
+
+            <button
+              type="button"
+              className="theme-enquiry-invite__cta"
+              onClick={() => setIsEnquiryOpen(true)}
+            >
+              Send an Enquiry
+              <ArrowIcon />
+            </button>
+          </div>
+        </div>
+      </section>
+      {isEnquiryOpen ? (
+        <ThemeInquiryForm
+          chosenThemes={chosenThemes}
+          themes={themeTitles}
+          onToggleTheme={toggleTheme}
+          onSubmitted={() => setChosenThemes([])}
+          onClose={() => setIsEnquiryOpen(false)}
+        />
+      ) : null}
     </main>
   )
 }

@@ -9,6 +9,12 @@
   padding-top: 0;
 }
 
+/* Any anchor target stops clear of the fixed header instead of sliding under
+   it. Applies to in-page jumps and to fragments arriving from another page. */
+.page-layout-content [id] {
+  scroll-margin-top: 96px;
+}
+
 @media (max-width: 680px) {
   .page-layout-content {
     padding-top: 96px;
@@ -16,5 +22,9 @@
 
   .page-layout-content:has(.figma-homepage) {
     padding-top: 0;
+  }
+
+  .page-layout-content [id] {
+    scroll-margin-top: 108px;
   }
 }

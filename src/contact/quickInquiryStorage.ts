@@ -19,6 +19,8 @@ export type QuickInquiryFormDraft = QuickInquiryFormFields & {
 export type QuickInquirySubmission = {
   id: string
   submittedAt: string
+  /** What the enquiry is about, e.g. the Expectations theme it came from. */
+  topic?: string
   form: QuickInquiryFormFields
 }
 
