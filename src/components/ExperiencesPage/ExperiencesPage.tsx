@@ -1,7 +1,7 @@
 import './ExperiencesPage.css'
 import { useState, type MouseEvent, type ReactNode } from 'react'
 import { ArrowIcon } from '../ArrowIcon'
-import { experienceImages } from './images'
+import { aboutImages } from '../AboutPage/images'
 import { experienceThemes } from './experienceThemes'
 import { ThreeDCarousel } from './ThreeDCarousel'
 import { ThemeInquiryForm } from './ThemeInquiryForm'
@@ -94,7 +94,7 @@ export function ExpectationsPage() {
                 assurance that no one else is moving through the same moment."
               </blockquote>
               <div>
-                <img src={experienceImages.arjun} alt="" />
+                <img src={aboutImages.portraitDrRaghavan} alt="" />
                 <span>
                   <strong>Dr Suren Raghavan</strong>
                   <small>{curatorTitles.arjun}</small>

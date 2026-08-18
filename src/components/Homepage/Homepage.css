@@ -1,3 +1,6 @@
+/* The inset hairline frames that used to box these sections in have been
+   removed — see git history if the framing is ever wanted back. */
+
 .figma-homepage {
   --homepage-section-kicker-size: 12px;
   --homepage-section-kicker-letter-spacing: 3.4px;
@@ -120,15 +123,6 @@
   place-items: center;
   overflow: hidden;
   color: var(--color-text-inverse);
-}
-
-.figma-hero::before {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  inset: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  pointer-events: none;
 }
 
 .figma-hero-video {
@@ -368,14 +362,6 @@
     linear-gradient(180deg, rgba(232, 225, 213, 0.34), var(--color-surface) 44%);
 }
 
-.figma-experiences::before {
-  content: '';
-  position: absolute;
-  inset: 32px;
-  border: 1px solid rgba(197, 160, 89, 0.12);
-  pointer-events: none;
-}
-
 .figma-experiences .figma-container {
   position: relative;
   z-index: 1;
@@ -390,14 +376,6 @@
     radial-gradient(circle at 84% 12%, rgba(197, 160, 89, 0.14), transparent 26%),
     linear-gradient(135deg, rgba(251, 249, 245, 0.98), rgba(232, 225, 213, 0.2) 52%, rgba(251, 249, 245, 0.98)),
     var(--color-surface);
-}
-
-.figma-journal::before {
-  content: '';
-  position: absolute;
-  inset: 32px;
-  border: 1px solid rgba(197, 160, 89, 0.12);
-  pointer-events: none;
 }
 
 .figma-journal .figma-container {
@@ -2602,14 +2580,6 @@
   text-align: center;
 }
 
-.figma-invitation-inner::before {
-  content: '';
-  position: absolute;
-  inset: -48px;
-  border: 1px solid var(--color-accent-rule);
-  pointer-events: none;
-}
-
 .figma-invitation-mark {
   display: flex;
   align-items: center;
@@ -3478,10 +3448,6 @@
     width: 100%;
   }
 
-  .figma-experiences::before,
-  .figma-journal::before {
-    inset: 18px;
-  }
 }
 
 @media (max-width: 560px) {
@@ -3763,10 +3729,6 @@
   .figma-brochure-form button,
   .figma-guide-form button {
     border-left: 1px solid currentColor;
-  }
-
-  .figma-hero::before {
-    inset: 18px;
   }
 
   .figma-hero-content {

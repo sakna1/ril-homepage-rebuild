@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import './DestinationsBentoGallery.css'
 
@@ -329,14 +329,14 @@ function GalleryModal({
 }
 
 /**
- * A bento-style grid of places: tiles of varied height, drag to reorder, and a
- * modal with a draggable dock for hopping between destinations.
+ * A bento-style grid of places: tiles of varied height opening into a modal,
+ * with a draggable dock for hopping between destinations.
  */
 export function DestinationsBentoGallery({ items, openId, onOpenChange }: BentoGalleryProps) {
-  // Tile order is local, since tiles can be dragged around.
-  const [ordered, setOrdered] = useState<readonly BentoMediaItem[]>(() => arrangeForFilms(items))
-  const [isDragging, setIsDragging] = useState(false)
-
+  // Films are placed into the tall slots once; the order is fixed after that.
+  // Tiles used to be draggable, but on a touch screen that turned a scroll into
+  // a reorder — places moved under the reader's thumb.
+  const ordered = useMemo(() => arrangeForFilms(items), [items])
   // Which place is open is the page's business — a marker on the map opens one
   // just as a tile does.
   const selectedItem = openId ? (ordered.find((item) => item.id === openId) ?? null) : null
@@ -364,7 +364,7 @@ export function DestinationsBentoGallery({ items, openId, onOpenChange }: BentoG
                 // reel-shaped footprint rather than the pattern's next shape.
                 className={`bento-tile ${item.video ? 'is-reel' : SPANS[index % SPANS.length]}`}
                 onClick={() => {
-                  if (!isDragging) onOpenChange(item.id)
+                  onOpenChange(item.id)
                 }}
                 aria-label={`View ${item.title}`}
                 variants={{
@@ -382,26 +382,6 @@ export function DestinationsBentoGallery({ items, openId, onOpenChange }: BentoG
                   },
                 }}
                 whileHover={{ scale: 1.02 }}
-                drag
-                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                dragElastic={1}
-                onDragStart={() => setIsDragging(true)}
-                onDragEnd={(_, info) => {
-                  setIsDragging(false)
-                  const moveDistance = info.offset.x + info.offset.y
-                  if (Math.abs(moveDistance) <= 50) return
-
-                  setOrdered((current) => {
-                    const next = [...current]
-                    const targetIndex =
-                      moveDistance > 0
-                        ? Math.min(index + 1, next.length - 1)
-                        : Math.max(index - 1, 0)
-                    const [dragged] = next.splice(index, 1)
-                    next.splice(targetIndex, 0, dragged)
-                    return next
-                  })
-                }}
               >
                 <TileMedia item={item} />
                 <span className="bento-tile__scrim" aria-hidden="true" />

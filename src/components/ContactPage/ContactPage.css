@@ -27,7 +27,9 @@
   --contact-shadow-lg: 0 28px 64px rgba(28, 58, 43, 0.16);
 
   width: 100%;
-  padding-top: 66px;
+  /* No header allowance here: .page-layout-content already clears the fixed
+     header, and adding it twice left a large empty band above the eyebrow. */
+  padding-top: 0;
   font-family: var(--font-body);
   color: var(--contact-green);
   background: var(--contact-cream);
@@ -113,7 +115,7 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding-block: clamp(26px, 2.8vw, 42px) var(--contact-band);
+  padding-block: clamp(18px, 2vw, 28px) var(--contact-band);
 }
 
 /*
@@ -455,12 +457,8 @@ a.contact-channel-value:hover {
   }
 }
 
-/* Phones: the header is taller, and full-width buttons beat a ragged wrap. */
+/* Phones: full-width buttons beat a ragged wrap. */
 @media (max-width: 600px) {
-  .contact-page {
-    padding-top: 96px;
-  }
-
   .contact-hero-buttons {
     gap: 10px;
   }

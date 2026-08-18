@@ -15,20 +15,22 @@ const primaryNavLinks = [
   { href: '/contact', label: 'Contact' },
 ] as const
 
-const loginLink = { href: '/login', label: 'Login' } as const
+// Login was only ever in the mobile menu, which no longer carries it. The
+// /login route still works if typed directly.
+// const loginLink = { href: '/login', label: 'Login' } as const
 
 const navAliases: Record<string, string[]> = {
   '/expectations': ['/experiences'],
   '/itineraries': ['/packages'],
 }
 
-function LoginIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0 2c-4.2 0-8 2.1-8 5.2V21h16v-1.8c0-3.1-3.8-5.2-8-5.2Z" />
-    </svg>
-  )
-}
+// function LoginIcon() {
+//   return (
+//     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+//       <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0 2c-4.2 0-8 2.1-8 5.2V21h16v-1.8c0-3.1-3.8-5.2-8-5.2Z" />
+//     </svg>
+//   )
+// }
 
 function normalizePath(path: string) {
   const normalizedPath = path.replace(/\/$/, '')
@@ -140,20 +142,8 @@ export function SiteHeader() {
           {primaryNavLinks.map((link) => renderNavLink(link, 'site-header-mobile-link'))}
         </nav>
 
-        <nav className="site-header-mobile-section" aria-label="Account">
-          <p className="site-header-mobile-heading">Account</p>
-          <a
-            className={`site-header-mobile-link site-header-mobile-link--login${
-              isActivePath(loginLink.href) ? ' is-active' : ''
-            }`}
-            href={loginLink.href}
-            aria-current={isActivePath(loginLink.href) ? 'page' : undefined}
-            onClick={closeMenus}
-          >
-            <LoginIcon />
-            {loginLink.label}
-          </a>
-        </nav>
+        {/* Login is desktop-only — restore this section to bring it back to the
+            mobile menu. */}
       </div>
     </header>
   )

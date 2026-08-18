@@ -23,14 +23,9 @@
   overflow: hidden;
   background: var(--color-surface);
   box-shadow: 0 18px 40px rgba(4, 26, 18, 0.1);
-  cursor: grab;
+  cursor: pointer;
   text-align: left;
-  touch-action: none;
   appearance: none;
-}
-
-.bento-tile:active {
-  cursor: grabbing;
 }
 
 .bento-tile:focus-visible {
