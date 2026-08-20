@@ -91,6 +91,12 @@ function CloseIcon() {
 /**
  * A tile with footage plays it muted and looping, but only while it is on
  * screen — eighteen videos decoding at once would cost far more than it buys.
+ *
+ * Mobile Safari refuses `play()` until a frame has been decoded, and with
+ * `preload="metadata"` that has usually not happened by the time the tile
+ * scrolls in. A single attempt therefore fails silently and the poster sits
+ * there forever, so the load is kicked off on entry and the play retried on
+ * every readiness event until it takes.
  */
 function TileVideo({ item }: { item: BentoMediaItem }) {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -99,22 +105,44 @@ function TileVideo({ item }: { item: BentoMediaItem }) {
     const video = videoRef.current
     if (!video) return
 
+    // React sets `muted` as a property, and iOS only grants inline autoplay to
+    // a video it considers muted, so assert it directly too.
+    video.muted = true
+
+    let inView = false
+
+    const attemptPlay = () => {
+      if (!inView || !video.paused) return
+      const started = video.play()
+      // Refusals (low power mode, data saver) leave the poster in place.
+      if (started) started.catch(() => {})
+    }
+
+    const readinessEvents = ['loadeddata', 'canplay', 'canplaythrough'] as const
+    readinessEvents.forEach((event) => video.addEventListener(event, attemptPlay))
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Autoplay can be refused (low power mode); the poster still shows.
-            void video.play().catch(() => {})
-          } else {
+          inView = entry.isIntersecting
+          if (!inView) {
             video.pause()
+            return
           }
+          // Nothing fetched yet (preload="metadata" on a cold tile): start it.
+          if (video.readyState === 0) video.load()
+          attemptPlay()
         })
       },
-      { root: null, rootMargin: '50px', threshold: 0.1 },
+      { root: null, rootMargin: '200px', threshold: 0.01 },
     )
 
     observer.observe(video)
-    return () => observer.disconnect()
+
+    return () => {
+      observer.disconnect()
+      readinessEvents.forEach((event) => video.removeEventListener(event, attemptPlay))
+    }
   }, [])
 
   return (
@@ -123,6 +151,7 @@ function TileVideo({ item }: { item: BentoMediaItem }) {
       className="bento-tile__media"
       src={item.video}
       poster={item.image || undefined}
+      autoPlay
       muted
       loop
       playsInline
