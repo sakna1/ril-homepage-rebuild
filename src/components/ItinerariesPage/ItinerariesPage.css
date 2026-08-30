@@ -763,7 +763,9 @@
   padding: 0;
   border: 0;
   background: none;
+  color: inherit;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
 }
 

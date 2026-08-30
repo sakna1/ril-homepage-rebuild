@@ -12,13 +12,14 @@ export type Office = {
   phone: string
 }
 
+// Listed alphabetically by country, so the order never looks arbitrary.
 export const offices: readonly Office[] = [
   {
-    country: 'The UK',
-    city: 'Oxford',
-    address: ['4 The Willows', 'Headington', 'Oxford OX3 9FE'],
-    region: 'United Kingdom',
-    phone: '+44 7843 223982',
+    country: 'Bahrain',
+    city: 'Nabi Saleh',
+    address: ['Villa 01, Entrance 1920', 'Road 8047, Block Area 380', 'Nabi Saleh'],
+    region: 'Kingdom of Bahrain',
+    phone: '+973 3919 0838',
   },
   {
     country: 'Canada',
@@ -28,11 +29,11 @@ export const offices: readonly Office[] = [
     phone: '+1 613 618 9990',
   },
   {
-    country: 'Bahrain',
-    city: 'Nabi Saleh',
-    address: ['Villa 01, Entrance 1920', 'Road 8047, Block Area 380', 'Nabi Saleh'],
-    region: 'Kingdom of Bahrain',
-    phone: '+973 3919 0838',
+    country: 'The UK',
+    city: 'Oxford',
+    address: ['4 The Willows', 'Headington', 'Oxford OX3 9FE'],
+    region: 'United Kingdom',
+    phone: '+44 7843 223982',
   },
 ]
 

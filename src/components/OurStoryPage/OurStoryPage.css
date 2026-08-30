@@ -258,3 +258,56 @@
   border-color: var(--color-accent);
   color: var(--color-accent);
 }
+
+/* The conservation project named in the chapter, linked in their own words. */
+.story-partner {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 22px;
+  padding: 14px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  text-decoration: none;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    transform 200ms ease;
+}
+
+.story-partner:hover {
+  border-color: var(--color-accent);
+  background: rgba(197, 160, 89, 0.08);
+  transform: translateY(-2px);
+}
+
+.story-partner__note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.story-partner__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(19px, 2vw, 24px);
+}
+
+.story-partner__label span {
+  color: var(--color-accent);
+  font-size: 15px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-partner {
+    transition: none;
+  }
+
+  .story-partner:hover {
+    transform: none;
+  }
+}

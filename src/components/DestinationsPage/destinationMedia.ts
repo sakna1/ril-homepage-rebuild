@@ -1,5 +1,6 @@
 import ellaFilm from '../../assets/videos/destination-film-two.mp4'
 import yalaFilm from '../../assets/videos/destination-film-one.mp4'
+import { itineraryImages } from '../ItineraryDetailPage/itineraryImages'
 
 /**
  * Optional media per destination, keyed by the destination id used in
@@ -17,6 +18,8 @@ import yalaFilm from '../../assets/videos/destination-film-one.mp4'
  * inside the tile itself rather than only in the modal.
  */
 export type DestinationMedia = {
+  /** Overrides the destination's own hero photograph on this page. */
+  image?: string
   /** A file bundled with the site. Plays muted and looping in its tile. */
   video?: string
   /** YouTube link or bare video id. Plays in the lightbox. */
@@ -27,9 +30,19 @@ export type DestinationMedia = {
 
 export const destinationMedia: Record<string, DestinationMedia> = {
   // Elephant crossing the park road.
-  yala: { video: yalaFilm },
+  yala: { video: yalaFilm, image: itineraryImages.yala },
   // Waterfall in the hill country.
-  ella: { video: ellaFilm },
+  ella: { video: ellaFilm, image: itineraryImages.ellaNineArches },
+
+  // Photographs supplied for the places that have them; the rest keep the
+  // hero image held against the destination itself.
+  colombo: { image: itineraryImages.colombo },
+  jaffna: { image: itineraryImages.jaffnaNallurKovil },
+  kandy: { image: itineraryImages.kandySacredTooth },
+  nilaveli: { image: itineraryImages.trincomaleeNilaveli },
+  polonnaruwa: { image: itineraryImages.polonnaruwaGalVihara },
+  sigiriya: { image: itineraryImages.sigiriya },
+  trincomalee: { image: itineraryImages.trincomaleeKoneswaram },
 }
 
 export function mediaForDestination(id: string): DestinationMedia {

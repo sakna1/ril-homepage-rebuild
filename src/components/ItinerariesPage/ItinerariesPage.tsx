@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './ItinerariesPage.css'
 import { experienceImages } from '../ExperiencesPage/images'
 import { fetchPublicPackages } from '../../services/publicContent'
+import { itinerarySlug } from '../ItineraryDetailPage/itineraryNarratives'
 
 type Itinerary = {
   numeral: string
@@ -151,7 +152,6 @@ export function ItinerariesPage() {
   // Content comes from the admin-managed DB; fall back to the curated list.
   const [items, setItems] = useState<readonly Itinerary[]>(fallbackItineraries)
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   const trackRef = useRef<HTMLDivElement>(null)
   const [current, setCurrent] = useState(0)
@@ -282,45 +282,37 @@ export function ItinerariesPage() {
           </header>
 
           <div className="itin-gallery4__track" ref={trackRef} onScroll={updateNav}>
-            {visible.map((itinerary, index) => {
-              const isChosen = index === selectedIndex
-              return (
-                <article
-                  key={itinerary.name}
-                  className={`itin-card4${isChosen ? ' is-active' : ''}`}
+            {visible.map((itinerary) => (
+              <article key={itinerary.name} className="itin-card4">
+                <a
+                  className="itin-card4__inner"
+                  href={`/itineraries/${itinerarySlug(itinerary.name)}`}
+                  aria-label={`Read the ${itinerary.name} journey day by day`}
                 >
-                  <button
-                    type="button"
-                    className="itin-card4__inner"
-                    aria-pressed={isChosen}
-                    onClick={() => setSelectedIndex(index)}
-                  >
-                    <span className="itin-card4__figure">
-                      <img
-                        className="itin-card4__img"
-                        src={itinerary.image}
-                        alt={itinerary.imageAlt}
-                        loading="lazy"
-                      />
-                      <span className="itin-card4__overlay" aria-hidden="true" />
-                      <span className="itin-card4__body">
-                        <span className="itin-card4__nights">
-                          {nightsLabel(itinerary.duration)}
-                        </span>
-                        <span className="itin-card4__title">{itinerary.name}</span>
-                        <span className="itin-card4__desc">
-                          {shortDescription(itinerary.character)}
-                        </span>
-                        <span className="itin-card4__more">
-                          {isChosen ? 'Yours ✓' : 'This is the one'}{' '}
-                          <span aria-hidden="true">→</span>
-                        </span>
+                  <span className="itin-card4__figure">
+                    <img
+                      className="itin-card4__img"
+                      src={itinerary.image}
+                      alt={itinerary.imageAlt}
+                      loading="lazy"
+                    />
+                    <span className="itin-card4__overlay" aria-hidden="true" />
+                    <span className="itin-card4__body">
+                      <span className="itin-card4__nights">
+                        {nightsLabel(itinerary.duration)}
+                      </span>
+                      <span className="itin-card4__title">{itinerary.name}</span>
+                      <span className="itin-card4__desc">
+                        {shortDescription(itinerary.character)}
+                      </span>
+                      <span className="itin-card4__more">
+                        Read this journey <span aria-hidden="true">→</span>
                       </span>
                     </span>
-                  </button>
-                </article>
-              )
-            })}
+                  </span>
+                </a>
+              </article>
+            ))}
           </div>
 
           <div className="itin-gallery4__dots">

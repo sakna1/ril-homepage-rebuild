@@ -16,31 +16,40 @@ const custodians = [
     offset: false,
   },
   {
-    name: 'Guest Experience Lead',
-    role: 'REPRESENTATIVE PROFILE',
-    image: aboutImages.portraitAnika,
-    summary: 'A discreet guest-care role at the centre of each arrival.',
-    bio: 'This role represents the people responsible for arrival, care, and continuity: the calm presence that allows a private journey to feel already held.',
-    focus: 'Guest care, journey support, and discreet coordination.',
+    name: 'Dilshan Kumarasinghe',
+    role: 'STRATEGIC INVESTOR',
+    image: aboutImages.portraitDilshan,
+    summary: 'Ottawa-based business owner guiding the corporate vision and international network.',
+    bio: "A seasoned Ottawa-based business owner and strategic investor, Dilshan brings proven entrepreneurial leadership to Royale Isles Lanka. Dedicated to excellence and sustainable expansion, he guides the company's corporate vision and international network, ensuring Royale Isles Lanka sets the benchmark for high-end, bespoke travel across the globe.",
+    focus: 'Corporate vision, international network, and sustainable expansion.',
     offset: true,
   },
   {
-    name: 'Private Planning Lead',
-    role: 'REPRESENTATIVE PROFILE',
-    image: aboutImages.portraitRoshan,
-    summary: 'A planning role for journeys that require calm orchestration.',
-    bio: 'This role represents the planning specialists who translate preference, privacy, timing, and access into a journey that feels composed rather than assembled.',
-    focus: 'Private planning, local coordination, and on-island support.',
+    name: 'Dr Lakmal Jayasinghe',
+    role: 'PRINCIPAL SCIENTIST',
+    image: aboutImages.portraitLakmal,
+    summary: 'Principal Scientist and Vice President of a nanotechnology company based in Oxford, UK.',
+    bio: 'Dr Lakmal Jayasinghe is Principal Scientist and Vice President of a nanotechnology company based in Oxford, United Kingdom. His scientific discipline informs how the company thinks about precision, evidence, and the standards it holds itself to.',
+    focus: 'Scientific rigour, research perspective, and international counsel.',
     offset: false,
   },
   {
-    name: 'Cultural Access Lead',
-    role: 'REPRESENTATIVE PROFILE',
-    image: aboutImages.portraitMalini,
-    summary: 'A cultural role for introductions that require care and context.',
-    bio: 'This role represents the cultural specialists and trusted hosts who make access feel respectful, prepared, and alive to the dignity of place.',
-    focus: 'Cultural context, trusted introductions, and guest readiness.',
+    name: 'Kelum M Hewage',
+    role: 'ATTORNEY-AT-LAW',
+    image: aboutImages.portraitKelum,
+    summary: 'Attorney-at-Law of the Supreme Court of Sri Lanka and a leading criminal lawyer.',
+    bio: 'Kelum M Hewage is an Attorney-at-Law of the Supreme Court of Sri Lanka and a leading criminal lawyer. He oversees the legal footing on which Royale Isles Lanka operates, so that every arrangement made on a guest’s behalf rests on solid ground.',
+    focus: 'Legal counsel, compliance, and guest protection.',
     offset: true,
+  },
+  {
+    name: 'Sakna Perera',
+    role: 'DIGITAL EXPERIENCE LEAD',
+    image: aboutImages.portraitSakna,
+    summary: 'Builds and maintains the digital side of Royale Isles Lanka.',
+    bio: 'Sakna Perera leads the digital experience at Royale Isles Lanka — designing and building the website, and providing the ongoing technical support that keeps every enquiry, journey page, and conversation running quietly in the background.',
+    focus: 'Web design and engineering, digital support, and the online guest experience.',
+    offset: false,
   },
 ] as const
 
@@ -48,7 +57,7 @@ const custodians = [
 const branches = offices
 
 /**
- * PLACEHOLDER DATA — replace with the confirmed banking relationships.
+ * The confirmed banking relationships, as supplied by the client.
  *
  * `initials` renders a typographic lettermark. When the real artwork is
  * supplied, import the file and set `logoSrc` on the entry; the monogram is
@@ -61,24 +70,19 @@ const bankingPartners: readonly {
   logoSrc?: string
 }[] = [
   {
-    name: 'Commercial Bank of Ceylon',
-    relationship: 'Primary operating and settlement account',
+    name: 'Commercial Bank of Ceylon PLC',
+    relationship: 'Sri Lanka',
     initials: 'CB',
   },
   {
-    name: 'Hatton National Bank',
-    relationship: 'Foreign currency and inbound guest remittances',
-    initials: 'HNB',
+    name: 'Pan Asia Banking Corporation',
+    relationship: 'Colombo, Sri Lanka',
+    initials: 'PABC',
   },
   {
-    name: 'Sampath Bank',
-    relationship: 'Merchant services and card acquiring',
-    initials: 'SB',
-  },
-  {
-    name: 'Bank of Ceylon',
-    relationship: 'Government and licensing settlements',
-    initials: 'BOC',
+    name: 'Barclays Bank',
+    relationship: 'Oxford, United Kingdom',
+    initials: 'BB',
   },
 ]
 
@@ -87,6 +91,7 @@ const digitalStudio = {
   founder: 'Sakna Perera',
   role: 'Founder',
   image: aboutImages.portraitSakna,
+  logo: aboutImages.eunoiaLogo,
   copy:
     "Eunoia Solutions is an independent digital product studio specialising in research, design, software engineering, and emerging technologies. Every product is shaped through thoughtful strategy, human-centred design, and robust technical implementation to create experiences that feel intuitive, accessible, and effortless.",
   focus:
@@ -228,9 +233,9 @@ export function AboutPage() {
             <p className="about-eyebrow about-eyebrow--green">BANKING &amp; SETTLEMENT</p>
             <h2 id="about-banking-head">The institutions behind the arrangements.</h2>
             <p>
-              Payments, deposits, and currency handling are held with established Sri Lankan banks,
-              so every settlement is traceable, regulated, and quietly straightforward for guests
-              arriving from abroad.
+              Deposits and currency handling are held with established banks in Sri Lanka and the
+              United Kingdom, so every settlement is traceable, regulated, and quietly
+              straightforward for guests arriving from abroad.
             </p>
           </header>
 
@@ -253,8 +258,7 @@ export function AboutPage() {
           </ul>
 
           <p className="about-placeholder-note">
-            Banking relationships shown are indicative and pending confirmation. Guests never send
-            funds before their concierge confirms the account details directly.
+            Guests never send funds before their concierge confirms the account details directly.
           </p>
         </div>
       </section>
@@ -267,6 +271,12 @@ export function AboutPage() {
           </div>
           <div className="about-digital-credit-grid">
             <article className="about-digital-credit about-digital-credit--studio">
+              <img
+                className="about-digital-credit-logo"
+                src={digitalStudio.logo}
+                alt={`${digitalStudio.name} logo`}
+                loading="lazy"
+              />
               <div>
                 <h3>{digitalStudio.name}</h3>
                 <span>

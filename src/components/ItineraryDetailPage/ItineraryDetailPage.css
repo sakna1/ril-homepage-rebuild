@@ -1,0 +1,418 @@
+.itin-detail {
+  width: 100%;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.itin-detail__eyebrow {
+  color: var(--color-accent);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+
+.itin-detail__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(420px, 62vh, 660px);
+  overflow: hidden;
+}
+
+.itin-detail__hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itin-detail__hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(4, 26, 18, 0.92) 8%,
+    rgba(4, 26, 18, 0.55) 46%,
+    rgba(4, 26, 18, 0.24)
+  );
+}
+
+.itin-detail__hero-copy {
+  position: relative;
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: clamp(32px, 5vw, 72px) clamp(20px, 5vw, 64px) clamp(36px, 5vw, 64px);
+}
+
+.itin-detail__hero h1 {
+  margin-top: 16px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 96px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+}
+
+.itin-detail__duration {
+  margin-top: 18px;
+  color: var(--color-accent);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.itin-detail__lede {
+  max-width: 46ch;
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(15px, 1.5vw, 19px);
+  line-height: var(--line-height-relaxed);
+}
+
+/* --- Days ---------------------------------------------------------------- */
+
+.itin-detail__days {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: clamp(48px, 7vw, 104px) clamp(20px, 5vw, 64px);
+}
+
+.itin-day {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: clamp(20px, 3vw, 48px);
+  align-items: start;
+  padding-block: clamp(32px, 4vw, 56px);
+  border-top: 1px solid var(--color-border);
+}
+
+.itin-day:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.itin-day__marker {
+  position: sticky;
+  top: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.itin-day__number {
+  color: var(--color-accent);
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1;
+}
+
+.itin-day__rule {
+  width: 1px;
+  height: clamp(40px, 6vw, 88px);
+  background: linear-gradient(to bottom, var(--color-accent), transparent);
+  opacity: 0.5;
+}
+
+/* "Day 9" / "Nights 1–2" — the quiet line above the place. */
+.itin-day__label {
+  color: var(--color-accent);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* The place itself carries the entry. */
+.itin-day__placename {
+  margin-top: 8px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4.6vw, 64px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+
+/* The passage's own title, now secondary to the place. */
+.itin-day__title {
+  margin-top: 10px;
+  color: var(--color-accent-text, var(--color-accent));
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.9vw, 26px);
+  font-style: italic;
+  line-height: var(--line-height-none);
+}
+
+.itin-day__body p + p,
+.itin-day__body .itin-day__title + p {
+  margin-top: 16px;
+  color: var(--color-text-muted);
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: var(--line-height-relaxed);
+}
+
+/* The title is a paragraph too, so keep it out of the body-copy rule above. */
+.itin-day__body .itin-day__title {
+  color: var(--color-accent-text, var(--color-accent));
+  font-size: clamp(18px, 1.9vw, 26px);
+}
+
+.itin-day__figure {
+  margin: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 22px 54px rgba(4, 26, 18, 0.12);
+}
+
+.itin-day__figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+.itin-day__figure:hover img {
+  transform: scale(1.04);
+}
+
+/* --- Closing ------------------------------------------------------------- */
+
+.itin-detail__closing {
+  padding: clamp(56px, 8vw, 112px) clamp(20px, 5vw, 64px);
+  background: var(--color-surface-atmospheric);
+  color: var(--color-surface);
+}
+
+.itin-detail__closing-inner {
+  max-width: 78ch;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.itin-detail__closing p + p {
+  margin-top: 18px;
+  color: var(--color-text-muted-on-dark);
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: var(--line-height-relaxed);
+}
+
+.itin-detail__closing .itin-detail__eyebrow {
+  display: block;
+  margin-bottom: 26px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 38px);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+/* --- Actions ------------------------------------------------------------- */
+
+.itin-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.itin-detail__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 30px;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-surface-atmospheric);
+  font-size: var(--font-size-button);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+.itin-detail__cta:hover {
+  background: transparent;
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.itin-detail__cta--ghost {
+  border-color: var(--color-border-on-dark);
+  background: transparent;
+  color: var(--color-surface);
+}
+
+.itin-detail__cta--ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.itin-detail__cta svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* The enquiry action is a button (it opens the form), so reset the UA styling
+   an anchor never carried. */
+button.itin-detail__cta {
+  font-family: var(--font-body);
+  cursor: pointer;
+  appearance: none;
+}
+
+/* --- Journey without a narrative yet ------------------------------------- */
+
+.itin-detail__missing {
+  max-width: 62ch;
+  margin-inline: auto;
+  padding: clamp(72px, 12vw, 160px) clamp(20px, 5vw, 64px);
+  text-align: center;
+}
+
+.itin-detail__missing h1 {
+  margin-top: 18px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4.4vw, 56px);
+  font-weight: 400;
+  line-height: var(--line-height-none);
+}
+
+.itin-detail__missing p:last-of-type {
+  margin-top: 18px;
+  color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
+}
+
+.itin-detail__missing .itin-detail__cta {
+  color: var(--color-surface-atmospheric);
+}
+
+.itin-detail__missing .itin-detail__cta--ghost {
+  border-color: var(--color-border);
+  color: var(--color-primary);
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .itin-day {
+    grid-template-columns: 60px minmax(0, 1fr);
+  }
+
+  .itin-day__figure {
+    grid-column: 1 / -1;
+  }
+
+  .itin-day__figure img {
+    aspect-ratio: 16 / 10;
+  }
+
+  .itin-day__marker {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .itin-day {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .itin-day__marker {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .itin-day__rule {
+    width: 48px;
+    height: 1px;
+    background: linear-gradient(to right, var(--color-accent), transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .itin-day__figure img,
+  .itin-detail__cta {
+    transition: none;
+  }
+
+  .itin-day__figure:hover img,
+  .itin-detail__cta:hover {
+    transform: none;
+  }
+}
+
+/* The explicit ask, set apart from the narrative above it. */
+.itin-detail__invite {
+  max-width: 54ch;
+  margin: clamp(28px, 4vw, 44px) auto 0;
+  padding-top: clamp(24px, 3vw, 34px);
+  border-top: 1px solid var(--color-border-on-dark);
+  color: var(--color-surface);
+  font-family: var(--font-display);
+  font-size: clamp(19px, 2vw, 26px);
+  font-style: italic;
+  line-height: var(--line-height-relaxed);
+}
+
+.itin-detail__closing p.itin-detail__invite + .itin-detail__actions {
+  margin-top: clamp(24px, 3vw, 32px);
+}
+
+/* --- A fork in the route, and waypoint asides ---------------------------- */
+
+.itin-fork {
+  margin-block: clamp(28px, 4vw, 48px);
+  padding: clamp(24px, 3.5vw, 44px);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface-warm, rgba(197, 160, 89, 0.06));
+  text-align: center;
+}
+
+.itin-fork__label {
+  color: var(--color-accent);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.itin-fork h2 {
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 38px);
+  font-weight: 400;
+  line-height: var(--line-height-none);
+}
+
+.itin-fork p:not(.itin-fork__label) {
+  max-width: 62ch;
+  margin: 14px auto 0;
+  color: var(--color-text-muted);
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: var(--line-height-relaxed);
+}
+
+/* A stop passed through rather than slept in. */
+.itin-day__note {
+  margin-top: 16px;
+  color: var(--color-accent);
+  font-size: var(--font-size-label);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}

@@ -12,6 +12,7 @@ import { ExpectationsPage } from './components/ExperiencesPage/ExperiencesPage'
 import { Homepage } from './components/Homepage/Homepage'
 import { OurStoryPage } from './components/OurStoryPage/OurStoryPage'
 import { ItinerariesPage } from './components/ItinerariesPage/ItinerariesPage'
+import { ItineraryDetailPage } from './components/ItineraryDetailPage/ItineraryDetailPage'
 import { JournalArticlePage } from './components/JournalArticlePage/JournalArticlePage'
 import { JournalLandingPage } from './components/JournalLandingPage/JournalLandingPage'
 import { AdminLoginPage } from './components/LoginPage/AdminLoginPage'
@@ -75,6 +76,12 @@ function AppContent() {
 
   if (path === '/itineraries' || path === '/packages') {
     return renderPage(<ItinerariesPage />)
+  }
+
+  // One journey, read day by day: /itineraries/discovery
+  if (path.startsWith('/itineraries/') || path.startsWith('/packages/')) {
+    const slug = path.split('/')[2] ?? ''
+    return renderPage(<ItineraryDetailPage slug={slug} />)
   }
 
   if (path === '/journal') {

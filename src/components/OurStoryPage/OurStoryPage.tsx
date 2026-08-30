@@ -3,29 +3,43 @@ import royaleIslesLogoImage from '../../assets/images/logo_bg_remove.png'
 import { experienceImages } from '../ExperiencesPage/images'
 
 /**
- * PLACEHOLDER COPY — the narrative below is written to the brand's voice but
- * is not the company's own account. Replace each chapter with the real story
- * before this goes live.
+ * Chapters I–III are the company's own account of the emblem, supplied by the
+ * client. Chapter IV is still placeholder copy written to the brand's voice —
+ * replace it before this goes live.
  */
 const chapters = [
   {
     numeral: 'I',
-    title: 'A Line That Never Lifts',
+    title: 'The Marine Turtle — Our Emblem',
     copy: [
-      'Our mark is a turtle drawn without the pen ever leaving the page — one continuous line, green and gold, closing on itself.',
-      'It is how we think about a journey. Not a list of stops to be ticked off, but a single unbroken movement: arrival, discovery, rest, return. Every part of it drawn in one go, by one hand.',
+      'Sri Lanka is the sanctuary for 5 of the 6 most admired marine turtles. The sea turtle is among the most attuned of all creatures to the rhythms of sun and moon. She seeks out only the calmest, most silent shores by night, laying hundreds of eggs in complete stillness. And after journeys spanning thousands of kilometers across open ocean, she returns unfailingly to the shore of her birth — guided not by sight, but by an ancient sense of the earth’s own vibration.',
+      'Across civilizations, the turtle has long symbolized the universe itself — bearing the world on her back in Hindu cosmology, and holding comparable meaning in the mythology of ancient Greece.',
     ],
   },
   {
     numeral: 'II',
-    title: 'Why The Turtle',
+    title: 'A Single Continuous Line',
     copy: [
-      'Sri Lanka’s southern shore is one of the few places on earth where five species of sea turtle come ashore to nest. They navigate thousands of miles of open ocean and return, without fail, to the beach they were born on.',
-      'We take that as our standard: a long way travelled, quietly, and an arrival that feels like coming back to somewhere you already belong.',
+      'Our emblem draws on this lineage. A single continuous line forms a turtle opening into a human figure, arms outstretched in welcome — completing itself in five connected forms within an ellipse, representing the Pancha Sheela, the five precepts binding us to the wider order of things.',
+      'This is the philosophy on which Royale Isles Lanka is built.',
     ],
   },
   {
     numeral: 'III',
+    title: 'A Share Returned to the Shore',
+    copy: [
+      'For this reason, we share part of our profits with the Rakawa Turtle Conservation Project (TCP) in Sri Lanka. In 2006, the Department of Wildlife Conservation — together with TCP, the Coast Conservation Department, and the International Union for Conservation of Nature — declared Rakawa Beach a protected wildlife sanctuary.',
+      'When you travel with Royale Isles, you become part of this quiet stewardship. A portion of every journey you take with us returns to the shores that make it possible — supporting the same fragile rhythms of sun, moon, and tide that have guided these creatures home for millions of years.',
+      'Your holiday, then, is more than a journey through Sri Lanka. It is a small, deliberate act of care for one of the world’s most sensitive ecosystems — and an invitation to leave the island a little better than you found it.',
+    ],
+    partner: {
+      label: 'Turtle Watch Rekawa',
+      note: 'The project we work with, in their own words',
+      href: 'https://www.turtlewatchrekawa.org/',
+    },
+  },
+  {
+    numeral: 'IV',
     title: 'Held Privately',
     copy: [
       'We do not publish a catalogue. Each journey begins as a conversation about who is travelling, what must be protected, and what would make the island feel personally meaningful.',
@@ -64,6 +78,20 @@ export function OurStoryPage() {
                 {chapter.copy.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
+                {'partner' in chapter && chapter.partner ? (
+                  <a
+                    className="story-partner"
+                    href={chapter.partner.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span className="story-partner__note">{chapter.partner.note}</span>
+                    <span className="story-partner__label">
+                      {chapter.partner.label}
+                      <span aria-hidden="true">↗</span>
+                    </span>
+                  </a>
+                ) : null}
               </div>
             </article>
           ))}

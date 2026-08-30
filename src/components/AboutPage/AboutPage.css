@@ -525,15 +525,16 @@
   line-height: var(--line-height-journal);
 }
 
+/* Ten columns so the five custodians sit in one even row. */
 .about-custodians-grid {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: repeat(10, minmax(0, 1fr));
   gap: 18px;
 }
 
 .about-custodian-card {
   position: relative;
-  grid-column: span 3;
+  grid-column: span 2;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -544,10 +545,6 @@
     border-color 0.25s ease,
     background 0.25s ease,
     transform 0.35s ease;
-}
-
-.about-custodian-card:nth-child(n + 5) {
-  grid-column: span 4;
 }
 
 .about-custodian-card:hover {
@@ -1178,8 +1175,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .about-custodian-card,
-  .about-custodian-card:nth-child(n + 5) {
+  .about-custodian-card {
     grid-column: auto;
   }
 
@@ -1708,5 +1704,26 @@
   .about-custodians-labels {
     flex-direction: row;
     gap: 14px;
+  }
+}
+
+/* The studio's own mark, beside the credit it belongs to. */
+.about-digital-credit--studio {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(20px, 3vw, 36px);
+}
+
+.about-digital-credit-logo {
+  flex: 0 0 auto;
+  width: clamp(74px, 8vw, 104px);
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .about-digital-credit--studio {
+    flex-direction: column;
+    gap: 18px;
   }
 }

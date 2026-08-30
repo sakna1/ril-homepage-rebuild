@@ -22,13 +22,13 @@ const allDestinations: readonly DestinationCard[] = journeyRegions.flatMap((regi
 
 /** Shapes a destination for the bento gallery, folding in any film it has. */
 function toBentoItem({ destination, regionTitle }: DestinationCard): BentoMediaItem {
-  const { video, youtube } = mediaForDestination(destination.id)
+  const { image, video, youtube } = mediaForDestination(destination.id)
 
   return {
     id: destination.id,
     title: destination.title,
     desc: destination.description,
-    image: destination.heroImage || youtubeThumbnail(youtube) || '',
+    image: image || destination.heroImage || youtubeThumbnail(youtube) || '',
     video,
     embedUrl: youtubeEmbedUrl(youtube),
     region: regionTitle,
