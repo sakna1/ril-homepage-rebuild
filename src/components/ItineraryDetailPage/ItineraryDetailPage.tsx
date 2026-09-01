@@ -9,6 +9,25 @@ import {
   type ItineraryStay,
 } from './itineraryNarratives'
 
+/**
+ * Carried by every journey, so it is written once here rather than repeated in
+ * each narrative. Anything true of all three itineraries belongs in this list.
+ */
+const alwaysIncluded = [
+  {
+    title: 'Luxury SUV transport',
+    copy: 'A private, air-conditioned luxury SUV for the length of the journey — yours alone, never shared.',
+  },
+  {
+    title: 'A dedicated national licensed guide',
+    copy: 'One nationally licensed tour guide with you from arrival to departure, rather than a different voice in every town.',
+  },
+  {
+    title: 'USD 100,000 health insurance',
+    copy: 'Health insurance cover of USD 100,000 per traveller, held for the full length of the journey.',
+  },
+] as const
+
 function StayEntry({ stay }: { stay: ItineraryStay }) {
   return (
     <article className="itin-day">
@@ -136,6 +155,22 @@ export function ItineraryDetailPage({ slug }: { slug: string }) {
             <StayEntry key={`${entry.label}-${entry.place}`} stay={entry} />
           ),
         )}
+      </section>
+
+      <section className="itin-included" aria-labelledby="itin-included-head">
+        <div className="itin-included__inner">
+          <p className="itin-detail__eyebrow">Carried Throughout</p>
+          <h2 id="itin-included-head">Included on every day of this journey.</h2>
+
+          <ul className="itin-included__list">
+            {alwaysIncluded.map((item) => (
+              <li key={item.title} className="itin-included__item">
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <section className="itin-detail__closing">

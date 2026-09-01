@@ -26,10 +26,10 @@ const custodians = [
   },
   {
     name: 'Dr Lakmal Jayasinghe',
-    role: 'PRINCIPAL SCIENTIST',
+    role: 'CHIEF SCIENTIFIC OFFICER',
     image: aboutImages.portraitLakmal,
-    summary: 'Principal Scientist and Vice President of a nanotechnology company based in Oxford, UK.',
-    bio: 'Dr Lakmal Jayasinghe is Principal Scientist and Vice President of a nanotechnology company based in Oxford, United Kingdom. His scientific discipline informs how the company thinks about precision, evidence, and the standards it holds itself to.',
+    summary: 'A respected scientific leader in nanotechnology, and Chief Scientific Officer of a UK-based global biotechnology company.',
+    bio: 'Dr Lakmal Jayasinghe is a respected scientific leader in the field of nanotechnology and Chief Scientific Officer of a UK-based global biotechnology company. His scientific discipline informs how Royale Isles Lanka thinks about precision, evidence, and the standards it holds itself to.',
     focus: 'Scientific rigour, research perspective, and international counsel.',
     offset: false,
   },

@@ -1,4 +1,11 @@
-/** Default placeholder used in development when no env var is set. */
+/**
+ * The confirmed business WhatsApp number: +94 71 168 0902.
+ * Used whenever `VITE_WHATSAPP_NUMBER` is unset, so every CTA works out of the
+ * box; set the env var to route messages elsewhere without a code change.
+ */
+export const BUSINESS_WHATSAPP_NUMBER = '94711680902'
+
+/** The old development stand-in. Still rejected, so it can never go live. */
 export const PLACEHOLDER_WHATSAPP_NUMBER = '94763962161'
 
 const DEFAULT_FLOATING_MESSAGE =
@@ -7,12 +14,12 @@ const DEFAULT_FLOATING_MESSAGE =
 export function getConfiguredWhatsAppNumber(): string | undefined {
   const raw = import.meta.env.VITE_WHATSAPP_NUMBER
   if (!raw || typeof raw !== 'string') {
-    return undefined
+    return BUSINESS_WHATSAPP_NUMBER
   }
 
   const normalized = raw.replace(/\D/g, '')
   if (!normalized || normalized === PLACEHOLDER_WHATSAPP_NUMBER) {
-    return undefined
+    return BUSINESS_WHATSAPP_NUMBER
   }
 
   return normalized
@@ -31,9 +38,9 @@ export function buildWhatsAppHref(message: string): string {
   return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
 }
 
-/** Floating action button — always visible in prototype, using env or dev fallback. */
+/** Floating action button — always visible, using the env value or the business number. */
 export function getDefaultWhatsAppHref(): string {
-  const phoneNumber = getConfiguredWhatsAppNumber() ?? PLACEHOLDER_WHATSAPP_NUMBER
+  const phoneNumber = getConfiguredWhatsAppNumber() ?? BUSINESS_WHATSAPP_NUMBER
   return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(DEFAULT_FLOATING_MESSAGE)}`
 }
 

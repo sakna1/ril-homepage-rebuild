@@ -11,8 +11,8 @@ type Tab = 'overview' | 'journeys' | 'contact'
 
 const CONCIERGE = {
   email: 'royaleisleslanka@gmail.com',
-  phoneLabel: '+94 76 396 2161',
-  whatsapp: '94763962161',
+  phoneLabel: '+94 71 168 0902',
+  whatsapp: '94711680902',
 }
 
 const PROFILE_FIELDS: { key: keyof TravellerProfile; label: string; type?: string }[] = [
