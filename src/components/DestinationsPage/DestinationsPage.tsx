@@ -1,53 +1,17 @@
 import { useMemo, useState } from 'react'
 import './DestinationsPage.css'
-import { journeyRegions, type RegionDestination } from '../../data/journeyRegions'
-import { DestinationsBentoGallery, type BentoMediaItem } from './DestinationsBentoGallery'
+import { journeyRegions } from '../../data/journeyRegions'
 import { DestinationsFlipbook } from './DestinationsFlipbook'
 import { DestinationsMap } from './DestinationsMap'
-import { mediaForDestination, youtubeEmbedUrl, youtubeThumbnail } from './destinationMedia'
-
-type DestinationCard = {
-  destination: RegionDestination
-  regionId: string
-  regionTitle: string
-}
 
 /** Every destination on the island, flattened out of its region. */
-const allDestinations: readonly DestinationCard[] = journeyRegions.flatMap((region) =>
-  region.destinations.map((destination) => ({
-    destination,
-    regionId: region.id,
-    regionTitle: region.title,
-  })),
-)
-
-/** Shapes a destination for the bento gallery, folding in any film it has. */
-function toBentoItem({ destination, regionTitle }: DestinationCard): BentoMediaItem {
-  const { image, video, youtube } = mediaForDestination(destination.id)
-
-  return {
-    id: destination.id,
-    title: destination.title,
-    desc: destination.description,
-    image: image || destination.heroImage || youtubeThumbnail(youtube) || '',
-    video,
-    embedUrl: youtubeEmbedUrl(youtube),
-    region: regionTitle,
-    bestTime: destination.bestTimeToVisit,
-    travelNotes: destination.travelNotes,
-    nearby: destination.nearbyExperiences,
-  }
-}
+const allDestinations = journeyRegions.flatMap((region) => region.destinations)
 
 export function DestinationsPage() {
-  // Held here so both the gallery tiles and the map markers open a place.
+  // The map keeps its own focus; the book is browsed by turning pages.
   const [openId, setOpenId] = useState<string | null>(null)
 
-  const bentoItems = useMemo(() => allDestinations.map(toBentoItem), [])
-  const mapDestinations = useMemo(
-    () => allDestinations.map((card) => card.destination),
-    [],
-  )
+  const mapDestinations = useMemo(() => allDestinations, [])
 
   return (
     <main className="destinations-page">
@@ -56,19 +20,11 @@ export function DestinationsPage() {
         <h1>
           Destinations
           <em>worth the journey.</em>
-        </h1>        
+        </h1>
       </section>
 
       <section className="destinations-book" aria-label="Destinations, page by page">
         <DestinationsFlipbook />
-      </section>
-
-      <section className="destinations-gallery" aria-label="Destinations in Sri Lanka">
-        <DestinationsBentoGallery
-          items={bentoItems}
-          openId={openId}
-          onOpenChange={setOpenId}
-        />
       </section>
 
       <DestinationsMap

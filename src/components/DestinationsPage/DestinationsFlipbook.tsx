@@ -8,15 +8,21 @@ type BookEntry = {
   destination: RegionDestination
   regionTitle: string
   image: string
+  /** A film bundled with the site, played in place of the photograph. */
+  video?: string
 }
 
 /** Every destination on the island, flattened out of its region, in book order. */
 const bookEntries: readonly BookEntry[] = journeyRegions.flatMap((region) =>
-  region.destinations.map((destination) => ({
-    destination,
-    regionTitle: region.title,
-    image: mediaForDestination(destination.id).image || destination.heroImage || '',
-  })),
+  region.destinations.map((destination) => {
+    const { image, video } = mediaForDestination(destination.id)
+    return {
+      destination,
+      regionTitle: region.title,
+      image: image || destination.heroImage || '',
+      video,
+    }
+  }),
 )
 
 /**
@@ -57,11 +63,25 @@ export function DestinationsFlipbook() {
           </div>
         </div>
 
-        {bookEntries.map(({ destination, regionTitle, image }, index) => (
+        {bookEntries.map(({ destination, regionTitle, image, video }, index) => (
           <div className="dfb-page" key={destination.id}>
             <article className="dfb-leaf">
               <figure className="dfb-leaf-figure">
-                {image ? (
+                {video ? (
+                  /* Silent and looping, like a moving plate in a printed guide.
+                     `preload="none"` keeps the hidden template from fetching
+                     footage; the effect starts only the clones. */
+                  <video
+                    className="dfb-leaf-video"
+                    src={video}
+                    poster={image || undefined}
+                    muted
+                    loop
+                    playsInline
+                    preload="none"
+                    disablePictureInPicture
+                  />
+                ) : image ? (
                   <img
                     src={image}
                     alt={`${destination.title}, Sri Lanka`}
@@ -147,6 +167,15 @@ export function DestinationsFlipbook() {
 
     flip.loadFromHTML(mount.querySelectorAll('.dfb-page'))
     flipRef.current = flip
+
+    // Only the clones are on screen, so only they play. Muted autoplay is the
+    // one kind browsers allow unprompted, and matches the hero.
+    mount.querySelectorAll('video').forEach((film) => {
+      film.muted = true
+      film.play().catch(() => {
+        /* A browser that refuses autoplay still shows the poster. */
+      })
+    })
 
     // Read the index off the live instance rather than the event payload, and
     // ignore anything from an instance we have already replaced: StrictMode's
