@@ -204,10 +204,8 @@ export function Homepage() {
           <header className="figma-experiences-header figma-experiences-header--center reveal">
             <p className="figma-overline">Inspiration Before Curation</p>
             <h2>
-              Ways Into The{' '}
-              <span className="figma-experiences-brand">Royale Isles</span>
+              We are <span className="figma-experiences-brand">Royale Isles</span>.
             </h2>
-            <p className="figma-experiences-lead">We are Royale Isles.</p>
             <p className="figma-experiences-bring">
               Custodians of a quieter, more private Sri Lanka where the island is not toured
               but confided. Unhurried mornings, doors opened by trust alone, and days composed
