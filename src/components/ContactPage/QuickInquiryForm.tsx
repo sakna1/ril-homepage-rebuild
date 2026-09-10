@@ -9,6 +9,7 @@ import {
   writeQuickInquiryDraft,
   type QuickInquiryFormFields,
 } from '../../contact/quickInquiryStorage'
+import { recordEnquiry } from '../../services/enquiriesApi'
 import {
   hasQuickInquiryValidationErrors,
   validateQuickInquiryForm,
@@ -60,16 +61,22 @@ export function QuickInquiryForm({ onFieldsChange }: QuickInquiryFormProps) {
       return
     }
 
+    const form = {
+      name: fields.name.trim(),
+      email: fields.email.trim(),
+      phone: fields.phone.trim(),
+      message: fields.message.trim(),
+    }
+
+    // Kept as a local fallback so nothing is lost if the desk is unreachable.
     saveQuickInquirySubmission({
       id: createQuickInquirySubmissionId(),
       submittedAt: new Date().toISOString(),
-      form: {
-        name: fields.name.trim(),
-        email: fields.email.trim(),
-        phone: fields.phone.trim(),
-        message: fields.message.trim(),
-      },
+      form,
     })
+
+    // No topic: a contact-page enquiry is recorded as "unplanned".
+    void recordEnquiry({ form, source: 'contact' })
 
     clearQuickInquiryDraft()
     setSubmitted(true)

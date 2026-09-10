@@ -6,6 +6,7 @@ import {
   saveQuickInquirySubmission,
   type QuickInquiryFormFields,
 } from '../../contact/quickInquiryStorage'
+import { recordEnquiry } from '../../services/enquiriesApi'
 import {
   hasQuickInquiryValidationErrors,
   validateQuickInquiryForm,
@@ -85,17 +86,24 @@ export function ThemeInquiryForm({
 
     if (hasQuickInquiryValidationErrors(nextErrors)) return
 
+    // No theme chosen means there is nothing concrete attached, so the topic
+    // is left off and the server records it as "unplanned".
+    const topic = chosenThemes.length > 0 ? chosenThemes.join(', ') : undefined
+    const form = {
+      name: fields.name.trim(),
+      email: fields.email.trim(),
+      phone: fields.phone.trim(),
+      message: fields.message.trim(),
+    }
+
     saveQuickInquirySubmission({
       id: createQuickInquirySubmissionId(),
       submittedAt: new Date().toISOString(),
-      topic: chosenThemes.length > 0 ? chosenThemes.join(', ') : 'General enquiry',
-      form: {
-        name: fields.name.trim(),
-        email: fields.email.trim(),
-        phone: fields.phone.trim(),
-        message: fields.message.trim(),
-      },
+      topic: topic ?? 'General enquiry',
+      form,
     })
+
+    void recordEnquiry({ form, source: 'theme', topic })
 
     setSentThemes(chosenThemes)
     setSubmitted(true)

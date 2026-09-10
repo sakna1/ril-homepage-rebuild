@@ -7,6 +7,7 @@ import {
   saveQuickInquirySubmission,
   type QuickInquiryFormFields,
 } from '../../contact/quickInquiryStorage'
+import { recordEnquiry } from '../../services/enquiriesApi'
 import {
   hasQuickInquiryValidationErrors,
   validateQuickInquiryForm,
@@ -62,17 +63,23 @@ export function JourneyInquiryForm({ journey, detail, onClose }: JourneyInquiryF
 
     if (hasQuickInquiryValidationErrors(nextErrors)) return
 
+    const topic = detail ? `${journey} — ${detail}` : journey
+    const form = {
+      name: fields.name.trim(),
+      email: fields.email.trim(),
+      phone: fields.phone.trim(),
+      message: fields.message.trim(),
+    }
+
     saveQuickInquirySubmission({
       id: createQuickInquirySubmissionId(),
       submittedAt: new Date().toISOString(),
-      topic: detail ? `${journey} — ${detail}` : journey,
-      form: {
-        name: fields.name.trim(),
-        email: fields.email.trim(),
-        phone: fields.phone.trim(),
-        message: fields.message.trim(),
-      },
+      topic,
+      form,
     })
+
+    // Carries the journey, so the server records this as "planned".
+    void recordEnquiry({ form, source: 'itinerary', topic })
 
     setSubmitted(true)
   }
