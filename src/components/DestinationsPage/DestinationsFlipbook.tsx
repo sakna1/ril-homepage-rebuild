@@ -51,7 +51,7 @@ export function DestinationsFlipbook() {
   const pages = useMemo(
     () => (
       <>
-        <div className="dfb-page dfb-page--cover" data-density="hard">
+        <div className="dfb-page dfb-page--cover">
           <div className="dfb-cover-inner">
             <p className="dfb-cover-eyebrow">Sri Lanka, Place by Place</p>
             <h2 className="dfb-cover-title">
@@ -116,7 +116,7 @@ export function DestinationsFlipbook() {
           </div>
         ))}
 
-        <div className="dfb-page dfb-page--cover dfb-page--back" data-density="hard">
+        <div className="dfb-page dfb-page--cover dfb-page--back">
           <div className="dfb-cover-inner">
             <span className="dfb-cover-rule" aria-hidden="true" />
             <p className="dfb-cover-note">
@@ -154,7 +154,11 @@ export function DestinationsFlipbook() {
       maxWidth: 620,
       minHeight: 400,
       maxHeight: 860,
-      showCover: true,
+      // No hard covers. With them, a closed book puts its front cover alone on
+      // the right of the spread and its back cover alone on the left, each
+      // leaving a blank half that reads as the book being off-centre. Without
+      // them every view is a full spread, so the book is always centred.
+      showCover: false,
       drawShadow: true,
       maxShadowOpacity: 0.4,
       flippingTime: 750,
@@ -225,6 +229,9 @@ export function DestinationsFlipbook() {
     setContentsOpen(false)
   }, [])
 
+  const atStart = currentPage <= 0
+  const atEnd = pageCount > 0 && currentPage >= pageCount - 1
+
   // Arrow keys turn pages, as they do in the reference reader.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -236,8 +243,6 @@ export function DestinationsFlipbook() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [goPrev, goNext])
 
-  const atStart = currentPage <= 0
-  const atEnd = pageCount > 0 && currentPage >= pageCount - 1
 
   return (
     <div className="dfb">
