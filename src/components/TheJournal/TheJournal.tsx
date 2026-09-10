@@ -1,7 +1,7 @@
 import './TheJournal.css'
-import kandyPeraheraImage from '../../assets/images/Kandy Perahera.JPG'
+import kandyPeraheraImage from '../../assets/optimised/images/Kandy Perahera.jpg'
 import kelaniTempleImage from '../../assets/images/Kelani temple.jpeg'
-import nuwaraEliyaImage from '../../assets/images/NuwaraEliya .jpg'
+import nuwaraEliyaImage from '../../assets/optimised/images/NuwaraEliya .jpg'
 
 const journalImages = {
   featured: kandyPeraheraImage,

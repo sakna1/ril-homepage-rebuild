@@ -30,14 +30,16 @@ export function useJourneyRoute(destinationIds: string[]): JourneyRoute {
   const [route, setRoute] = useState<DrivingRoute | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const isRoutable = stopCoordinates.length >= 2
+
   useEffect(() => {
-    if (stopCoordinates.length < 2) {
-      setRoute(null)
-      setIsLoading(false)
-      return
-    }
+    if (!isRoutable) return
 
     let cancelled = false
+    // Flagged by react-hooks/set-state-in-effect: the Directions request is an
+    // external system, and the in-flight flag has to be raised before it is
+    // dispatched. Every other branch of this hook is derived (see below).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true)
 
     fetchDrivingRoute(stopCoordinates).then((resolved) => {
@@ -49,7 +51,13 @@ export function useJourneyRoute(destinationIds: string[]): JourneyRoute {
     return () => {
       cancelled = true
     }
-  }, [stopCoordinates])
+  }, [stopCoordinates, isRoutable])
 
-  return { stopCoordinates, route, isLoading }
+  // Derived rather than reset through state: with fewer than two stops there is
+  // nothing to route, so the last response must not leak into the next render.
+  return {
+    stopCoordinates,
+    route: isRoutable ? route : null,
+    isLoading: isRoutable && isLoading,
+  }
 }

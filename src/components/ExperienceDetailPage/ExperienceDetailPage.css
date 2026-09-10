@@ -286,7 +286,7 @@
   color: var(--color-text-secondary-on-dark);
   font-family: var(--font-display);
   font-size: 36px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: var(--line-height-display);
 }
 
@@ -486,7 +486,7 @@
   color: var(--detail-ink);
   font-family: var(--font-display);
   font-size: 18px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: var(--line-height-copy);
 }
 

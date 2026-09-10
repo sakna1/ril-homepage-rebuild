@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import './ThreeDCarousel.css'
 import { experienceImages } from './images'
-import kandyPeraheraImage from '../../assets/images/Kandy Perahera.JPG'
+import kandyPeraheraImage from '../../assets/optimised/images/Kandy Perahera.jpg'
 import queenVictoriaStatueImage from '../../assets/images/queen-victoria-statue-colombo.jpg'
 
 const cards = [

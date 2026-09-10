@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
   adminLogin,
   clearAdminToken,
@@ -8,17 +8,7 @@ import {
   AdminUnauthorizedError,
   type AdminProfile,
 } from './adminApi'
-
-type AdminAuthValue = {
-  token: string | null
-  admin: AdminProfile | null
-  isLoading: boolean
-  isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
-}
-
-export const AdminAuthContext = createContext<AdminAuthValue | undefined>(undefined)
+import { AdminAuthContext, type AdminAuthValue } from './adminAuthContext'
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => getAdminToken())
@@ -34,6 +24,11 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!token) return
     let cancelled = false
+    // Flagged by react-hooks/set-state-in-effect. Restoring a session from a
+    // stored token is exactly the "subscribe to an external system" case the
+    // rule carves out: the spinner has to be up before the request leaves, and
+    // there is no render-time value to derive it from.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true)
     fetchAdminProfile()
       .then((profile) => {

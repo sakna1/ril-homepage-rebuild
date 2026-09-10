@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './AboutPage.css'
 import { aboutImages } from './images'
 import { experienceImages } from '../ExperiencesPage/images'
-import breathSeaImage from '../../assets/images/breath-sea.jpg'
+import breathSeaImage from '../../assets/optimised/images/breath-sea.jpg'
 import { offices } from '../../data/offices'
 
 const custodians = [

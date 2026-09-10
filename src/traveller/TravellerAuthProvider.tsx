@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
   clearTravellerToken,
   fetchTravellerItineraries,
@@ -15,25 +15,7 @@ import {
   type TravellerItinerary,
   type TravellerProfile,
 } from './travellerAuthApi'
-
-type TravellerAuthValue = {
-  token: string | null
-  traveller: TravellerProfile | null
-  itineraries: TravellerItinerary[]
-  isLoading: boolean
-  error: string
-  isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, fullName: string) => Promise<void>
-  googleLogin: (credential: string) => Promise<void>
-  completeReset: (token: string, password: string) => Promise<void>
-  saveProfile: (profile: TravellerProfile) => Promise<void>
-  saveItineraries: (itineraries: TravellerItinerary[]) => Promise<void>
-  logout: () => void
-  reload: () => void
-}
-
-export const TravellerAuthContext = createContext<TravellerAuthValue | undefined>(undefined)
+import { TravellerAuthContext, type TravellerAuthValue } from './travellerAuthContext'
 
 export function TravellerAuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => getTravellerToken())

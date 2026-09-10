@@ -2196,7 +2196,7 @@
   color: var(--color-primary);
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 1.9vw, 1.75rem);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.025em;
   line-height: 1.14;
 }
@@ -2755,7 +2755,7 @@
   color: var(--color-text-muted);
   font-family: var(--font-display);
   font-size: 15px;
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
   letter-spacing: 0.01em;
 }
@@ -2864,7 +2864,7 @@
   color: var(--color-primary);
   font-family: var(--font-display);
   font-size: clamp(22px, 2.2vw, 28px);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.02em;
 }
 
@@ -2982,7 +2982,7 @@
   color: var(--color-primary);
   font-family: var(--font-display);
   font-size: 22px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.15;
 }
@@ -2995,7 +2995,7 @@
   color: var(--color-primary);
   font-family: var(--font-display);
   font-size: 28px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1;
 }
@@ -3081,7 +3081,7 @@
   color: var(--color-primary);
   font-family: var(--font-display);
   font-size: 24px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.02em;
 }
 

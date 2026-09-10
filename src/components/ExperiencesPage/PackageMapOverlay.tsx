@@ -141,11 +141,18 @@ export function PackageMapOverlay({
     packageContext?.focused?.destination.id,
   )
 
+  // Re-point the focus when the package changes. This id cannot simply be
+  // derived at render: the fly-to effect below compares it against
+  // framedFocusRef to decide whether the camera has already moved, so it has to
+  // be real state that changes exactly once per package.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFocusedDestinationId(packageContext?.focused?.destination.id)
   }, [packageContext?.focused?.destination.id])
 
-  const places = packageContext?.places ?? []
+  // Memoised because the `?? []` fallback otherwise mints a new array on every
+  // render, which invalidates the useMemo and two useCallbacks that depend on it.
+  const places = useMemo(() => packageContext?.places ?? [], [packageContext?.places])
   const focusedPlace =
     places.find((place) => place.destination.id === focusedDestinationId) ?? packageContext?.focused ?? null
 
@@ -300,6 +307,11 @@ export function PackageMapOverlay({
       maxZoom: 9.2,
     })
     framedFocusRef.current = focusedDestinationId
+    // Deliberately narrow: this frames the whole package once per theme. Adding
+    // places/packageContext/focusedDestinationId would re-fit the camera on every
+    // focus change, fighting the fly-to effect below (which uses framedFocusRef
+    // to tell "already framed" from "needs moving").
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapReady, packageContext?.themeId])
 
   useEffect(() => {

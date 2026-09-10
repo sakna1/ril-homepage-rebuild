@@ -425,7 +425,7 @@
   margin-top: 16px;
   font-family: var(--font-serif);
   font-size: clamp(22px, 2.6vw, 34px);
-  font-weight: 300;
+  font-weight: 400;
   line-height: var(--line-height-display);
 }
 
@@ -1460,7 +1460,7 @@
 .about-branches-heading {
   font-family: var(--font-serif);
   font-size: clamp(32px, 4.4vw, 50px);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.03em;
   line-height: var(--line-height-display);
   color: var(--color-primary);
@@ -1510,7 +1510,7 @@
   color: var(--color-primary);
   font-family: var(--font-serif);
   font-size: 24px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.15;
 }
@@ -1592,7 +1592,7 @@
   color: var(--color-primary);
   font-family: var(--font-serif);
   font-size: clamp(28px, 3.6vw, 42px);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 1.12;
 }
@@ -1672,7 +1672,7 @@
   color: var(--color-primary);
   font-family: var(--font-serif);
   font-size: 19px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.015em;
   line-height: 1.2;
 }

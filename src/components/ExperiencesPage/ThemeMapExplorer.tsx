@@ -91,11 +91,10 @@ export function ThemeMapExplorer({ themes, selectedTheme, onSelectTheme }: Theme
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | undefined>()
 
   const places = useMemo(() => (selectedTheme ? getPackagePlacesForTheme(selectedTheme) : []), [selectedTheme])
+  // Switching theme leaves a place id that belongs to the previous theme, so the
+  // lookup misses and falls through to the first place of the new one. That is
+  // the same reset an effect would do, minus the extra render pass.
   const selectedPlace = places.find((place) => place.destination.id === selectedPlaceId) ?? places[0] ?? null
-
-  useEffect(() => {
-    setSelectedPlaceId(places[0]?.destination.id)
-  }, [places])
 
   const handleMapReady = useCallback((map: Map) => {
     mapRef.current = map

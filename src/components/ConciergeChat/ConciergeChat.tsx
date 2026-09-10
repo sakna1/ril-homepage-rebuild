@@ -49,9 +49,12 @@ export function ConciergeChat({ open, onClose }: { open: boolean; onClose: () =>
       return () => window.clearTimeout(timer)
     }
 
-    // Closing the panel abandons any request still in flight.
+    // Closing the panel abandons any request still in flight. Flagged by
+    // react-hooks/set-state-in-effect, but aborting a fetch is external-system
+    // teardown, and the flag it clears belongs to the request being abandoned.
     abortRef.current?.abort()
     abortRef.current = null
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsSending(false)
     return undefined
   }, [open])

@@ -2,13 +2,13 @@ import blueWhaleSunset from '../assets/experiences/blue-whale-sunset.jpg'
 import brassLamp from '../assets/experiences/brass-lamp.jpg'
 import galleFort from '../assets/experiences/galle-fort.jpg'
 import kandyanDancer from '../assets/experiences/kandyan-dancer.jpg'
-import leopardFeature from '../assets/experiences/leopard-feature.jpg'
+import leopardFeature from '../assets/optimised/experiences/leopard-feature.jpg'
 import mirissaBoats from '../assets/experiences/mirissa-boats.jpg'
 import monks from '../assets/experiences/monks.jpg'
 import oilLamps from '../assets/experiences/oil-lamps.jpg'
 import poolVilla from '../assets/experiences/pool-villa.jpg'
-import sigiriyaMain from '../assets/images/Sigiriya Main.jpg'
-import hillCountryNuwaraEliya from '../assets/images/Hill Country Nuwaraeliya.jpg'
+import sigiriyaMain from '../assets/optimised/images/Sigiriya Main.jpg'
+import hillCountryNuwaraEliya from '../assets/optimised/images/Hill Country Nuwaraeliya.jpg'
 
 export type Experience = {
   id: string

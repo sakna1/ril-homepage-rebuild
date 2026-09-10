@@ -171,7 +171,11 @@ function useCrud<T extends { id: number }>(load: () => Promise<T[]>) {
       .finally(() => setLoading(false))
   }, [load])
 
+  // Initial load. Flagged by react-hooks/set-state-in-effect because refresh()
+  // raises its own loading flag; this is the plain fetch-on-mount case, and the
+  // same callback is handed back so mutations can re-run it.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refresh()
   }, [refresh])
 

@@ -1,3 +1,4 @@
+import portraitDrRaghavan from '../../assets/about/portrait-drRaghavan.jpeg'
 import './WhyWeExist.css'
 
 const processSteps = [
@@ -72,7 +73,7 @@ export function WhyWeExist() {
         <div className="founder-info">
           <img
             className="founder-avatar"
-            src="https://picsum.photos/seed/dr-raghavan/96/96"
+            src={portraitDrRaghavan}
             alt="Dr Raghavan"
           />
           <div className="founder-details">

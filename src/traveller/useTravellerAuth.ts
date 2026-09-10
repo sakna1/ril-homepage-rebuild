@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { TravellerAuthContext } from './TravellerAuthContext'
+import { TravellerAuthContext } from './travellerAuthContext'
 
 export function useTravellerAuth() {
   const context = useContext(TravellerAuthContext)

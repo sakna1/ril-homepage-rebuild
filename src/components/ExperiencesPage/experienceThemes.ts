@@ -1,6 +1,6 @@
 import { experienceImages } from './images'
 import { sharedHeritageWorld } from '../../journey/discoveryWorlds'
-import kandyPerahera from '../../assets/images/Kandy Perahera.JPG'
+import kandyPerahera from '../../assets/optimised/images/Kandy Perahera.jpg'
 
 /**
  * The seven discovery worlds. Lives in its own module so both the Expectations

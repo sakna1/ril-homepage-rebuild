@@ -1,0 +1,74 @@
+{
+  "coastline.jpg": {
+    "from": "assets/about/coastline.jpg",
+    "to": "assets/optimised/about/coastline.jpg"
+  },
+  "portrait-dilshan.png": {
+    "from": "assets/about/portrait-dilshan.png",
+    "to": "assets/optimised/about/portrait-dilshan.jpg"
+  },
+  "portrait-kelum.png": {
+    "from": "assets/about/portrait-kelum.png",
+    "to": "assets/optimised/about/portrait-kelum.jpg"
+  },
+  "dhoni.jpg": {
+    "from": "assets/experiences/dhoni.jpg",
+    "to": "assets/optimised/experiences/dhoni.jpg"
+  },
+  "leopard-feature.jpg": {
+    "from": "assets/experiences/leopard-feature.jpg",
+    "to": "assets/optimised/experiences/leopard-feature.jpg"
+  },
+  "Gartmore waterfall.jpg": {
+    "from": "assets/images/Gartmore waterfall.jpg",
+    "to": "assets/optimised/images/Gartmore waterfall.jpg"
+  },
+  "Hill Country Nuwaraeliya.jpg": {
+    "from": "assets/images/Hill Country Nuwaraeliya.jpg",
+    "to": "assets/optimised/images/Hill Country Nuwaraeliya.jpg"
+  },
+  "Kandy Perahera.JPG": {
+    "from": "assets/images/Kandy Perahera.JPG",
+    "to": "assets/optimised/images/Kandy Perahera.jpg"
+  },
+  "Kelani temple(1).JPG": {
+    "from": "assets/images/Kelani temple(1).JPG",
+    "to": "assets/optimised/images/Kelani temple(1).jpg"
+  },
+  "Naalanda gedige Matale(1).jpg": {
+    "from": "assets/images/Naalanda gedige Matale(1).jpg",
+    "to": "assets/optimised/images/Naalanda gedige Matale(1).jpg"
+  },
+  "Naalanda gedige Matale.jpg": {
+    "from": "assets/images/Naalanda gedige Matale.jpg",
+    "to": "assets/optimised/images/Naalanda gedige Matale.jpg"
+  },
+  "NuwaraEliya .jpg": {
+    "from": "assets/images/NuwaraEliya .jpg",
+    "to": "assets/optimised/images/NuwaraEliya .jpg"
+  },
+  "Peradeniya.jpg": {
+    "from": "assets/images/Peradeniya.jpg",
+    "to": "assets/optimised/images/Peradeniya.jpg"
+  },
+  "Sigiriya Main.jpg": {
+    "from": "assets/images/Sigiriya Main.jpg",
+    "to": "assets/optimised/images/Sigiriya Main.jpg"
+  },
+  "breath-sea.jpg": {
+    "from": "assets/images/breath-sea.jpg",
+    "to": "assets/optimised/images/breath-sea.jpg"
+  },
+  "geogary lake nuwra eliya .jpg": {
+    "from": "assets/images/geogary lake nuwra eliya .jpg",
+    "to": "assets/optimised/images/geogary lake nuwra eliya .jpg"
+  },
+  "theru festival.jpg": {
+    "from": "assets/images/theru festival.jpg",
+    "to": "assets/optimised/images/theru festival.jpg"
+  },
+  "negombo.png": {
+    "from": "assets/itineraries/negombo.png",
+    "to": "assets/optimised/itineraries/negombo.jpg"
+  }
+}

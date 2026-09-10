@@ -21,7 +21,7 @@ function useHashScroll() {
 
     let frame = 0
     const jump = () => {
-      let target: Element | null = null
+      let target: Element | null
       try {
         target = document.querySelector(hash)
       } catch {

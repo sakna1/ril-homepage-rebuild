@@ -26,8 +26,8 @@ import { TravelPreparationPage } from './components/TravelPreparationPage/Travel
 import { TravellerDashboardPage } from './pages/TravellerDashboardPage/TravellerDashboardPage'
 import { AdminDashboardPage } from './pages/AdminDashboardPage/AdminDashboardPage'
 import { JourneyProvider } from './journey/JourneyContext'
-import { TravellerAuthProvider } from './traveller/TravellerAuthContext'
-import { AdminAuthProvider } from './admin/AdminAuthContext'
+import { TravellerAuthProvider } from './traveller/TravellerAuthProvider'
+import { AdminAuthProvider } from './admin/AdminAuthProvider'
 
 function AppContent() {
   const rawPath = window.location.pathname.replace(/\/$/, '')

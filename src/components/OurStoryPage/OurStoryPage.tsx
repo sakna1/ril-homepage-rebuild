@@ -12,7 +12,7 @@ const chapters = [
     numeral: 'I',
     title: 'The Marine Turtle — Our Emblem',
     copy: [
-      'Sri Lanka is the sanctuary for 5 of the 6 most admired marine turtles. The sea turtle is among the most attuned of all creatures to the rhythms of sun and moon. She seeks out only the calmest, most silent shores by night, laying hundreds of eggs in complete stillness. And after journeys spanning thousands of kilometers across open ocean, she returns unfailingly to the shore of her birth — guided not by sight, but by an ancient sense of the earth’s own vibration.',
+      'Sri Lanka is the sanctuary for 5 of the 6 most admired marine turtles. The sea turtle is among the most attuned of all creatures to the rhythms of sun and moon. She seeks out only the calmest, most silent shores by night, laying hundreds of eggs in complete stillness. And after journeys spanning thousands of kilometres across open ocean, she returns unfailingly to the shore of her birth — guided not by sight, but by an ancient sense of the earth’s own vibration.',
       'Across civilizations, the turtle has long symbolized the universe itself — bearing the world on her back in Hindu cosmology, and holding comparable meaning in the mythology of ancient Greece.',
     ],
   },

@@ -101,8 +101,8 @@ export function FeaturedExperiences() {
         <div className="experience-row">
           <div className="experience-image-wrap">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/f0c708d2b75f301df7b8ec2dfce515705491979b?width=1067"
-              alt="Steam rising from cup of Ceylon tea on antique teak table"
+              src={experienceImages.teaEstate}
+              alt="Tea bushes following the contour of a Ceylon hill estate"
             />
             <span className="experience-number">03</span>
           </div>
