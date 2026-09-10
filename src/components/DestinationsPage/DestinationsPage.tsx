@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import './DestinationsPage.css'
 import { journeyRegions, type RegionDestination } from '../../data/journeyRegions'
 import { DestinationsBentoGallery, type BentoMediaItem } from './DestinationsBentoGallery'
+import { DestinationsFlipbook } from './DestinationsFlipbook'
 import { DestinationsMap } from './DestinationsMap'
 import { mediaForDestination, youtubeEmbedUrl, youtubeThumbnail } from './destinationMedia'
 
@@ -56,6 +57,10 @@ export function DestinationsPage() {
           Destinations
           <em>worth the journey.</em>
         </h1>        
+      </section>
+
+      <section className="destinations-book" aria-label="Destinations, page by page">
+        <DestinationsFlipbook />
       </section>
 
       <section className="destinations-gallery" aria-label="Destinations in Sri Lanka">

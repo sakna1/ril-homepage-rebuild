@@ -1,0 +1,365 @@
+/* The destinations, bound as a book. StPageFlip supplies the curl; everything
+   here is the paper it turns. */
+
+.dfb {
+  --dfb-paper: #fbf9f4;
+  --dfb-ink: var(--color-text, #2c2418);
+  --dfb-rule: rgba(44, 36, 24, 0.16);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding-block: clamp(24px, 4vw, 56px);
+}
+
+.dfb-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 2vw, 28px);
+  width: 100%;
+  max-width: 1400px;
+}
+
+/* StPageFlip measures this element, so it must not be display:flex or grid. */
+.dfb-book {
+  flex: 0 1 auto;
+  width: min(100%, 1240px);
+}
+
+/* Before init the raw pages would stack down the document; keep them out of
+   the way until StPageFlip has lifted them into its own wrapper. */
+.dfb-book > .dfb-page {
+  overflow: hidden;
+}
+
+.dfb-page {
+  background: var(--dfb-paper);
+  color: var(--dfb-ink);
+}
+
+/* ---------- covers ---------- */
+
+.dfb-page--cover {
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255, 255, 255, 0.08), transparent 60%),
+    var(--color-primary, #004225);
+  color: #f7f4ec;
+}
+
+.dfb-cover-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  height: 100%;
+  padding: clamp(24px, 6%, 52px);
+  text-align: center;
+}
+
+.dfb-cover-eyebrow {
+  margin: 0;
+  color: var(--color-accent, #b8915a);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.dfb-cover-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.4vw, 52px);
+  font-weight: 400;
+  line-height: 1.06;
+}
+
+.dfb-cover-title em {
+  display: block;
+  font-style: italic;
+}
+
+.dfb-cover-rule {
+  width: 46px;
+  height: 1px;
+  background: var(--color-accent, #b8915a);
+}
+
+.dfb-cover-note {
+  margin: 0;
+  max-width: 30ch;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  opacity: 0.82;
+}
+
+.dfb-cover-link {
+  margin-top: 6px;
+  color: #f7f4ec;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-accent, #b8915a);
+  padding-bottom: 4px;
+}
+
+/* ---------- a destination leaf ---------- */
+
+.dfb-leaf {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.dfb-leaf-figure {
+  position: relative;
+  margin: 0;
+  /* The photograph takes the top half; the text sits under it like a plate
+     caption in a printed guide. */
+  flex: 0 0 52%;
+  overflow: hidden;
+  background: #e8e2d6;
+}
+
+.dfb-leaf-figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dfb-leaf-region {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 7px 14px;
+  background: var(--color-primary, #004225);
+  color: #f7f4ec;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.dfb-leaf-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(16px, 5%, 30px) clamp(16px, 6%, 34px) 38px;
+  overflow: hidden;
+}
+
+.dfb-leaf-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--color-primary, #004225);
+}
+
+.dfb-leaf-desc {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(12px, 1.1vw, 14px);
+  font-weight: 300;
+  line-height: 1.62;
+  /* Descriptions vary a lot in length; clamp so no page overflows its leaf. */
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dfb-leaf-meta {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.dfb-leaf-meta span {
+  display: block;
+  color: var(--color-accent, #b8915a);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.dfb-leaf-note {
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--dfb-rule);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.5;
+  opacity: 0.78;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dfb-leaf-folio {
+  position: absolute;
+  right: clamp(16px, 6%, 34px);
+  bottom: 16px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--dfb-ink);
+  opacity: 0.45;
+}
+
+/* ---------- controls ---------- */
+
+.dfb-arrow {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--dfb-rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary, #004225);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 200ms ease, opacity 200ms ease;
+}
+
+.dfb-arrow:hover:not(:disabled) {
+  background: rgba(0, 66, 37, 0.07);
+}
+
+.dfb-arrow:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.dfb-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+}
+
+.dfb-bar-button {
+  padding: 8px 18px;
+  border: 1px solid var(--color-primary, #004225);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-primary, #004225);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.dfb-bar-button:hover {
+  background: rgba(0, 66, 37, 0.07);
+}
+
+.dfb-counter {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+}
+
+.dfb-hint {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 300;
+  opacity: 0.6;
+}
+
+/* ---------- contents ---------- */
+
+.dfb-contents {
+  width: min(100%, 1000px);
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--dfb-rule);
+  border-radius: 10px;
+  background: var(--dfb-paper);
+  padding: 10px;
+}
+
+.dfb-contents ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dfb-contents button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.dfb-contents button:hover {
+  background: rgba(0, 66, 37, 0.06);
+}
+
+.dfb-contents-title {
+  flex: 1 1 auto;
+  font-size: 13px;
+  color: var(--color-primary, #004225);
+}
+
+.dfb-contents-region {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.dfb-contents-folio {
+  font-family: var(--font-display);
+  font-size: 11px;
+  opacity: 0.45;
+}
+
+@media (max-width: 760px) {
+  .dfb-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 21px;
+  }
+
+  .dfb-hint {
+    display: none;
+  }
+}
