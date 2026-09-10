@@ -26,7 +26,11 @@ const heroPoster = '/figma-homepage/hero.jpg'
 export function Homepage() {
   const pageRef = useRef<HTMLElement>(null)
   const heroVideoRef = useRef<HTMLVideoElement>(null)
-  const [isHeroMuted, setIsHeroMuted] = useState(false)
+  // The hero starts silent. Sound is opt-in, via the control over the video.
+  const [isHeroMuted, setIsHeroMuted] = useState(true)
+  // Once the visitor has used the sound control, playback retries must stop
+  // touching `muted` — otherwise a late canplay would undo their choice.
+  const hasUserSetSoundRef = useRef(false)
 
   useScrollReveal(pageRef)
 
@@ -44,25 +48,17 @@ export function Homepage() {
       // Guard against loadeddata/canplay firing again after playback has
       // already started — re-issuing play() on a playing video can cause
       // an audible restart/overlap ("double sound").
-      if (hasStartedPlaying) return
+      if (hasStartedPlaying || hasUserSetSoundRef.current) return
 
-      video.muted = false
+      // Muted is also the only state browsers reliably allow to autoplay, so
+      // this doubles as the path most likely to actually start.
+      video.muted = true
 
       try {
         await video.play()
         hasStartedPlaying = true
-        setIsHeroMuted(false)
-        return
       } catch {
-        video.muted = true
-        setIsHeroMuted(true)
-
-        try {
-          await video.play()
-          hasStartedPlaying = true
-        } catch {
-          // Autoplay can still be blocked on some devices.
-        }
+        // Autoplay can still be blocked on some devices.
       }
     }
 
@@ -78,45 +74,6 @@ export function Homepage() {
     video.addEventListener('loadeddata', handleLoadedData)
     video.addEventListener('canplay', handleCanPlay)
 
-    // Browsers block audio autoplay until the first user gesture. Rather than
-    // making the visitor hunt for the sound button, the very first interaction
-    // anywhere on the page (tap, click, scroll, or key press) unmutes the hero
-    // video and gives it sound. This is the earliest point the browser allows.
-    let hasEnabledSound = false
-
-    const enableSoundOnFirstGesture = () => {
-      if (hasEnabledSound) return
-      hasEnabledSound = true
-
-      video.muted = false
-      video.volume = 1
-      setIsHeroMuted(false)
-      void video.play().catch(() => {})
-
-      removeGestureListeners()
-    }
-
-    const gestureEvents: Array<keyof DocumentEventMap> = [
-      'pointerdown',
-      'touchstart',
-      'click',
-      'keydown',
-      'scroll',
-      'wheel',
-    ]
-
-    const removeGestureListeners = () => {
-      gestureEvents.forEach((eventName) => {
-        document.removeEventListener(eventName, enableSoundOnFirstGesture)
-      })
-    }
-
-    gestureEvents.forEach((eventName) => {
-      document.addEventListener(eventName, enableSoundOnFirstGesture, {
-        passive: true,
-      })
-    })
-
     const handleVisibilityChange = () => {
       if (!document.hidden && video.paused) {
         void video.play().catch(() => {})
@@ -128,7 +85,6 @@ export function Homepage() {
     return () => {
       video.removeEventListener('loadeddata', handleLoadedData)
       video.removeEventListener('canplay', handleCanPlay)
-      removeGestureListeners()
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
@@ -136,6 +92,8 @@ export function Homepage() {
   const toggleHeroSound = () => {
     const video = heroVideoRef.current
     if (!video) return
+
+    hasUserSetSoundRef.current = true
 
     if (video.muted) {
       video.muted = false
